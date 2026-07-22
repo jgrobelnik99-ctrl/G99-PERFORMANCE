@@ -1420,20 +1420,27 @@
                       animation: tvDih 2.4s ease-in-out infinite; }
         @keyframes tvDih { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        /* Napoved naslednjega športnika: skener zapestnice že ve, kdo je na vrsti,
-           še preden je izmerjen. Skrit privzeto, prikaže se ob skeniranju in samodejno
-           izgine, ko se sproži prava kartica ali po določenem času. */
-        .tv-pripravi-se { display: none; align-items: center; gap: 14px; margin-top: 20px;
-                           background: rgba(255,159,67,0.12); border: 1px solid rgba(255,159,67,0.5);
-                           border-radius: 40px; padding: 10px 26px 10px 20px;
-                           animation: tvPripraviUtrip 1.8s ease-in-out infinite; }
-        .tv-pripravi-se.viden { display: inline-flex; }
-        .tv-pripravi-se-label { font-size: clamp(10px, 1vw, 13px); font-weight: 900; letter-spacing: 3px;
-                                 text-transform: uppercase; color: #ff9f43; }
-        .tv-pripravi-se-ime { font-size: clamp(16px, 1.6vw, 24px); font-weight: 900; letter-spacing: 1px;
-                              text-transform: uppercase; color: #fff; }
-        @keyframes tvPripraviUtrip { 0%,100% { box-shadow: 0 0 10px rgba(255,159,67,0.15); }
-                                     50% { box-shadow: 0 0 26px rgba(255,159,67,0.55); } }
+        /* --- TRETJI ZASLON: ATLET SE JE PRIJAVIL NA ŠTARTU --- */
+        /* Skener zapestnice ve, kdo je prišel na vrsto, precej prej kot je meritev vnesena.
+           To je samostojen zaslon (ne pasica), ker gre za napoved na dogodku - enako težo
+           ima kot citat in kartica iz baze, le da ima prednost pred obema. */
+        #tvNaStartu { display: none; flex-direction: column; align-items: center; justify-content: center;
+                      width: 100%; height: 100%; text-align: center; }
+        .tv-st-oznaka { font-size: clamp(11px, 1.15vw, 16px); font-weight: 900;
+                        letter-spacing: clamp(5px, 1vw, 12px); text-transform: uppercase;
+                        color: #ff9f43; margin-bottom: clamp(18px, 2.6vh, 34px);
+                        animation: tvStUtrip 2.2s ease-in-out infinite; }
+        @keyframes tvStUtrip { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+        .tv-st-ime { font-size: clamp(46px, 8.5vw, 148px); font-weight: 900; line-height: 0.98;
+                     letter-spacing: clamp(2px, 0.5vw, 8px); text-transform: uppercase;
+                     max-width: 16ch;
+                     background: linear-gradient(90deg, #ff9f43, #ffd074 55%, #ff9f43);
+                     -webkit-background-clip: text; background-clip: text; color: transparent;
+                     filter: drop-shadow(0 0 32px rgba(255,159,67,0.35)); }
+        .tv-st-pod { margin-top: clamp(20px, 3vh, 40px); font-size: clamp(12px, 1.25vw, 19px);
+                     font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
+                     color: #8b9ab3; }
+        .tv-st-pod b { color: #4facfe; font-weight: 900; font-size: 1.2em; }
 
         .tv-start { margin-top: 30px; padding: 16px 42px; border-radius: 40px; cursor: pointer;
                     background: linear-gradient(90deg, #4facfe, #00f2fe); color: #03060f; border: none;

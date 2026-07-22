@@ -225,7 +225,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         qrNamig: "Skeniraj za celoten profil",
         tvCakanje: "Čakam na naslednji rezultat", tvZazeni: "Zaženi zaslon",
         tvNamig: "Zvok in celozaslonski način se vklopita ob zagonu",
-        tvPripraviSe: "Pripravi se",
+        tvStOznake: ["Na štartu", "Na vrsti", "Zdaj gre", "V akciji", "Na progi"],
+        tvStPrvic: "Prva meritev", tvStZadnji: "Zadnji OVR",
         tvNovRekord: "Nov rekord", tvRekordOvr: "Najvišji OVR",
         tvNapaka: "Povezave z bazo ni bilo mogoče vzpostaviti",
         tvPodlogo: "Uradne meritve", tvStatMeritev: "Meritev v bazi", tvStatVodi: "Vodi",
@@ -240,7 +241,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         skenerNalozen: "Naložen športnik:", skenerNalagam: "nalagam ...",
         skenerDrugi: "Poveži z drugim", skenerVpisiNovega: "Vpiši novega športnika za to kodo.",
         skenerPotekla: "Povezava je potekla. Koda je spet prosta.",
-        btnTiskKod: "Natisni kode za zapestnice",
+        btnTiskKod: "Natisni kode za zapestnice", btnNaStartu: "Napovej na štartu",
         tiskKoliko: "Koliko kod naj pripravim?", tiskOd: "Od katere številke naprej?",
         tiskBlokirano: "Brskalnik je blokiral novo okno. Dovoli pojavna okna in poskusi znova.",
         tiskPrenesi: "Prenesi vse kot sliko", tiskNatisni: "Natisni",
@@ -305,7 +306,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         qrNamig: "Scan for the full profile",
         tvCakanje: "Waiting for the next result", tvZazeni: "Start screen",
         tvNamig: "Sound and fullscreen turn on when you start",
-        tvPripraviSe: "Get ready",
+        tvStOznake: ["On the start line", "Up next", "Going now", "In action", "On the track"],
+        tvStPrvic: "First measurement", tvStZadnji: "Last OVR",
         tvNovRekord: "New record", tvRekordOvr: "Highest OVR",
         tvNapaka: "Could not connect to the database",
         tvPodlogo: "Official testing", tvStatMeritev: "Measurements", tvStatVodi: "Leader",
@@ -320,7 +322,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         skenerNalozen: "Athlete loaded:", skenerNalagam: "loading ...",
         skenerDrugi: "Link to someone else", skenerVpisiNovega: "Enter a new athlete for this code.",
         skenerPotekla: "The link has expired. The code is free again.",
-        btnTiskKod: "Print wristband codes",
+        btnTiskKod: "Print wristband codes", btnNaStartu: "Announce on the line",
         tiskKoliko: "How many codes should I prepare?", tiskOd: "Starting from which number?",
         tiskBlokirano: "The browser blocked the new window. Allow pop-ups and try again.",
         tiskPrenesi: "Download all as image", tiskNatisni: "Print",
@@ -3082,25 +3084,100 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
     // Preliv med slojema: najprej zbledi obstoječi, šele nato se pokaže novi.
     // Zamik 520 ms se ujema s trajanjem prehoda v CSS.
-    // Napoved naslednjega športnika ("Pripravi se: Jaka"). Sproži jo skener zapestnice,
-    // ki že ob skeniranju ve, kdo je na vrsti - torej precej prej, kot je meritev vnesena.
-    // Zapis živi v "stanje/naslednji", TV ga bere prek onSnapshot. Samodejno izgine po
-    // PRIPRAVI_SE_TRAJANJE_MS, ali takoj, ko se na oder dvigne prava kartica.
-    window.PRIPRAVI_SE_TRAJANJE_MS = 25000;
-    window._tvPripraviSeTimer = null;
-    window.tvPokaziPripraviSe = function(ime) {
-        let el = document.getElementById('tvPripraviSe');
-        let elIme = document.getElementById('tvPripraviSeIme');
-        if(!el || !elIme) return;
-        elIme.innerText = ime || '';
-        el.classList.add('viden');
-        if(window._tvPripraviSeTimer) clearTimeout(window._tvPripraviSeTimer);
-        window._tvPripraviSeTimer = setTimeout(window.tvSkrijPripraviSe, window.PRIPRAVI_SE_TRAJANJE_MS);
+    // Objava "kdo je na štartu" na TV zaslon. Uporabljata jo skener zapestnice in
+    // ročni gumb v Vnosu. Anonimni ključ pošljemo zraven, da TV lahko poišče zadnji OVR,
+    // ne da bi kdaj videl e-naslov. Pisanje je zavarovano s catch: če admin ni prijavljen,
+    // pravila zapis zavrnejo, in to ne sme prekiniti vnosa meritve.
+    window.objaviNaStartu = function(ime, email) {
+        ime = (ime || '').trim();
+        if(!ime) return false;
+        let kljuc = email ? window.anonKljuc(email) : null;
+        try {
+            window.setDoc(window.doc(window.db, "stanje", "naslednji"),
+                          { ime: ime, kljuc: kljuc, cas: Date.now() }).catch(() => {});
+        } catch(e) {}
+        return true;
     };
-    window.tvSkrijPripraviSe = function() {
-        let el = document.getElementById('tvPripraviSe');
-        if(el) el.classList.remove('viden');
-        if(window._tvPripraviSeTimer) { clearTimeout(window._tvPripraviSeTimer); window._tvPripraviSeTimer = null; }
+
+    // Ročna napoved iz Vnosa - za primere, ko zapestnice ni (pozabljena, prvi obisk).
+    window.napovejNaStartu = function() {
+        let ime = (document.getElementById('ime') || {}).value || '';
+        let email = (document.getElementById('emailSportnika') || {}).value || '';
+        let g = document.getElementById('btnNaStartu');
+        if(!window.objaviNaStartu(ime, email.toLowerCase().trim())) return;
+        if(g) {
+            let orig = g.innerHTML;
+            g.innerHTML = '📣 ' + window.escapeHtml(ime.trim());
+            setTimeout(() => { g.innerHTML = orig; }, 2200);
+        }
+    };
+
+    // ===== TRETJI ZASLON: ATLET NA ŠTARTU =====
+    // Skener zapestnice ve, kdo je prišel na vrsto, precej prej kot je meritev vnesena.
+    // Ta zaslon ima PREDNOST pred citatom in kartico iz baze - prekine cikel, se pokaže
+    // TV_START_MS, nato se cikel nadaljuje tam, kjer bi bil sicer.
+    // Oznaka se menja ("Na štartu", "Na vrsti", ...), da napis ne postane tapeta.
+    window.TV_START_MS = 11000;
+    window._tvStTimer = null;
+    window._tvStOznakaIdx = -1;
+
+    window.tvStNaslednjaOznaka = function() {
+        let sez = (window.prevodi[window.tJezik] || {}).tvStOznake || ['Na štartu'];
+        let i;
+        do { i = Math.floor(Math.random() * sez.length); }
+        while(sez.length > 1 && i === window._tvStOznakaIdx);
+        window._tvStOznakaIdx = i;
+        return sez[i];
+    };
+
+    // Podnapis: če je športnik že v bazi, pokažemo njegov zadnji OVR - gledalci takoj
+    // vedo, koliko mora podreti. Če ga ni, je to njegova prva meritev in to je svoja zgodba.
+    window.tvStPodnapis = function(kljuc) {
+        let lng = window.prevodi[window.tJezik];
+        if(!kljuc) return '';
+        let g = window.groupAthletesByEmail();
+        let sez = g[kljuc];
+        if(!sez || !sez.length) return lng.tvStPrvic;
+        let zadnja = sez[0];
+        let ovr = window.izracunajOcene(zadnja).ovr;
+        return `${lng.tvStZadnji} <b>${ovr}</b>`;
+    };
+
+    window.tvPokaziNaStartu = function(ime, kljuc) {
+        let el = document.getElementById('tvNaStartu');
+        if(!el || !ime) return;
+        if(window.tvTece) return;   // med prikazom prave kartice ne prekinjamo - ta ima prednost
+
+        window.setT('tvStOznaka', window.tvStNaslednjaOznaka());
+        window.setT('tvStIme', ime);
+        window.setH('tvStPod', window.tvStPodnapis(kljuc));
+
+        // Cikel ustavimo, da nam citat ali kartica ne skoči čez napoved.
+        if(window.tvCikelTimer) { clearTimeout(window.tvCikelTimer); window.tvCikelTimer = null; }
+        let citat = document.getElementById('tvCitatBlok');
+        let arhiv = document.getElementById('tvArhiv');
+        if(arhiv) arhiv.classList.remove('viden');
+        window.tvPreklopiSloj(el, (arhiv && arhiv.style.display !== 'none') ? arhiv : citat,
+                              () => el.classList.add('viden'));
+        window.vibriraj([25, 60, 25]);
+
+        if(window._tvStTimer) clearTimeout(window._tvStTimer);
+        window._tvStTimer = setTimeout(window.tvSkrijNaStartu, window.TV_START_MS);
+    };
+
+    window.tvSkrijNaStartu = function() {
+        if(window._tvStTimer) { clearTimeout(window._tvStTimer); window._tvStTimer = null; }
+        let el = document.getElementById('tvNaStartu');
+        if(!el || !el.classList.contains('viden')) return;
+        el.classList.remove('viden');
+        // Vrnemo se na citat in cikel poženemo od začetka - le če je bil zaslon že zagnan.
+        window.tvFaza = 'citat';
+        window.tvPostaviNapis();
+        window.tvPreklopiSloj(document.getElementById('tvCitatBlok'), el);
+        if(document.getElementById('tvStart').style.display === 'none') {
+            if(window.tvCikelTimer) clearTimeout(window.tvCikelTimer);
+            window.tvCikelTimer = setTimeout(window.tvCikelKorak, window.TV_CITAT_MS);
+        }
     };
 
     window.tvPreklopiSloj = function(vklopi, izklopi, priprava) {
@@ -3425,7 +3502,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 window.vibriraj([25, 60, 25]);
             } else { rk.innerHTML = ''; rk.classList.remove('viden'); }
             document.getElementById('tvOder').classList.add('viden');
-            window.tvSkrijPripraviSe();
+            window.tvSkrijNaStartu();
 
             // Šele ZDAJ kartica postane del baze in novo merilo za naslednjo.
             window.tvDanes.add(a.id);
@@ -3491,15 +3568,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 if(window.tvVrsta.length > 0) window.tvPrikaziNaslednjo();
             }, (e) => console.error('TV onSnapshot:', e));
 
-            // "Pripravi se: ..." - prvi odziv je obstoječe stanje ob zagonu TV, ne nov
-            // dogodek, zato ga (kot pri glavni bazi zgoraj) preskočimo.
-            let tvPrviNaslednji = true;
+            // Tretji zaslon ("Na štartu: Jaka"). Prvi odziv je obstoječe stanje ob zagonu
+            // TV, ne nov dogodek - zato ga (kot pri glavni bazi zgoraj) preskočimo, sicer
+            // bi ob vsakem zagonu zaslona zavpil ime nekoga, ki je bil na vrsti včeraj.
+            let tvPrviNaStartu = true;
             window.onSnapshot(window.doc(window.db, "stanje", "naslednji"), (snap) => {
-                if(tvPrviNaslednji) { tvPrviNaslednji = false; return; }
+                if(tvPrviNaStartu) { tvPrviNaStartu = false; return; }
                 if(!snap.exists()) return;
                 let d = snap.data();
-                if(d && d.ime) window.tvPokaziPripraviSe(d.ime);
-            }, (e) => console.error('TV pripravi se:', e));
+                if(d && d.ime) window.tvPokaziNaStartu(d.ime, d.kljuc || null);
+            }, (e) => console.error('TV na startu:', e));
         } catch(e) {
             console.error('TV način:', e);
             window.setT('tvCakanje', lng.tvNapaka);
@@ -4283,16 +4361,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         nast('emailSportnika', z.email);
         nast('ime', z.ime);
 
-        // Skener že tu ve, kdo je naslednji na vrsti - precej prej, kot je meritev
-        // vnesena. Objavimo TAKOJ, da se na TV pokaže "Pripravi se: <ime>". Ne admin
-        // po pomoti ni prijavljen, zapis pade na pravilih (samo admin lahko pise); to
-        // je namenoma zavarovano s try/catch, da napaka ne prekine vnosa meritve.
-        if(z.ime) {
-            try {
-                window.setDoc(window.doc(window.db, "stanje", "naslednji"),
-                              { ime: z.ime, cas: Date.now() }).catch(() => {});
-            } catch(e) {}
-        }
+        // Skener že tu ve, kdo je prišel na vrsto - precej prej, kot je meritev vnesena.
+        // Objavimo TAKOJ, da TV pokaže zaslon "Na štartu: <ime>".
+        window.objaviNaStartu(z.ime, z.email);
 
         // Če športnik v bazi že ima kartico, prevzamemo še telesne podatke iz zadnje.
         let kljuc = window.anonKljuc(z.email);
@@ -5131,6 +5202,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.setT('btnTvZaslonTxt', lng.btnTvZaslon);
         window.setT('btnSkenerTxt', lng.btnSkener);
         window.setT('btnTiskKodTxt', lng.btnTiskKod);
+        window.setT('btnNaStartuTxt', lng.btnNaStartu);
         window.setT('btnSamoShraniSliko', lng.slikaShrani);
         // Vsi pogledi, ki se izrisujejo iz JavaScripta, se ob menjavi jezika NE prevedejo sami -
         // besedilo je vgrajeno v že izrisan HTML. Zato jih znova izrišemo, a samo tistega,
@@ -5613,6 +5685,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 if(bSk) bSk.style.display = window.isAdm ? 'block' : 'none';
                 let bTk = document.getElementById('btnTiskKod');
                 if(bTk) bTk.style.display = window.isAdm ? 'block' : 'none';
+                let bNs = document.getElementById('btnNaStartu');
+                if(bNs) bNs.style.display = window.isAdm ? 'block' : 'none';
                 let gPrikaz = document.getElementById('gumbPrikaz'); if(gPrikaz) gPrikaz.style.display = 'inline-flex';
                 
                 if (!user.emailVerified && !window.isAdm) {

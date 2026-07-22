@@ -174,10 +174,6 @@
                     </div>
                     <div class="tv-motiv" id="tvMotiv"></div>
                     <div class="tv-cakanje" id="tvCakanje">Čakam na naslednji rezultat</div>
-                    <div class="tv-pripravi-se" id="tvPripraviSe">
-                        <span class="tv-pripravi-se-label" id="tvPripraviSeNapis">Pripravi se</span>
-                        <span class="tv-pripravi-se-ime" id="tvPripraviSeIme"></span>
-                    </div>
                     <button class="tv-start" id="tvStart" onclick="window.tvStart()">Zaženi zaslon</button>
                     <div class="tv-namig" id="tvNamig">Zvok in celozaslonski način se vklopita ob zagonu</div>
                     <div id="tvRekordiPas"></div>
@@ -192,6 +188,11 @@
                         </div>
                         <div id="tvArhivMeritve"></div>
                     </div>
+                </div>
+                <div id="tvNaStartu">
+                    <div class="tv-st-oznaka" id="tvStOznaka">Na štartu</div>
+                    <div class="tv-st-ime" id="tvStIme"></div>
+                    <div class="tv-st-pod" id="tvStPod"></div>
                 </div>
             </div>
             <div id="tvOder">
@@ -284,6 +285,7 @@
                     <button class="gumb gumb-shrani-bazo" id="btnShraniBazo" onclick="window.shraniAtleta()">💾 V Bazo</button>
                 </div>
                 <button class="btn-tv-zaslon" id="btnSkener" onclick="window.odpriSkener()" style="display:none; background: linear-gradient(90deg, #2ecc71, #7bed9f);">📷 <span id="btnSkenerTxt">Skeniraj zapestnico</span></button>
+                <button class="btn-tv-zaslon" id="btnNaStartu" onclick="window.napovejNaStartu()" style="display:none; background: linear-gradient(90deg, #ff9f43, #ffd074); color:#03060f;">📣 <span id="btnNaStartuTxt">Napovej na štartu</span></button>
                 <button class="btn-tv-zaslon" id="btnTiskKod" onclick="window.natisniZapestnice()" style="display:none; background: rgba(255,255,255,0.07); color:#a0aec0; border:1px solid #1e3a5f;">🖨️ <span id="btnTiskKodTxt">Natisni kode za zapestnice</span></button>
                 <button class="btn-tv-zaslon" id="btnTvZaslon" onclick="window.odpriTVZaslon()" style="display:none;">📺 <span id="btnTvZaslonTxt">Odpri TV zaslon za dogodek</span></button>
                 <div id="obvestiloShranjeno" style="color: #55efc4; font-size: 12px; text-align: center; margin-top: 10px; display: none; font-weight: bold;">Shranjeno v Bazo!</div>
