@@ -4356,7 +4356,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     // nova meritev, zato se prepišejo samo podatki o osebi, meritve pa ostanejo prazne.
     window.zapestnicaUporabi = function(koda, z) {
         let lng = window.prevodi[window.tJezik];
-        window.urejaniId = null;
+        // Popolno počiščenje PRED izpolnjevanjem - glej razlago pri window.pripraviNovVnos.
+        // Brez tega bi morebiten ID prejšnjega urejanja tiho prepisal tujo kartico.
+        window.pripraviNovVnos();
         let nast = (id, v) => { let e = document.getElementById(id); if(e && v !== undefined && v !== null && v !== '') e.value = v; };
         nast('emailSportnika', z.email);
         nast('ime', z.ime);
@@ -4914,6 +4916,39 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             window.osveziGalerijo();
         };
         reader.readAsText(file);
+    };
+
+    // NOV VNOS: obrazec vrne v enako stanje, kot bi bilo ob prvem nalaganju strani.
+    // NUJNO se pokliče vsakič, ko admin NAMENOMA začne nov vnos - drugače lahko ID
+    // prejšnjega urejanja ostane v skritem polju "atletId" in shranjevanje NAMESTO
+    // nove kartice tiho PREPIŠE tujo. To je resnični hrošč, ki so ga opazili v praksi:
+    // admin uredi/pogleda athleta A, nato skenira zapestnico athleta B (novega, brez
+    // kartice) - "atletId" ostane A-jev, shranjevanje pa prepiše A-jevo kartico z
+    // B-jevimi podatki, B pa nikoli ne dobi svoje.
+    window.pripraviNovVnos = function() {
+        window.urejaniId = null;
+        document.getElementById('atletId').value = '';
+        document.getElementById('emailSportnika').value = '';
+        document.getElementById('ime').value = '';
+        document.getElementById('letorojstva').value = '2008';
+        document.getElementById('visina').value = '180';
+        document.getElementById('teza').value = '80';
+        document.getElementById('spol').value = 'M';
+        document.getElementById('hitrostVal').value = '4.80';
+        document.getElementById('mocVal').value = '950';
+        document.getElementById('eksplozivnostVal').value = '3000';
+        document.getElementById('agilnostVal').value = '4.40';
+        document.getElementById('vzdrzljivostVal').value = '11';
+        document.getElementById('odstotekMascobe').value = '';
+        document.getElementById('misicnaMasa').value = '';
+        let chk = document.getElementById('chkJavnaSestava'); if(chk) chk.checked = false;
+        window.gSlika = '';
+        let lng = window.prevodi[window.tJezik];
+        let sT = encodeURIComponent(lng.addPhoto);
+        let dB = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600'%3E%3Crect width='400' height='600' fill='transparent'/%3E%3Ctext x='50%25' y='50%25' fill='%234facfe' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' dominant-baseline='middle'%3E${sT}%3C/text%3E%3C/svg%3E")`;
+        let okvir = document.getElementById('slikaOkvir'); if(okvir) okvir.style.backgroundImage = dB;
+        let bSlika = document.getElementById('btnSamoShraniSliko'); if(bSlika) bSlika.style.display = 'none';
+        if(window.izracunajVse) window.izracunajVse();
     };
 
     window.urediAtleta = function(id) {
