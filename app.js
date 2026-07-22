@@ -245,6 +245,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         tiskKoliko: "Koliko kod naj pripravim?", tiskOd: "Od katere številke naprej?",
         tiskBlokirano: "Brskalnik je blokiral novo okno. Dovoli pojavna okna in poskusi znova.",
         tiskPrenesi: "Prenesi vse kot sliko", tiskNatisni: "Natisni",
+        btnSprostiKode: "Sprosti vse kode", sprostiPotrdi: "Vse povezave zapestnic bodo takoj prekinjene - kode bodo spet proste, tudi tiste, ki še niso stare 24 ur. Nadaljujem?",
+        sprosceno: "Kode so sproščene.", sprostiNapaka: "Sprostitev ni uspela pri vseh kodah.",
         vnosSumljivo: "Te vrednosti izstopajo iz pričakovanega razpona:",
         vnosPricakovano: "pričakovano", vnosVseeno: "Res shranim tako?",
         gumbSobe: "Sobe", sobeNaslov: "ZASEBNE SOBE", sobePodnaslov: "Lestvica samo za tvojo ekipo",
@@ -326,6 +328,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         tiskKoliko: "How many codes should I prepare?", tiskOd: "Starting from which number?",
         tiskBlokirano: "The browser blocked the new window. Allow pop-ups and try again.",
         tiskPrenesi: "Download all as image", tiskNatisni: "Print",
+        btnSprostiKode: "Release all codes", sprostiPotrdi: "All wristband links will be cleared immediately - codes become free again, even ones not yet 24 hours old. Continue?",
+        sprosceno: "Codes released.", sprostiNapaka: "Releasing some codes failed.",
         vnosSumljivo: "These values fall outside the expected range:",
         vnosPricakovano: "expected", vnosVseeno: "Save anyway?",
         gumbSobe: "Rooms", sobeNaslov: "PRIVATE ROOMS", sobePodnaslov: "A leaderboard just for your crew",
@@ -4951,6 +4955,31 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         if(window.izracunajVse) window.izracunajVse();
     };
 
+    // Sprosti VSE kode takoj, brez čakanja na 24-urni potek. Uporabno ob koncu dogodka,
+    // ko admin hoče ista zapestnice ponovno uporabiti naslednji dan/na naslednjem eventu.
+    // Brez tega bi se vsaka koda sama sprostila šele, ko bi jo kdo znova skeniral IN bi
+    // bila starejša od 24 ur - torej šele naslednjič, ne takoj.
+    window.sprostiVseKode = async function() {
+        let lng = window.prevodi[window.tJezik];
+        if(!confirm(lng.sprostiPotrdi)) return;
+        let btn = document.getElementById('btnSprostiKode');
+        let orig = btn ? btn.innerHTML : '';
+        if(btn) { btn.innerHTML = '⏳ ...'; btn.disabled = true; }
+        try {
+            let snap = await window.getDocs(window.collection(window.db, "zapestnice"));
+            let napake = 0;
+            for(const d of snap.docs) {
+                try { await window.deleteDoc(window.doc(window.db, "zapestnice", d.id)); }
+                catch(e) { napake++; }
+            }
+            alert(napake > 0 ? lng.sprostiNapaka : lng.sprosceno);
+        } catch(e) {
+            console.error('Sprostitev kod:', e);
+            alert(lng.sprostiNapaka);
+        }
+        if(btn) { btn.innerHTML = orig; btn.disabled = false; }
+    };
+
     window.urediAtleta = function(id) {
         if(!window.jeTrener) return; let a = window.aBaza.find(x => x.id === id); if(!a) return;
         document.getElementById('atletId').value = a.id; 
@@ -5238,6 +5267,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.setT('btnSkenerTxt', lng.btnSkener);
         window.setT('btnTiskKodTxt', lng.btnTiskKod);
         window.setT('btnNaStartuTxt', lng.btnNaStartu);
+        window.setT('btnSprostiKodeTxt', lng.btnSprostiKode);
         window.setT('btnSamoShraniSliko', lng.slikaShrani);
         // Vsi pogledi, ki se izrisujejo iz JavaScripta, se ob menjavi jezika NE prevedejo sami -
         // besedilo je vgrajeno v že izrisan HTML. Zato jih znova izrišemo, a samo tistega,
@@ -5722,6 +5752,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 if(bTk) bTk.style.display = window.isAdm ? 'block' : 'none';
                 let bNs = document.getElementById('btnNaStartu');
                 if(bNs) bNs.style.display = window.isAdm ? 'block' : 'none';
+                let bSpk = document.getElementById('btnSprostiKode');
+                if(bSpk) bSpk.style.display = window.isAdm ? 'block' : 'none';
                 let gPrikaz = document.getElementById('gumbPrikaz'); if(gPrikaz) gPrikaz.style.display = 'inline-flex';
                 
                 if (!user.emailVerified && !window.isAdm) {
