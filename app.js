@@ -225,6 +225,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         qrNamig: "Skeniraj za celoten profil",
         tvCakanje: "Čakam na naslednji rezultat", tvZazeni: "Zaženi zaslon",
         tvNamig: "Zvok in celozaslonski način se vklopita ob zagonu",
+        tvPripraviSe: "Pripravi se",
         tvNovRekord: "Nov rekord", tvRekordOvr: "Najvišji OVR",
         tvNapaka: "Povezave z bazo ni bilo mogoče vzpostaviti",
         tvPodlogo: "Uradne meritve", tvStatMeritev: "Meritev v bazi", tvStatVodi: "Vodi",
@@ -304,6 +305,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         qrNamig: "Scan for the full profile",
         tvCakanje: "Waiting for the next result", tvZazeni: "Start screen",
         tvNamig: "Sound and fullscreen turn on when you start",
+        tvPripraviSe: "Get ready",
         tvNovRekord: "New record", tvRekordOvr: "Highest OVR",
         tvNapaka: "Could not connect to the database",
         tvPodlogo: "Official testing", tvStatMeritev: "Measurements", tvStatVodi: "Leader",
@@ -3080,6 +3082,27 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
     // Preliv med slojema: najprej zbledi obstoječi, šele nato se pokaže novi.
     // Zamik 520 ms se ujema s trajanjem prehoda v CSS.
+    // Napoved naslednjega športnika ("Pripravi se: Jaka"). Sproži jo skener zapestnice,
+    // ki že ob skeniranju ve, kdo je na vrsti - torej precej prej, kot je meritev vnesena.
+    // Zapis živi v "stanje/naslednji", TV ga bere prek onSnapshot. Samodejno izgine po
+    // PRIPRAVI_SE_TRAJANJE_MS, ali takoj, ko se na oder dvigne prava kartica.
+    window.PRIPRAVI_SE_TRAJANJE_MS = 25000;
+    window._tvPripraviSeTimer = null;
+    window.tvPokaziPripraviSe = function(ime) {
+        let el = document.getElementById('tvPripraviSe');
+        let elIme = document.getElementById('tvPripraviSeIme');
+        if(!el || !elIme) return;
+        elIme.innerText = ime || '';
+        el.classList.add('viden');
+        if(window._tvPripraviSeTimer) clearTimeout(window._tvPripraviSeTimer);
+        window._tvPripraviSeTimer = setTimeout(window.tvSkrijPripraviSe, window.PRIPRAVI_SE_TRAJANJE_MS);
+    };
+    window.tvSkrijPripraviSe = function() {
+        let el = document.getElementById('tvPripraviSe');
+        if(el) el.classList.remove('viden');
+        if(window._tvPripraviSeTimer) { clearTimeout(window._tvPripraviSeTimer); window._tvPripraviSeTimer = null; }
+    };
+
     window.tvPreklopiSloj = function(vklopi, izklopi, priprava) {
         if(izklopi) izklopi.classList.add('tv-sloj-skrit');
         setTimeout(() => {
@@ -3402,6 +3425,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 window.vibriraj([25, 60, 25]);
             } else { rk.innerHTML = ''; rk.classList.remove('viden'); }
             document.getElementById('tvOder').classList.add('viden');
+            window.tvSkrijPripraviSe();
 
             // Šele ZDAJ kartica postane del baze in novo merilo za naslednjo.
             window.tvDanes.add(a.id);
@@ -3466,6 +3490,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 // sicer bi nova kartica podrla rekord sama sebi in bi bil vsak vnos "rekord".
                 if(window.tvVrsta.length > 0) window.tvPrikaziNaslednjo();
             }, (e) => console.error('TV onSnapshot:', e));
+
+            // "Pripravi se: ..." - prvi odziv je obstoječe stanje ob zagonu TV, ne nov
+            // dogodek, zato ga (kot pri glavni bazi zgoraj) preskočimo.
+            let tvPrviNaslednji = true;
+            window.onSnapshot(window.doc(window.db, "stanje", "naslednji"), (snap) => {
+                if(tvPrviNaslednji) { tvPrviNaslednji = false; return; }
+                if(!snap.exists()) return;
+                let d = snap.data();
+                if(d && d.ime) window.tvPokaziPripraviSe(d.ime);
+            }, (e) => console.error('TV pripravi se:', e));
         } catch(e) {
             console.error('TV način:', e);
             window.setT('tvCakanje', lng.tvNapaka);
@@ -4248,6 +4282,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let nast = (id, v) => { let e = document.getElementById(id); if(e && v !== undefined && v !== null && v !== '') e.value = v; };
         nast('emailSportnika', z.email);
         nast('ime', z.ime);
+
+        // Skener že tu ve, kdo je naslednji na vrsti - precej prej, kot je meritev
+        // vnesena. Objavimo TAKOJ, da se na TV pokaže "Pripravi se: <ime>". Ne admin
+        // po pomoti ni prijavljen, zapis pade na pravilih (samo admin lahko pise); to
+        // je namenoma zavarovano s try/catch, da napaka ne prekine vnosa meritve.
+        if(z.ime) {
+            try {
+                window.setDoc(window.doc(window.db, "stanje", "naslednji"),
+                              { ime: z.ime, cas: Date.now() }).catch(() => {});
+            } catch(e) {}
+        }
 
         // Če športnik v bazi že ima kartico, prevzamemo še telesne podatke iz zadnje.
         let kljuc = window.anonKljuc(z.email);
