@@ -1,0 +1,3 @@
+/p/*   /index.html?profil=:splat   200
+/tv    /index.html?tv=1            200
+/*     /index.html                 200

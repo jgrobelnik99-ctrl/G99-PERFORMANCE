@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G99 Ultimate Database</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&family=Chakra+Petch:ital,wght@0,600;0,700;1,700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="app.css">
+    <script>
+      // Zaznaj profil način TAKOJ (pred izrisom), da vmesnik aplikacije niti za trenutek
+      // ne utripne - sicer se med nalaganjem vidijo paneli/pravokotniki.
+      (function(){
+        try {
+          if(new URLSearchParams(location.search).get('profil')) {
+            document.documentElement.classList.add('profil-priprava');
+            // Obris kartice pokažemo TAKOJ, ko je body na voljo - da ni praznega zaslona.
+            document.addEventListener('DOMContentLoaded', function(){
+              if(document.getElementById('profilNalaganje')) return;
+              let n = document.createElement('div');
+              n.id = 'profilNalaganje';
+              n.innerHTML = '<div class="obris"></div><div class="napis">Odpiram kartico</div>';
+              document.body.appendChild(n);
+            });
+          }
+        } catch(e){}
+      })();
+    </script>
+    
+</head>
+<body>
+
+<button class="gumb-odjava" onclick="window.odjaviUporabnika()" id="btnOdjavaTekst">Odjava</button>
+
+<div class="jezikovni-meni">
+    <div class="jezik-gumb aktivno" id="slGumb" onclick="window.spremeniJezik('sl')">SI</div>
+    <div class="jezik-gumb" id="enGumb" onclick="window.spremeniJezik('en')">EN</div>
+</div>
+
+<div class="prijava-kontejner" id="panelPrijava">
+    <h2 id="naslovPrijava">G99 Performance</h2>
+    <div style="text-align:center; color:#2ecc71; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin:-8px 0 18px;" id="prijavaPodnaslov">Javni Combine</div>
+    <div class="prijava-skupina">
+        <label id="lblPrijavaEmail">E-pošta</label>
+        <input type="email" id="prijavaEmail" placeholder="trener@g99.com">
+    </div>
+    <div class="prijava-skupina">
+        <label id="lblPrijavaGeslo">Geslo</label>
+        <input type="password" id="prijavaGeslo" placeholder="••••••••">
+    </div>
+    <button class="gumb gumb-shrani-bazo" onclick="window.prijaviUporabnika()" id="btnPrijavaGumb" style="margin-top:10px;">Login</button>
+    <button class="gumb" onclick="window.odpriRegistracijo()" id="btnOdpriReg" style="margin-top:10px; background: transparent; border: 1px solid #4facfe; color: #4facfe;">Registracija</button>
+    <div id="prijavaNapaka" style="color:#ff7675; font-size:12px; margin-top:10px; font-weight:bold; display:none;"></div>
+</div>
+
+<div class="modal-overlay" id="regOverlay" onclick="window.zapriRegistracijo()" style="z-index: 7000;"></div>
+<div class="modal" id="regModal" style="z-index: 7001; max-width: 400px; text-align: center;">
+    <div class="modal-header"><h2 id="naslovRegModal">Ustvari račun</h2></div>
+    <div class="prijava-skupina"><label id="lblRegEmail">E-pošta</label><input type="email" id="regEmail" placeholder="sportnik@g99.com"></div>
+    <div class="prijava-skupina"><label id="lblRegGeslo">Geslo</label><input type="password" id="regGeslo" placeholder="••••••••"></div>
+    <div class="prijava-skupina"><label id="lblRegPotrdi">Potrdi geslo</label><input type="password" id="regPotrdiGeslo" placeholder="••••••••"></div>
+    <div id="regNapaka" style="color:#ff7675; font-size:12px; margin-bottom:10px; font-weight:bold; display:none;"></div>
+    <button class="gumb gumb-shrani-bazo" onclick="window.registrirajUporabnika()" id="btnRegPotrdi" style="width: 100%;">Registriraj se</button>
+    <button class="btn-zapri" onclick="window.zapriRegistracijo()" id="btnZapriReg" style="margin-top: 15px; padding: 10px 20px; font-size: 12px;">✖ Prekliči</button>
+</div>
+
+<div id="g99-aplikacija">
+    <div class="app-oznaka app-oznaka-perf">🏆 G99 <b>Performance</b> <span id="oznakaCombine">javni combine</span></div>
+    <div class="pogled-preklopnik">
+        <button class="preklop-gumb" id="gumbVnos" onclick="window.preklopiPogled('vnos')">⚙️ Vnos</button>
+        <button class="preklop-gumb aktivno" id="gumbPrikaz" onclick="window.preklopiPogled('prikaz')">👤 Moja Kartica</button>
+        <button class="preklop-gumb" id="gumbMojKlub" onclick="window.odpriMojKlub()" style="display:none;">🏛️ <span id="gumbMojKlubTxt">Moj Klub</span></button>
+        <button class="preklop-gumb" id="gumbBaza" onclick="window.preklopiPogled('baza')">🗂️ Baza</button>
+        <button class="preklop-gumb" id="gumbLestvica" onclick="window.preklopiPogled('lestvica')">🏆 Lestvica</button>
+        <button class="preklop-gumb" id="gumbSlava" onclick="window.preklopiPogled('slava')">🏛️ <span id="gumbSlavaTxt">Hall of Fame</span></button>
+        <button class="preklop-gumb" id="gumbIzzivi" onclick="window.preklopiPogled('izzivi')">⚔️ <span id="gumbIzziviTxt">Izzivi</span></button>
+        <button class="preklop-gumb" id="gumbSobe" onclick="window.preklopiPogled('sobe')">🔒 <span id="gumbSobeTxt">Sobe</span></button>
+        <button class="preklop-gumb" id="gumbNadzor" onclick="window.preklopiPogled('nadzor')" style="display:none;">📊 <span id="gumbNadzorTxt">Nadzorna plošča</span></button>
+    </div>
+
+    <div class="mode-switch-wrapper">
+        <span class="mode-switch-label active" id="lblGlobal" onclick="if(window.ratingMode==='LOCAL') window.toggleRatingMode();">🌍 GLOBAL</span>
+        <label class="switch">
+            <input type="checkbox" id="chkRatingToggle" onchange="window.toggleRatingMode()">
+            <span class="slider"></span>
+        </label>
+        <span class="mode-switch-label" id="lblLocal" onclick="if(window.ratingMode==='GLOBAL') window.toggleRatingMode();">📍 LOCAL</span>
+    </div>
+    <div id="modePreklopnikOpomba" style="display:none; text-align:center; font-size:11px; font-weight:700; color:#a0aec0; margin-top:-18px; margin-bottom:20px; max-width:320px;"></div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="window.zapriNormative()" style="z-index: 5000;"></div>
+    <div class="modal" id="modalNormativi" style="z-index: 5001;">
+        <div class="modal-header"><h2 id="modalNaslov">Normativi</h2></div>
+        <table class="modal-tabela">
+            <thead><tr><th id="thTest">Test</th><th id="thMin">Min</th><th id="thAvg">Avg</th><th id="thMax">Max</th></tr></thead>
+            <tbody id="modalTelo"></tbody>
+        </table>
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <button class="btn-zapri" id="btnZapriNormative" onclick="window.zapriNormative()">✖ ZAPRI / CLOSE</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="vseZnackeOverlay" onclick="window.zapriVseZnacke()" style="z-index: 6000;"></div>
+    <div class="modal" id="vseZnackeModal" style="z-index: 6001; max-width: 500px;">
+        <div class="modal-header">
+            <h2 id="naslovVseZnacke">VSE ZNAČKE (PLAYSTYLES)</h2>
+        </div>
+        <div id="vseZnackeTelo" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <button class="btn-zapri" id="btnZapriZnacke" onclick="window.zapriVseZnacke()">✖ ZAPRI / CLOSE</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="metodologijaOverlay" onclick="window.zapriMetodologijo()" style="z-index: 6500;"></div>
+    <div class="modal" id="metodologijaModal" style="z-index: 6501; max-width: 560px;">
+        <div class="modal-header">
+            <h2 id="naslovMetodologija">KAKO SE RAČUNA OVR?</h2>
+        </div>
+        <div id="metodologijaTelo" class="metodologija-telo"></div>
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <button class="btn-zapri" id="btnZapriMetodologija" onclick="window.zapriMetodologijo()">✖ ZAPRI / CLOSE</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="compareOverlay" onclick="window.zapriPrimerjavo()" style="z-index: 2000;"></div>
+    <div class="modal" id="compareModal" style="z-index: 2001; max-width: 1200px; width: 95%; background: #050a18; border: 2px solid #4facfe;">
+        <div class="modal-header"><h2 id="compareModalNaslov">⚖️ PRIMERJAVA ŠPORTNIKOV</h2></div>
+        <div class="compare-modal-content">
+            <div id="compareCard1Container" class="compare-modal-card"></div>
+            <div style="width: 360px; height: 360px; max-width: 100%; background: rgba(0,0,0,0.6); border-radius: 50%; padding: 20px; border: 2px solid #1e3a5f; display: flex; justify-content: center; align-items: center; flex-shrink: 0;">
+                <canvas id="compareRadarChart"></canvas>
+            </div>
+            <div id="compareCard2Container" class="compare-modal-card"></div>
+        </div>
+        <div id="izzivRazsodba" style="width:100%;"></div>
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 30px;">
+            <button class="btn-zapri" id="btnZapriPrimerjavo" onclick="window.zapriPrimerjavo()">✖ ZAPRI / CLOSE</button>
+        </div>
+    </div>
+
+    <div class="skener-ozadje" id="skenerOzadje">
+        <div class="skener-okno">
+            <div class="skener-naslov" id="skenerNaslov">Skeniraj zapestnico</div>
+            <div class="skener-podnaslov" id="skenerPodnaslov">Kodo drži v okvirju</div>
+            <div class="skener-slika"><video id="skenerVideo" playsinline muted></video><div class="skener-okvir"></div></div>
+            <div class="skener-stanje" id="skenerStanje"></div>
+            <button class="btn-soba btn-soba-drugotni" id="skenerDrugi" style="display:none; width:100%; margin-top:10px;" onclick="window.zapestnicaPrevezi()">Poveži z drugim</button>
+            <div class="skener-povezi" id="skenerPovezi">
+                <input type="email" id="skenerEmail" placeholder="email@sportnika.si">
+                <input type="text" id="skenerIme" placeholder="Ime in priimek">
+                <button class="btn-soba" style="width:100%" onclick="window.zapestnicaPovezi()" id="skenerPoveziGumb">Poveži</button>
+            </div>
+            <div class="skener-gumbi">
+                <button class="btn-soba btn-soba-drugotni" onclick="window.zapriSkener()" id="skenerZapriGumb">Zapri</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tvZaslon">
+        <div id="tvMegla"></div>
+        <div id="tvMreza"></div>
+        <div id="tvVinjeta"></div>
+        <div class="tv-plast">
+            <div id="tvMirovanje">
+                <div id="tvCitatBlok">
+                    <div id="tvLogoBlok">
+                        <div class="tv-logo">G99 Combine</div>
+                        <div class="tv-podlogo" id="tvPodlogo">Uradne meritve</div>
+                    </div>
+                    <div class="tv-motiv" id="tvMotiv"></div>
+                    <div class="tv-cakanje" id="tvCakanje">Čakam na naslednji rezultat</div>
+                    <button class="tv-start" id="tvStart" onclick="window.tvStart()">Zaženi zaslon</button>
+                    <div class="tv-namig" id="tvNamig">Zvok in celozaslonski način se vklopita ob zagonu</div>
+                    <div id="tvRekordiPas"></div>
+                </div>
+                <div id="tvArhiv">
+                    <div class="tv-arhiv-oznaka" id="tvArhivOznaka">Iz baze</div>
+                    <div class="tv-arhiv-vrsta">
+                        <div class="tv-arhiv-levo">
+                            <div id="tvArhivOvoj"><div id="tvArhivVrt"><div id="tvArhivKartica"></div></div></div>
+                            <div class="tv-arhiv-ime" id="tvArhivIme"></div>
+                            <div class="tv-arhiv-pod" id="tvArhivPod"></div>
+                        </div>
+                        <div id="tvArhivMeritve"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="tvOder">
+                <div id="tvKarticaOvoj"><div id="tvKarticaVrt"><div id="tvKartica"></div></div></div>
+                <div class="tv-ime" id="tvIme"></div>
+                <div class="tv-podnapis" id="tvPodnapis"></div>
+                <div id="tvMeritve"></div>
+                <div class="tv-rekord" id="tvRekord"></div>
+            </div>
+        </div>
+        <div id="tvStatus"></div>
+    </div>
+
+    <div class="modal-overlay" id="viewCardOverlay" onclick="window.zapriPoglej()" style="z-index: 3000;"></div>
+    <div class="modal" id="viewCardModal" style="z-index: 3001; background: transparent; border: none; box-shadow: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; padding: 0;">
+        <div id="viewCardContent" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px;"></div>
+        <button class="btn-zapri" id="btnZapriPoglej" onclick="window.zapriPoglej()" style="margin-bottom: 40px; margin-top: 20px;">✖ ZAPRI / CLOSE</button>
+    </div>
+
+    <div class="modal-overlay" id="reportOverlay" onclick="window.zapriPorocilo()" style="z-index: 4000;"></div>
+    <div class="modal" id="reportModal" style="z-index: 4001;">
+        <div id="porociloVsebina"></div>
+        <div style="width:100%; display:flex; justify-content:center; gap:12px; padding: 18px 28px 30px; flex-wrap:wrap;">
+            <button class="gumb gumb-shrani-sliko" id="btnPrenesiPorocilo" onclick="window.prenesiPorocilo()" style="width:auto; padding: 12px 25px;">⬇️ <span id="btnPrenesiPorociloTxt">Prenesi Poročilo (PNG)</span></button>
+            <button class="btn-zapri" onclick="window.zapriPorocilo()" style="margin-top:0;">✖ ZAPRI / CLOSE</button>
+        </div>
+    </div>
+
+    <div class="glavni-kontejner prikaz-nacin" id="zajem-slike">
+        <div class="vsebina">
+            
+            <div class="kontrole" id="panelVnos" style="display:none;">
+                <input type="hidden" id="atletId" value="">
+                <input type="file" id="slikaVnos" accept="image/*" style="display:none" onchange="window.naloziSliko(event)">
+                
+                <div class="vnosna-vrstica" style="grid-template-columns: 2fr 1fr;">
+                    <div><label id="lblVnosEmail">Email športnika</label><input type="email" id="emailSportnika" placeholder="sportnik@gmail.com" style="border-color: #f1c40f;"></div>
+                    <div><label id="labelSezona">Sezona</label>
+                        <select id="sezona" style="border-color: #f1c40f;" onchange="window.izracunajVse()">
+                            <option id="vnosSez1" value="Sezona 1">Season 1</option>
+                            <option id="vnosSez2" value="Sezona 2">Season 2</option>
+                            <option id="vnosSez3" value="Sezona 3">Season 3</option>
+                            <option id="vnosSez4" value="Sezona 4">Season 4</option>
+                            <option id="vnosSez5" value="Sezona 5">Season 5</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="vnosna-vrstica vnosna-vrstica-tri" style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+                    <div><label id="labelIme">Ime Atleta</label><input type="text" id="ime" value="Jaka Grobelnik" oninput="window.izracunajVse()"></div>
+                    <div><label id="labelStarost">Leto rojstva</label><input type="number" id="letorojstva" value="2008" oninput="window.izracunajVse()"></div>
+                    <div><label id="labelVisina">Višina (cm)</label><input type="number" id="visina" value="180" oninput="window.izracunajVse()"></div>
+                    <div><label id="labelTeza">Teža (kg)</label><input type="number" id="teza" value="80" oninput="window.izracunajVse()"></div>
+                </div>
+                
+                <div class="vnosna-vrstica" style="grid-template-columns: 1fr 1fr auto;">
+                    <div><label id="labelSpol">Spol</label><select id="spol" onchange="window.izracunajVse()"><option id="optSpolM" value="M">M</option><option id="optSpolZ" value="Z">F</option></select></div>
+                    <div><label id="labelGen">Gen</label><select id="generacija" onchange="window.izracunajVse()"><option value="U15">U15</option><option value="U17" selected>U17</option><option value="U19">U19</option><option value="PRO">PRO</option></select></div>
+                    <button class="gumb-info" onclick="window.pokaziNormative()"><i class="fa-solid fa-info"></i></button>
+                </div>
+                
+                <hr style="border:0; border-top:1px solid #1e3a5f; margin:15px 0;">
+                
+                <div class="vnosna-vrstica" style="grid-template-columns: 1fr 1fr;">
+                    <div><label id="lblInHit">Hitrost (s)</label><input type="number" id="hitrostVal" value="4.80" step="0.01" oninput="window.izracunajVse()"></div>
+                    <div><label id="lblInMoc">Moč (N)</label><input type="number" id="mocVal" value="950" oninput="window.izracunajVse()"></div>
+                </div>
+                <div class="vnosna-vrstica" style="grid-template-columns: 1fr 1fr;">
+                    <div><label id="lblInEks">Ekspl. (N)</label><input type="number" id="eksplozivnostVal" value="3000" oninput="window.izracunajVse()"></div>
+                    <div><label id="lblInAgi">Agiln. (s)</label><input type="number" id="agilnostVal" value="4.40" step="0.01" oninput="window.izracunajVse()"></div>
+                </div>
+                <div><label id="lblInVzd">Vzdržljivost (Beep)</label><input type="number" id="vzdrzljivostVal" value="11" oninput="window.izracunajVse()"></div>
+
+                <hr style="border:0; border-top:1px solid #1e3a5f; margin:15px 0;">
+                <div style="font-size:11px; color:#4facfe; font-weight:900; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;" id="lblSekcijaSestava">🧬 Telesna sestava (neobvezno)</div>
+                <div class="vnosna-vrstica" style="grid-template-columns: 1fr 1fr;">
+                    <div><label id="lblInMascoba">Maščoba (%)</label><input type="number" id="odstotekMascobe" step="0.1" placeholder="npr. 12.5" oninput="window.izracunajVse()"></div>
+                    <div><label id="lblInMisicna">Mišična masa (kg)</label><input type="number" id="misicnaMasa" step="0.1" placeholder="npr. 38.0" oninput="window.izracunajVse()"></div>
+                </div>
+                <label style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:12px; color:#a0aec0; cursor:pointer;">
+                    <input type="checkbox" id="chkJavnaSestava" style="width:auto;">
+                    <span id="lblJavnaSestava">Sestavo telesa (FFMI) pokaži javno na kartici</span>
+                </label>
+                <div id="ffmiPrikaz" style="display:none; background: rgba(79,172,254,0.07); border:1px solid rgba(79,172,254,0.25); border-radius:8px; padding:10px 12px; font-size:11px; color:#a0aec0; font-weight:700; line-height:1.5;"></div>
+                
+                <div class="graf-predogled"><canvas id="radarChartVnos"></canvas></div>
+
+                <div style="display:flex; gap:10px; margin-top: 15px;">
+                    <button class="gumb gumb-shrani-sliko" id="btnSlikoVnos" onclick="window.sproziSlikoKlik()">📸 Dodaj Sliko</button>
+                    <button class="gumb gumb-shrani-bazo" id="btnShraniBazo" onclick="window.shraniAtleta()">💾 V Bazo</button>
+                </div>
+                <button class="btn-tv-zaslon" id="btnSkener" onclick="window.odpriSkener()" style="display:none; background: linear-gradient(90deg, #2ecc71, #7bed9f);">📷 <span id="btnSkenerTxt">Skeniraj zapestnico</span></button>
+                <button class="btn-tv-zaslon" id="btnTiskKod" onclick="window.natisniZapestnice()" style="display:none; background: rgba(255,255,255,0.07); color:#a0aec0; border:1px solid #1e3a5f;">🖨️ <span id="btnTiskKodTxt">Natisni kode za zapestnice</span></button>
+                <button class="btn-tv-zaslon" id="btnTvZaslon" onclick="window.odpriTVZaslon()" style="display:none;">📺 <span id="btnTvZaslonTxt">Odpri TV zaslon za dogodek</span></button>
+                <div id="obvestiloShranjeno" style="color: #55efc4; font-size: 12px; text-align: center; margin-top: 10px; display: none; font-weight: bold;">Shranjeno v Bazo!</div>
+            </div>
+
+            <div class="prikaz-sekcija" id="panelPrikaz">
+                
+                <div class="history-nav" id="mainHistoryNav">
+                    <button id="mainBtnPrev" onclick="window.mainSpremeniZgodovino(1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span id="mainHistoryLabel">Season 1</span>
+                    <button id="mainBtnNext" onclick="window.mainSpremeniZgodovino(-1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+                <div class="leva-kolona-prikaz">
+                    <div class="tilt-ovoj efekt-ovoj" id="karticaTiltOvoj">
+                    <div class="tilt-tarca" style="width:320px; height:480px;">
+                    <div class="poglej-flip" id="mojaFlip" onclick="window.obrniMojoKartico(event)">
+                    <div class="poglej-face poglej-front">
+                    <div class="fifa-kartica" id="kartica">
+                         <div class="notranji-rob" id="karticaNotranjiRob"></div>
+                         <div class="foil-plast" id="karticaFoil"></div>
+                         <div class="g99-pulsing-glow" id="karticaGlow" style="display:none;"></div>
+                         <div class="slika-atleta-bg" id="slikaOkvir" onclick="event.stopPropagation(); window.sproziSlikoKlik();" style="cursor:pointer;"></div>
+                         
+                         <div class="kartica-ovr-wrapper">
+                             <div class="kartica-ovr-label">
+                                 <div id="dOvrContainer"></div>
+                                 <div class="ovr-stevilka"><span id="karticaOvr">85</span></div>
+                                 <div class="kartica-mode-text" id="kModeBadge">🌍 WRLD</div>
+                             </div>
+                         </div>
+                         <div id="karticaCast"></div>
+                         
+                         <div class="znacke-kontejner" id="karticaZnacke"></div>
+                         <div class="kartica-bottom">
+                             <div class="kartica-bottom-ime" id="karticaIme">Jaka Grobelnik</div>
+                             <div class="kartica-bottom-rank" id="karticaRank">DIAMOND</div>
+                             <div class="kartica-bottom-detajli" id="karticaDetajli">16 YRS | M | U17 | 180 cm | 80 kg</div>
+                             <div class="stat-panel-ikone">
+                                 <div class="ikona-box" data-stat="mHit"><i class="fa-solid fa-bolt ikona-img" id="cHit"></i><div class="ikona-val"><span id="dHitContainer"></span><span id="mHit" class="roll-in">85</span></div></div>
+                                 <div class="ikona-box" data-stat="mMoc"><i class="fa-solid fa-dumbbell ikona-img" id="cMoc"></i><div class="ikona-val"><span id="dMocContainer"></span><span id="mMoc" class="roll-in">85</span></div></div>
+                                 <div class="ikona-box" data-stat="mVzd"><i class="fa-solid fa-heart-pulse ikona-img" id="cVzd"></i><div class="ikona-val"><span id="dVzdContainer"></span><span id="mVzd" class="roll-in">85</span></div></div>
+                                 <div class="ikona-box" data-stat="mSko"><i class="fa-solid fa-gauge-high ikona-img" id="cSko"></i><div class="ikona-val"><span id="dSkoContainer"></span><span id="mSko" class="roll-in">85</span></div></div>
+                                 <div class="ikona-box" data-stat="mAgi"><i class="fa-solid fa-wave-square ikona-img" id="cAgi"></i><div class="ikona-val"><span id="dAgiContainer"></span><span id="mAgi" class="roll-in">85</span></div></div>
+                             </div>
+                         </div>
+                    </div>
+                    </div>
+                    <div id="mojaHrbet" style="position:absolute; inset:0; transform-style:preserve-3d;"></div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="poglej-namig" id="mojaNamigObrat">↻ Klikni za obrat</div>
+
+                </div>
+                
+                <div class="desna-kolona">
+                    <!-- Segmentirani zavihki: namesto da je vse naloženo eno pod drugo,
+                         uporabnik izbere, kaj gleda. Enak vzorec kot v "Poglej" oknu. -->
+                    <div class="modal-tabs-bar" id="mojiTabi" style="align-self:center;">
+                        <button class="modal-tab-btn active" id="mkTabPregled" onclick="window.mkZavihek('pregled')">📋 <span id="mkTabPregledTxt">Pregled</span></button>
+                        <button class="modal-tab-btn" id="mkTabAnalitika" onclick="window.mkZavihek('analitika')">📈 <span id="mkTabAnalitikaTxt">Analitika</span></button>
+                        <button class="modal-tab-btn" id="mkTabDosezki" onclick="window.mkZavihek('dosezki')">🏆 <span id="mkTabDosezkiTxt">Dosežki</span></button>
+                    </div>
+
+                    <div id="mkPanelPregled" class="mk-panel">
+                        <div id="napredekRang" style="width:100%;"></div>
+                        <div id="prikazPodatkiPanel" style="width:100%;"></div>
+                    </div>
+
+                    <div id="mkPanelAnalitika" class="mk-panel" style="display:none;">
+                        <div class="podatki-panel-naslov" style="width:100%;">🕸️ <span id="lblProfilSposobnosti">Profil sposobnosti</span></div>
+                        <div class="graf-sekcija"><canvas id="radarChart"></canvas></div>
+                    </div>
+
+                    <div id="mkPanelDosezki" class="mk-panel" style="display:none;">
+                        <div class="legenda-sekcija" id="legendaZnack"></div>
+                    </div>
+                </div>
+                
+                <div id="prikazAkcije">
+                    <!-- Akcijska vrstica: EN primarni gumb (poročilo), ostalo kot enakovredne
+                         sekundarne akcije. Prej so bili vsi gumbi enako glasni in razmetani. -->
+                    <button class="btn-akcija-sekundarna btn-akcija-shrani-sliko" id="btnSamoShraniSliko" style="display:none;" onclick="window.shraniSamoSliko()">💾 Shrani Mojo Sliko v Bazo</button>
+
+                    <div class="akcijska-vrstica">
+                        <button class="btn-akcija-primarna btn-akcija-porocilo" id="btnGenerirajPorocilo" onclick="window.odpriPorocilo(window.tZgodovina && window.tZgodovina[window.mInd] ? window.tZgodovina[window.mInd].id : null)">📄 <span id="btnGenerirajPorociloTxt">Ustvari Poročilo</span></button>
+
+                        <div class="akcije-delitev">
+                            <button class="btn-ikona" id="btnShraniSliko2" onclick="window.prenesiSliko()" data-namig-ime="Prenesi kartico" data-namig-opis="Shrani kartico kot sliko PNG.">⬇️</button>
+                            <button class="btn-ikona" id="btnShraniIG" onclick="window.prenesiIGStory()" data-namig-ime="Deli na IG Story" data-namig-opis="Ustvari sliko v formatu za Instagram Story.">📱</button>
+                        </div>
+                    </div>
+                    <button class="gumb" id="btnDeliProfil" onclick="window.deliProfil()" style="margin-top:8px; background:linear-gradient(90deg,#2ecc71,#27ae60); color:#052; font-weight:900;">🔗 <span id="btnDeliProfilTxt">Deli profil (za Instagram bio)</span></button>
+
+                    <div class="akcije-pomoc">
+                        <button class="btn-pomoc" id="btnPrikazNormativi" onclick="window.pokaziNormative()">📊 <span id="btnPrikazNormativiTxt">Normativi</span></button>
+                        <button class="btn-pomoc" id="btnPrikazZnacke" onclick="window.pokaziVseZnacke()">🏆 <span id="btnPrikazZnackeTxt">Legenda Značk</span></button>
+                        <button class="btn-pomoc" id="btnPrikazMetodologija" onclick="window.pokaziMetodologijo()">📐 <span id="btnPrikazMetodologijaTxt">Kako se računa OVR?</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prikaz-sekcija" id="panelBaza" style="display: none; width: 100%;">
+                <div class="galerija-filtri" style="margin-bottom: 20px;">
+                    <input type="text" id="iskalnik" placeholder="Išči po imenu..." onkeyup="window.izrisiGalerijo()">
+                    <select id="filterSezona" onchange="window.izrisiGalerijo()">
+                        <option id="optSezVse" value="VSE">Vse Sezone (Najnovejše)</option>
+                        <option id="optSez1" value="Sezona 1">Season 1</option>
+                        <option id="optSez2" value="Sezona 2">Season 2</option>
+                        <option id="optSez3" value="Sezona 3">Season 3</option>
+                        <option id="optSez4" value="Sezona 4">Season 4</option>
+                        <option id="optSez5" value="Sezona 5">Season 5</option>
+                    </select>
+                    <select id="filterSpol" onchange="window.izrisiGalerijo()"><option id="optVsiSpol" value="VSI">Vsi Spoli</option><option id="optFilterM" value="M">Moški</option><option id="optFilterZ" value="Z">Ženske</option></select>
+                    <select id="filterGen" onchange="window.izrisiGalerijo()"><option id="optVsiGen" value="VSI">Vse Generacije</option><option value="U15">U15</option><option value="U17">U17</option><option value="U19">U19</option><option value="PRO">PRO</option></select>
+                    <select id="sortOvr" onchange="window.izrisiGalerijo()"><option id="optOvrDesc" value="desc">OVR Najvišji</option><option id="optOvrAsc" value="asc">OVR Najnižji</option></select>
+                    
+                    <button class="btn-klub-filter" id="btnKlubFilter" onclick="window.preklopiKlubskiFilter()" style="display:none;">🏛️ <span id="btnKlubFilterTxt">Samo moj klub</span></button>
+                    <button class="btn-toggle-compare" id="btnToggleCompare" onclick="window.toggleCompareMode()">⚖️ Vklopi Primerjavo</button>
+                    <button class="btn-run-compare" id="btnRunCompare" onclick="window.odpriPrimerjavo()">▶ Poženi Primerjavo</button>
+
+                    <button class="btn-toggle-delete" id="btnToggleDelete" onclick="window.toggleDeleteMode()" style="display:none;">🗑️ Način Brisanja</button>
+                    <button class="btn-run-delete" id="btnRunDelete" onclick="window.izbrisiIzbrane()" style="display:none;">🗑️ Izbriši Izbrane (0)</button>
+                    
+                    <input type="file" id="csvUvozInp" accept=".csv" style="display:none" onchange="window.uvoziCSV(event)">
+                    <button class="gumb-info" id="btnUvozi" onclick="document.getElementById('csvUvozInp').click()" style="width: auto; padding: 0 15px; display: none; background: #2ecc71; color:#000; font-weight:900; border:none;">📥 Uvozi (CSV)</button>
+                    <button class="gumb-info" id="btnIzvozi" onclick="window.izvoziCSV()" style="width: auto; padding: 0 15px; display: none;">📤 Izvozi (CSV)</button>
+                </div>
+                <div class="namig-dotik" id="namigDotik">Dotakni se kartice za obrat</div>
+                <div class="galerija-grid" id="galerijaKontejner"></div>
+            </div>
+
+            <div class="prikaz-sekcija" id="panelLestvica" style="display: none; width: 100%; flex-direction: column;">
+                <div class="galerija-filtri" style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px;">
+                    <select id="filterLestvicaSezona" onchange="window.izrisiLestvice()" style="max-width: 250px;">
+                        <option id="optLestSezVse2" value="VSE">Vse Sezone (Najnovejše)</option>
+                        <option id="optLestSez1_2" value="Sezona 1">Season 1</option>
+                        <option id="optLestSez2_2" value="Sezona 2">Season 2</option>
+                        <option id="optLestSez3_2" value="Sezona 3">Season 3</option>
+                        <option id="optLestSez4_2" value="Sezona 4">Season 4</option>
+                        <option id="optLestSez5_2" value="Sezona 5">Season 5</option>
+                    </select>
+                    <select id="filterLestvicaSpol" onchange="window.izrisiLestvice()" style="max-width: 200px;">
+                        <option id="optLestSpolVsi" value="VSI">Vsi Spoli</option>
+                        <option id="optLestSpolM" value="M">Moški</option>
+                        <option id="optLestSpolZ" value="Z">Ženske</option>
+                    </select>
+                </div>
+                <div id="lestvicaVsebina" style="width: 100%;"></div>
+            </div>
+
+            <!-- HALL OF FAME: muzej rekordov. Ločen zavihek (ne pri lestvici), ker gre za
+                 drugačno psihologijo: lestvica kaže trenutni vrstni red, tu pa so VEČNI
+                 rekorderji - biti tu mora biti prestiž. -->
+            <div class="prikaz-sekcija" id="panelSlava" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                <div id="slavaVsebina" style="width: 100%;"></div>
+            </div>
+
+            <!-- IZZIVI: dvoboji pred dogodkom. Shranjeni v bazi, razsodijo se po meritvi. -->
+            <div class="prikaz-sekcija" id="panelSobe" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                <div id="sobeVsebina" style="width:100%;"></div>
+            </div>
+
+            <div class="prikaz-sekcija" id="panelIzzivi" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                <div id="izziviVsebina" style="width: 100%;"></div>
+            </div>
+
+
+            <div class="prikaz-sekcija" id="panelNadzor" style="display: none; width: 100%; flex-direction: column; gap: 18px;">
+                <div class="nadzor-filtri">
+                    <select id="nadzorSezona" onchange="window.izrisiNadzor()">
+                        <option value="VSE" id="optNadzorVse">Vse sezone (najnovejše)</option>
+                        <option value="Sezona 1" id="optNadzorS1">Sezona 1</option>
+                        <option value="Sezona 2" id="optNadzorS2">Sezona 2</option>
+                        <option value="Sezona 3" id="optNadzorS3">Sezona 3</option>
+                        <option value="Sezona 4" id="optNadzorS4">Sezona 4</option>
+                        <option value="Sezona 5" id="optNadzorS5">Sezona 5</option>
+                    </select>
+                </div>
+                <div id="nadzorVsebina" style="width:100%;"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="module" src="app.js"></script>
+    <div id="brisiOverlay" onclick="window.zapriBrisiModal()"></div>
+    <div id="brisiModal">
+        <div class="brisi-vsebina">
+            <div class="brisi-naslov" id="brisiNaslov">Brisanje športnika</div>
+            <div class="brisi-podnaslov" id="brisiPodnaslov">Izberi, kaj želiš izbrisati.</div>
+            <div id="brisiSeznam" class="brisi-seznam"></div>
+            <div class="brisi-gumbi">
+                <button class="brisi-preklici" onclick="window.zapriBrisiModal()" id="brisiPrekliciTxt">Prekliči</button>
+                <button class="brisi-potrdi" onclick="window.potrdiBrisanje()" id="brisiPotrdiTxt">🗑️ Izbriši izbrano</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="izrezOverlay" onclick="window.zapriIzrez()"></div>
+    <div id="izrezModal">
+        <div class="izrez-vsebina">
+            <div class="izrez-naslov" id="izrezNaslov">Prilagodi sliko</div>
+            <div class="izrez-podnaslov" id="izrezPodnaslov">Povleci sliko in nastavi približek, da bo lepo v okvirju kartice.</div>
+            <div class="izrez-okvir" id="izrezOkvir">
+                <canvas id="izrezPlatno" width="320" height="264"></canvas>
+                <div class="izrez-mreza"></div>
+            </div>
+            <div class="izrez-kontrole">
+                <span>🔍</span>
+                <input type="range" id="izrezZoom" min="1" max="3" step="0.01" value="1" oninput="window.nastaviZoom(this.value)">
+            </div>
+            <div class="izrez-gumbi">
+                <button class="izrez-preklici" onclick="window.zapriIzrez()" id="izrezPrekliciTxt">Prekliči</button>
+                <button class="izrez-potrdi" onclick="window.potrdiIzrez()" id="izrezPotrdiTxt">✓ Uporabi sliko</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="rankUpOverlay" onclick="window.zapriRankUp()"></div>
+    <div id="rankUpModal">
+        <div class="ru-vsebina">
+            <div class="ru-naslov" id="ruNaslov">NAPREDOVANJE</div>
+            <div class="ru-oder" id="ruOder"></div>
+            <div class="ru-rang-ime" id="ruRangIme"></div>
+            <div class="ru-podnapis" id="ruPodnapis"></div>
+            <div class="ru-podnapis" id="ruNamig" style="animation-delay: 2.6s; color:#5a6a85;"></div>
+            <div class="ru-gumb-ovoj">
+                <button class="btn-zapri" onclick="window.zapriRankUp()" style="margin-top:0;">✖ ZAPRI / CLOSE</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
