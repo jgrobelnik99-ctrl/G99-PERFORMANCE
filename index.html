@@ -41,8 +41,8 @@
         <div class="l-hero-text">
             <div class="l-eyebrow"><span class="dot"></span> Digitalni combine za športnike</div>
             <h1 class="l-title" id="lHeroTitle">
-                <span class="word">Ni</span><span class="word">ekip.</span><span class="word">Ni</span><span class="word">sreče.</span><br>
-                <span class="word accent">Samo</span><span class="word accent">tvoj</span><span class="word accent">OVR.</span>
+                <span class="l-title-rot" id="lHeroRot">Ni ekip. Ni sreče.</span><br>
+                <span class="accent">Samo tvoj OVR.</span>
             </h1>
             <p class="l-subtitle">Pet meritev se združi v en sam rezultat od 0 do 99. Zbiraj značke, plezaj po lestvici in napreduj skozi devet rangov — vse na svoji digitalni kartici.</p>
             <div class="l-hero-ctas">
@@ -278,54 +278,11 @@
     </div>
 
     <div class="l-rang-scroll-ovoj l-reveal">
-        <div class="l-rang-scroll" id="lRangScroll">
-            <div class="l-rang-tile rank-iron" style="--rb:var(--rang-iron);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">32</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-iron);">Iron</div>
-                <div class="l-rang-tile-obseg">OVR 0–39</div>
-            </div>
-            <div class="l-rang-tile rank-bronze" style="--rb:var(--rang-bronze);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">45</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-bronze);">Bronze</div>
-                <div class="l-rang-tile-obseg">OVR 40–49</div>
-            </div>
-            <div class="l-rang-tile rank-silver" style="--rb:var(--rang-silver);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">55</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-silver);">Silver</div>
-                <div class="l-rang-tile-obseg">OVR 50–59</div>
-            </div>
-            <div class="l-rang-tile rank-gold" style="--rb:var(--rang-gold);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">64</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-gold);">Gold</div>
-                <div class="l-rang-tile-obseg">OVR 60–69</div>
-            </div>
-            <div class="l-rang-tile rank-platinum" style="--rb:var(--rang-platinum);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">74</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-platinum);">Platinum</div>
-                <div class="l-rang-tile-obseg">OVR 70–79</div>
-            </div>
-            <div class="l-rang-tile rank-diamond" style="--rb:var(--rang-diamond);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">84</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-diamond);">Diamond</div>
-                <div class="l-rang-tile-obseg">OVR 80–88</div>
-            </div>
-            <div class="l-rang-tile rank-prime" style="--rb:var(--rang-prime);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">91</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-prime);">Prime</div>
-                <div class="l-rang-tile-obseg">OVR 89–93</div>
-            </div>
-            <div class="l-rang-tile rank-elite" style="--rb:var(--rang-elite);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">95</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-elite);">Elite</div>
-                <div class="l-rang-tile-obseg">OVR 94–97</div>
-            </div>
-            <div class="l-rang-tile rank-g99" style="--rb:var(--rang-g99);">
-                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="g99-pulsing-glow" style="display:block;"></div><div class="l-rang-mini-ovr">99</div></div>
-                <div class="l-rang-tile-ime" style="color:var(--rang-g99);">G99 Tier</div>
-                <div class="l-rang-tile-obseg">OVR 98–99</div>
-            </div>
-        </div>
-        <div class="l-rang-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> podrsaj</div>
+        <button class="l-rang-arrow l-rang-arrow-l" id="lRangPrev" aria-label="Prejšnji"><i class="fa-solid fa-chevron-left"></i></button>
+        <!-- Kartice napolni landing.js (l-vc = pomanjšana verzija prave kartice iz baze). -->
+        <div class="l-rang-scroll" id="lRangScroll"></div>
+        <button class="l-rang-arrow l-rang-arrow-r" id="lRangNext" aria-label="Naslednji"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="l-rang-scroll-hint"><i class="fa-solid fa-hand-pointer"></i> povleci ali klikni puščice</div>
     </div>
 </section>
 
@@ -340,38 +297,8 @@
     </div>
 
     <div class="l-baza-ovoj l-reveal">
-        <div class="l-baza-grid">
-            <div class="l-mini-kartica rank-g99" style="--rb:var(--rang-g99);">
-                <div class="l-mini-foto l-foto-1"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-g99);">98</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Jaka Grobelnik</span><span class="l-mini-rank" style="color:var(--rang-g99);">G99 Tier</span></div>
-            </div>
-            <div class="l-mini-kartica rank-elite" style="--rb:var(--rang-elite);">
-                <div class="l-mini-foto l-foto-2"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-elite);">95</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Luka Medved</span><span class="l-mini-rank" style="color:var(--rang-elite);">Elite</span></div>
-            </div>
-            <div class="l-mini-kartica rank-prime" style="--rb:var(--rang-prime);">
-                <div class="l-mini-foto l-foto-3"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-prime);">91</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Nejc Kovač</span><span class="l-mini-rank" style="color:var(--rang-prime);">Prime</span></div>
-            </div>
-            <div class="l-mini-kartica rank-diamond" style="--rb:var(--rang-diamond);">
-                <div class="l-mini-foto l-foto-4"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-diamond);">84</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Tim Zupan</span><span class="l-mini-rank" style="color:var(--rang-diamond);">Diamond</span></div>
-            </div>
-            <div class="l-mini-kartica rank-platinum" style="--rb:var(--rang-platinum);">
-                <div class="l-mini-foto l-foto-5"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-platinum);">76</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Mark Horvat</span><span class="l-mini-rank" style="color:var(--rang-platinum);">Platinum</span></div>
-            </div>
-            <div class="l-mini-kartica rank-gold" style="--rb:var(--rang-gold);">
-                <div class="l-mini-foto l-foto-6"></div>
-                <div class="l-mini-ovr" style="color:var(--rang-gold);">68</div>
-                <div class="l-mini-info"><span class="l-mini-ime">Žan Novak</span><span class="l-mini-rank" style="color:var(--rang-gold);">Gold</span></div>
-            </div>
-        </div>
+        <!-- Kartice napolni landing.js (isti l-vc kot v rang-scrollu). -->
+        <div class="l-baza-grid" id="lBazaGrid"></div>
         <div class="l-baza-fade">
             <a href="app.html" class="l-btn-primary">Odpri celotno bazo <i class="fa-solid fa-arrow-right"></i></a>
         </div>
