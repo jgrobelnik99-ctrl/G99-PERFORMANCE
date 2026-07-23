@@ -5270,7 +5270,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let slGumb = document.getElementById('slGumb'); let enGumb = document.getElementById('enGumb');
         if (slGumb) slGumb.classList.toggle('aktivno', j === 'sl'); if (enGumb) enGumb.classList.toggle('aktivno', j === 'en');
         
-        window.setT('naslovPrijava', lng.btnLogin === "Login" ? "G99 LOGIN" : "G99 PRIJAVA"); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava); 
+        window.setT('naslovPrijava', j === 'sl' ? 'Tvoj OVR te čaka.' : 'Your OVR awaits.'); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava);
         // Ikone (namesto emoji) so tu, ker gumbVnos/Prikaz/Baza/Lestvica/Slava/Izzivi/Sobe
         // dobijo CELOTEN innerHTML na novo ob vsakem preklopu jezika - .nav-oznaka ovija
         // besedilo, da ga lahko app.css na mobilni spodnji vrstici ločeno postavi pod ikono.
@@ -5281,7 +5281,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.setT('btnPrikazNormativiTxt', lng.btnPrikazNormativi); window.setT('btnPrikazZnackeTxt', lng.btnPrikazZnacke); window.setT('naslovVseZnacke', lng.naslovVseZnacke); window.setT('btnPrikazMetodologijaTxt', lng.btnMetodologija);
         window.setT('lblSekcijaSestava', lng.lblSekcijaSestava); window.setT('lblInMascoba', lng.lblInMascoba); window.setT('lblInMisicna', lng.lblInMisicna); window.setT('lblProfilSposobnosti', lng.porociloProfil); window.setT('gumbNadzorTxt', window.tJezik === 'sl' ? 'Nadzorna plošča' : 'Dashboard');
         window.setT('gumbMojKlubTxt', window.tJezik === 'sl' ? 'Moj Klub' : 'My Club');
-        window.setT('prijavaPodnaslov', lng.javniCombine); window.setT('oznakaCombine', lng.javniCombine);
+        window.setT('prijavaPodnaslov', j === 'sl' ? 'Prijavi se in odpri svojo digitalno kartico.' : 'Sign in and open your digital card.'); window.setT('oznakaCombine', '');
         window.setT('namigDotik', lng.namigDotik);
         window.setT('btnTvZaslonTxt', lng.btnTvZaslon);
         window.setT('btnSkenerTxt', lng.btnSkener);
@@ -5787,6 +5787,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 }
 
                 document.getElementById('panelPrijava').style.display = 'none'; document.getElementById('g99-aplikacija').style.display = 'flex';
+                { let bOdj = document.getElementById('btnOdjavaTekst'); if(bOdj) bOdj.style.display = 'block'; } // Odjava vidna šele ko si prijavljen
                 // Varovalo: prisilno skrije VSE modale/overlaye ob prijavi, ne glede na
                 // morebiten "osiroteli" inline stil, ki bi privzeti CSS "display:none" premagal.
                 document.querySelectorAll('.modal, .modal-overlay').forEach(el => { el.style.display = 'none'; });
@@ -5798,7 +5799,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 } else { 
                     document.getElementById('gumbVnos').style.display = 'none'; document.getElementById('gumbBaza').style.display = 'block'; document.getElementById('btnIzvozi').style.display = 'none'; document.getElementById('btnUvozi').style.display = 'none'; document.getElementById('btnToggleDelete').style.display = 'none'; document.getElementById('btnRunDelete').style.display = 'none'; window.dMode = false; document.body.classList.remove('delete-mode'); window.preklopiPogled('prikaz'); window.naloziKarticoZaSportnika(window.tEmail); 
                 }
-            } else { document.getElementById('panelPrijava').style.display = 'block'; document.getElementById('g99-aplikacija').style.display = 'none'; }
+            } else { document.getElementById('panelPrijava').style.display = 'block'; document.getElementById('g99-aplikacija').style.display = 'none'; let bOdj = document.getElementById('btnOdjavaTekst'); if(bOdj) bOdj.style.display = 'none'; }
         });
     };
 

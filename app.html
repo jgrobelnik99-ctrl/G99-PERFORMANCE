@@ -41,27 +41,40 @@
 </head>
 <body>
 
-<button class="gumb-odjava" onclick="window.odjaviUporabnika()" id="btnOdjavaTekst">Odjava</button>
+<!-- Odjava je skrita na prijavnem zaslonu (nima smisla, dokler nisi prijavljen).
+     Prikaže se šele ob prijavi (glej onAuthStateChanged v app.js). -->
+<button class="gumb-odjava" onclick="window.odjaviUporabnika()" id="btnOdjavaTekst" style="display:none;">Odjava</button>
 
 <div class="jezikovni-meni">
     <div class="jezik-gumb aktivno" id="slGumb" onclick="window.spremeniJezik('sl')">SI</div>
     <div class="jezik-gumb" id="enGumb" onclick="window.spremeniJezik('en')">EN</div>
 </div>
 
+<!-- PRIJAVNI ZASLON = landing "epic" hero: žareči blobi + branding + naslov, obrazec
+     v steklenem panelu. ID-ji in onclick vezave so NEDOTAKNJENI (prijaviUporabnika,
+     odpriRegistracijo, prijavaEmail/Geslo, prijavaNapaka ...). -->
 <div class="prijava-kontejner" id="panelPrijava">
-    <h2 id="naslovPrijava">G99 Performance</h2>
-    <div style="text-align:center; color:#2ecc71; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin:-8px 0 18px;" id="prijavaPodnaslov">Javni Combine</div>
-    <div class="prijava-skupina">
-        <label id="lblPrijavaEmail">E-pošta</label>
-        <input type="email" id="prijavaEmail" placeholder="trener@g99.com">
+    <div class="pr-glow" aria-hidden="true">
+        <span class="pr-blob pr-blob-1"></span>
+        <span class="pr-blob pr-blob-2"></span>
+        <span class="pr-blob pr-blob-3"></span>
     </div>
-    <div class="prijava-skupina">
-        <label id="lblPrijavaGeslo">Geslo</label>
-        <input type="password" id="prijavaGeslo" placeholder="••••••••">
+    <div class="pr-brand"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></div>
+    <h1 class="pr-naslov" id="naslovPrijava">Tvoj OVR te čaka.</h1>
+    <p class="pr-podnaslov" id="prijavaPodnaslov">Prijavi se in odpri svojo digitalno kartico.</p>
+    <div class="pr-card">
+        <div class="prijava-skupina">
+            <label id="lblPrijavaEmail">E-pošta</label>
+            <input type="email" id="prijavaEmail" placeholder="ime@primer.com">
+        </div>
+        <div class="prijava-skupina">
+            <label id="lblPrijavaGeslo">Geslo</label>
+            <input type="password" id="prijavaGeslo" placeholder="••••••••">
+        </div>
+        <button class="gumb gumb-shrani-bazo" onclick="window.prijaviUporabnika()" id="btnPrijavaGumb" style="margin-top:6px;">Prijava</button>
+        <button class="gumb" onclick="window.odpriRegistracijo()" id="btnOdpriReg" style="margin-top:10px; background: transparent; border: 1px solid #4facfe; color: #4facfe;">Registracija</button>
+        <div id="prijavaNapaka" style="color:#ff7675; font-size:12px; margin-top:10px; font-weight:bold; display:none;"></div>
     </div>
-    <button class="gumb gumb-shrani-bazo" onclick="window.prijaviUporabnika()" id="btnPrijavaGumb" style="margin-top:10px;">Login</button>
-    <button class="gumb" onclick="window.odpriRegistracijo()" id="btnOdpriReg" style="margin-top:10px; background: transparent; border: 1px solid #4facfe; color: #4facfe;">Registracija</button>
-    <div id="prijavaNapaka" style="color:#ff7675; font-size:12px; margin-top:10px; font-weight:bold; display:none;"></div>
 </div>
 
 <div class="modal-overlay" id="regOverlay" onclick="window.zapriRegistracijo()" style="z-index: 7000;"></div>
@@ -76,7 +89,7 @@
 </div>
 
 <div id="g99-aplikacija">
-    <div class="app-oznaka app-oznaka-perf">🏆 G99 <b>Performance</b> <span id="oznakaCombine">javni combine</span></div>
+    <div class="app-oznaka app-oznaka-perf">🏆 G99 <b>Performance</b><span id="oznakaCombine"></span></div>
     <!-- Ista vrstica gumbov služi DVEMA videzoma: na PC je to zgornja pill-vrstica
          (nespremenjeno), pod 768px (glej app.css) pa se preseli na dno zaslona kot
          app-like tab-bar. Razdelitev na "glavne" (nav-primarno, vedno vidni spodaj)
