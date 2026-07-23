@@ -20,7 +20,7 @@
     --rang-silver:   #c7d0dc;
     --rang-gold:     #f1c40f;
     --rang-diamond:  #9fe8ff;
-    --rang-platinum: #b7d3e0;
+    --rang-emerald:  #1fd98a;
     --rang-prime:    #a29bfe;
     --rang-elite:    #ff7675;
     --rang-g99:      #00f2fe;
@@ -190,8 +190,8 @@
         .rank-gold     { border-color: var(--rang-gold); animation: breathe-gold 3s infinite alternate ease-in-out; }
         .rank-gold .notranji-rob { border: 1px solid rgba(241,196,15,0.45); box-shadow: inset 0 0 11px rgba(241,196,15,0.3); }
 
-        .rank-platinum { border-color: var(--rang-platinum); animation: breathe-plat 2.85s infinite alternate ease-in-out; }
-        .rank-platinum .notranji-rob { border: 1px solid rgba(255,255,255,0.65); box-shadow: inset 0 0 17px rgba(183,211,224,0.55); }
+        .rank-emerald { border-color: var(--rang-emerald); animation: breathe-eme 2.85s infinite alternate ease-in-out; }
+        .rank-emerald .notranji-rob { border: 1px solid rgba(255,255,255,0.65); box-shadow: inset 0 0 17px rgba(31,217,138,0.55); }
 
         .rank-diamond  { border-color: var(--rang-diamond); animation: breathe-dia 2.7s infinite alternate ease-in-out; }
         .rank-diamond .notranji-rob { border: 1px solid rgba(255,255,255,0.6); box-shadow: inset 0 0 18px rgba(159,232,255,0.45); }
@@ -206,7 +206,7 @@
         .rank-g99 .notranji-rob { border: 1px solid rgba(255,255,255,0.95); box-shadow: inset 0 0 30px rgba(0,242,254,0.7); }
 
         @keyframes breathe-gold { 0% { box-shadow: 0 0 6px rgba(241,196,15,0.2); } 100% { box-shadow: 0 0 14px rgba(241,196,15,0.5); } }
-        @keyframes breathe-plat { 0% { box-shadow: 0 0 10px rgba(183,211,224,0.35); } 100% { box-shadow: 0 0 20px rgba(183,211,224,0.65); } }
+        @keyframes breathe-eme  { 0% { box-shadow: 0 0 10px rgba(31,217,138,0.35); } 100% { box-shadow: 0 0 20px rgba(31,217,138,0.65); } }
         @keyframes breathe-dia  { 0% { box-shadow: 0 0 10px rgba(159,232,255,0.3); } 100% { box-shadow: 0 0 21px rgba(159,232,255,0.6); } }
         @keyframes breathe-pri  { 0% { box-shadow: 0 0 12px rgba(162,155,254,0.35); } 100% { box-shadow: 0 0 25px rgba(162,155,254,0.65); } }
         @keyframes breathe-eli  { 0% { box-shadow: 0 0 14px rgba(255,118,117,0.4); } 100% { box-shadow: 0 0 30px rgba(255,118,117,0.72); } }
@@ -736,7 +736,7 @@
 
         /* Stopnje foila (višji rang = močnejši, bolj mavričen lesk) */
         .foil-t1 { --foil-op: 0.30; --foil-barva: 0.05; --foil-blend: soft-light; }  /* Iron-Silver */
-        .foil-t2 { --foil-op: 0.45; --foil-barva: 0.09; --foil-blend: soft-light; }  /* Gold-Platinum */
+        .foil-t2 { --foil-op: 0.45; --foil-barva: 0.09; --foil-blend: soft-light; }  /* Gold-Emerald */
         .foil-t3 { --foil-op: 0.62; --foil-barva: 0.19; --foil-blend: color-dodge; } /* Diamond-Prime */
         .foil-t4 { --foil-op: 0.80; --foil-barva: 0.30; --foil-blend: color-dodge; } /* Elite / G99 */
 

@@ -90,7 +90,7 @@
         { rank: 'Bronze',   varc: '--rang-bronze',   ovr: 45, obseg: 'OVR 40–49', foto: 6, name: 'Miha Kos' },
         { rank: 'Silver',   varc: '--rang-silver',   ovr: 55, obseg: 'OVR 50–59', foto: 2, name: 'Lan Perko' },
         { rank: 'Gold',     varc: '--rang-gold',     ovr: 64, obseg: 'OVR 60–69', foto: 3, name: 'Žan Novak' },
-        { rank: 'Platinum', varc: '--rang-platinum', ovr: 74, obseg: 'OVR 70–79', foto: 4, name: 'Mark Horvat' },
+        { rank: 'Emerald', varc: '--rang-emerald', ovr: 74, obseg: 'OVR 70–79', foto: 4, name: 'Mark Horvat' },
         { rank: 'Diamond',  varc: '--rang-diamond',  ovr: 84, obseg: 'OVR 80–88', foto: 1, name: 'Tim Zupan' },
         { rank: 'Prime',    varc: '--rang-prime',    ovr: 91, obseg: 'OVR 89–93', foto: 3, name: 'Nejc Kovač' },
         { rank: 'Elite',    varc: '--rang-elite',    ovr: 95, obseg: 'OVR 94–97', foto: 2, name: 'Luka Medved' },
@@ -113,7 +113,7 @@
         { name: 'Luka Medved',    rank: 'Elite',    varc: '--rang-elite',    ovr: 95, foto: 2 },
         { name: 'Nejc Kovač',     rank: 'Prime',    varc: '--rang-prime',    ovr: 91, foto: 3 },
         { name: 'Tim Zupan',      rank: 'Diamond',  varc: '--rang-diamond',  ovr: 84, foto: 4 },
-        { name: 'Mark Horvat',    rank: 'Platinum', varc: '--rang-platinum', ovr: 76, foto: 5 },
+        { name: 'Mark Horvat',    rank: 'Emerald',  varc: '--rang-emerald',  ovr: 76, foto: 5 },
         { name: 'Žan Novak',      rank: 'Gold',     varc: '--rang-gold',     ovr: 68, foto: 6 }
     ];
     var bazaGrid = document.getElementById('lBazaGrid');
