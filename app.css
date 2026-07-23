@@ -368,10 +368,26 @@
             background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob);
             border-radius: 16px; padding: 13px 16px; }
 
-        /* MOJA KARTICA kot sredinski hero: kartica na sredini, panel pod njo.
+        /* MOJA KARTICA kot sredinski HERO (kot na landing strani): kartica na sredini
+           z žarečim ambient ozadjem, panel pod njo.
            Scope na data-pogled="prikaz", da NE spremeni postavitve v načinu Vnos
            (kjer sta obrazec + predogled kartice namenoma eden ob drugem). */
-        body[data-pogled="prikaz"] #panelPrikaz { flex-direction: column; align-items: center; }
+        body[data-pogled="prikaz"] #panelPrikaz { flex-direction: column; align-items: center; padding-top: 8px; }
+        /* Žareči blobi ZA kartico - psevdo-element (brez sprememb HTML). Med izvozom slike
+           se SKRIJE (.exporting), da PNG kartice ostane povsem nespremenjen. */
+        body[data-pogled="prikaz"] #panelPrikaz::before {
+            content: ''; position: absolute; top: -26px; left: 50%; transform: translateX(-50%);
+            width: min(720px, 94%); height: 600px; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(circle at 32% 30%, rgba(0,242,254,0.20), transparent 58%),
+                radial-gradient(circle at 70% 62%, rgba(162,155,254,0.18), transparent 60%),
+                radial-gradient(circle at 52% 100%, rgba(31,217,138,0.12), transparent 62%);
+            filter: blur(55px); animation: mojHeroDih 7s ease-in-out infinite alternate;
+        }
+        @keyframes mojHeroDih { 0% { opacity: 0.72; } 100% { opacity: 1; } }
+        /* Vsebina (nav, kartica, panel, akcije) mora biti NAD žarečim ozadjem. */
+        body[data-pogled="prikaz"] #panelPrikaz > * { position: relative; z-index: 1; }
+        body.exporting #panelPrikaz::before { display: none; }
 
         /* LESTVICA: vsaka kategorija je svoja "plošča" - drugačen občutek kot baza. */
         #panelLestvica .lestvica-sekcija {
