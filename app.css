@@ -19,11 +19,11 @@
     --rang-bronze:   #cd7f32;
     --rang-silver:   #c7d0dc;
     --rang-gold:     #f1c40f;
-    --rang-diamond:  #4fc3f7;
-    --rang-platinum: #5ad1e0;
+    --rang-diamond:  #9fe8ff;
+    --rang-platinum: #a9c4d1;
     --rang-prime:    #a29bfe;
     --rang-elite:    #ff7675;
-    --rang-g99:      #7ee8fa;
+    --rang-g99:      #00f2fe;
 }
 
 * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -135,17 +135,17 @@
         .rank-platinum { border-color: var(--rang-platinum); animation: breathe-plat 3s infinite alternate ease-in-out; }
         .rank-platinum .notranji-rob { border-color: rgba(255,255,255,0.3); border-style: dashed; }
         .rank-diamond  { border-color: var(--rang-diamond); animation: breathe-dia 3s infinite alternate ease-in-out; }
-        .rank-diamond .notranji-rob { border-top-color: rgba(255,255,255,0.5); border-bottom-color: rgba(255,255,255,0.5); border-left-color: rgba(79,195,247,0.3); border-right-color: rgba(79,195,247,0.3); }
+        .rank-diamond .notranji-rob { border-top-color: rgba(255,255,255,0.5); border-bottom-color: rgba(255,255,255,0.5); border-left-color: rgba(159,232,255,0.3); border-right-color: rgba(159,232,255,0.3); }
         .rank-prime    { border-color: var(--rang-prime); animation: breathe-pri 3s infinite alternate ease-in-out; }
         .rank-prime .notranji-rob { border: 1px solid rgba(255,255,255,0.5); box-shadow: inset 0 0 10px rgba(162,155,254,0.3); }
         .rank-elite    { border-color: var(--rang-elite); animation: breathe-eli 3s infinite alternate ease-in-out; }
         .rank-elite .notranji-rob { border: 1px solid rgba(255,255,255,0.7); box-shadow: inset 0 0 15px rgba(255,118,117,0.5); }
         .rank-g99      { border-color: var(--rang-g99); animation: breathe-g99 3s infinite alternate ease-in-out; }
-        .rank-g99 .notranji-rob { border: 1px solid rgba(255,255,255,0.9); box-shadow: inset 0 0 20px rgba(126,232,250,0.6); }
+        .rank-g99 .notranji-rob { border: 1px solid rgba(255,255,255,0.9); box-shadow: inset 0 0 20px rgba(0,242,254,0.6); }
 
         @keyframes breathe-gold { 0% { box-shadow: 0 0 5px rgba(241,196,15,0.1); } 100% { box-shadow: 0 0 10px rgba(241,196,15,0.4); } }
-        @keyframes breathe-plat { 0% { box-shadow: 0 0 5px rgba(0,206,201,0.1); } 100% { box-shadow: 0 0 10px rgba(0,206,201,0.4); } }
-        @keyframes breathe-dia  { 0% { box-shadow: 0 0 5px rgba(9,132,227,0.2); } 100% { box-shadow: 0 0 15px rgba(9,132,227,0.5); } }
+        @keyframes breathe-plat { 0% { box-shadow: 0 0 5px rgba(169,196,209,0.15); } 100% { box-shadow: 0 0 10px rgba(169,196,209,0.4); } }
+        @keyframes breathe-dia  { 0% { box-shadow: 0 0 5px rgba(159,232,255,0.25); } 100% { box-shadow: 0 0 15px rgba(159,232,255,0.55); } }
         @keyframes breathe-pri  { 0% { box-shadow: 0 0 5px rgba(162,155,254,0.2); } 100% { box-shadow: 0 0 15px rgba(162,155,254,0.5); } }
         @keyframes breathe-eli  { 0% { box-shadow: 0 0 5px rgba(214,48,49,0.3); } 100% { box-shadow: 0 0 20px rgba(214,48,49,0.6); } }
         @keyframes breathe-g99  { 0% { box-shadow: 0 0 8px rgba(0,242,254,0.4); } 100% { box-shadow: 0 0 25px rgba(0,242,254,0.7); } }
