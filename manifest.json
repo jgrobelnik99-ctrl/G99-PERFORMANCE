@@ -2,7 +2,7 @@
   "name": "G99 Performance",
   "short_name": "G99 Performance",
   "description": "G99 Performance - digitalna kartica in meritve športnikov",
-  "start_url": "/",
+  "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#020306",
