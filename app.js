@@ -522,7 +522,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
     window.getColorForOvr = function(ovr) {
         if (ovr>=98) return "#00f2fe"; if (ovr>=94) return "#ff7675"; if (ovr>=89) return "#a29bfe";
-        if (ovr>=80) return "#9fe8ff"; if (ovr>=70) return "#a9c4d1"; if (ovr>=60) return "#f1c40f";
+        if (ovr>=80) return "#9fe8ff"; if (ovr>=70) return "#b7d3e0"; if (ovr>=60) return "#f1c40f";
         if (ovr>=50) return "#c7d0dc"; if (ovr>=40) return "#cd7f32"; return "#8794a6";
     };
     
