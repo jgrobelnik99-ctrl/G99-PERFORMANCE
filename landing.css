@@ -182,15 +182,152 @@ body.landing {
 .l-reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1); }
 .l-reveal.in { opacity: 1; transform: translateY(0); }
 
+/* ============================================================
+   NOVE SEKCIJE (v2): metrike, flip-kartica s foto, lestvica,
+   značke, rang-scroll, sneak-peek baze, dogodki
+   ============================================================ */
+
+/* --- FOTOGRAFIJE: pravi Unsplash posnetki z brand-gradientom SPODAJ, da kartica
+       NIKOLI ni črna - če posnetek ne naloži, se vidi atmosferski gradient. --- */
+.l-foto, .l-mini-foto, .l-dogodek-slika {
+    background-image: var(--foto), radial-gradient(circle at 50% 120%, rgba(0,242,254,0.22), transparent 60%), linear-gradient(160deg, #0d1b2e 0%, #050a14 78%);
+    background-size: cover; background-position: center 22%; background-repeat: no-repeat;
+}
+.l-foto-hero { --foto: url('https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=520&q=70'); }
+.l-foto-1 { --foto: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=360&q=65'); }
+.l-foto-2 { --foto: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=360&q=65'); }
+.l-foto-3 { --foto: url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=360&q=65'); }
+.l-foto-4 { --foto: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=360&q=65'); }
+.l-foto-5 { --foto: url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=360&q=65'); }
+.l-foto-6 { --foto: url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=360&q=65'); }
+.l-dog-foto-1 { --foto: url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=520&q=68'); }
+.l-dog-foto-2 { --foto: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=520&q=68'); }
+.l-dog-foto-3 { --foto: url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=520&q=68'); }
+
+/* --- HERO metrike --- */
+.l-hero-metrike { display: flex; align-items: center; gap: 22px; margin-top: 34px; opacity: 0; animation: l-fade-up 0.7s ease forwards; animation-delay: 1.5s; }
+.l-metrika { display: flex; flex-direction: column; }
+.l-metrika b { font-size: 26px; font-weight: 900; color: #fff; line-height: 1; }
+.l-metrika span { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--g99-tekst-medlo); margin-top: 4px; }
+.l-metrika-crta { width: 1px; height: 34px; background: rgba(255,255,255,0.12); }
+
+/* --- HERO flip kartica --- */
+.l-hero-card .poglej-flip { box-shadow: 0 30px 80px -22px rgba(0,0,0,0.85); }
+.l-hero-card-hint { text-align: center; margin-top: 40px; font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #5a6a85; }
+.l-hero-card-hint i { color: #00f2fe; margin-right: 5px; }
+
+/* --- LIVE utripajoča pika --- */
+.l-live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ff4757; box-shadow: 0 0 10px #ff4757; margin-right: 7px; vertical-align: middle; animation: l-live 1.4s infinite; }
+@keyframes l-live { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.8); } }
+
+/* --- LESTVICA --- */
+.l-lestvica { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+.l-lestvica-row { display: grid; grid-template-columns: 44px 52px 1fr auto auto; align-items: center; gap: 14px;
+    background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); border-radius: 14px; padding: 12px 18px; transition: transform 0.2s, border-color 0.2s; }
+.l-lestvica-row:hover { transform: translateX(4px); border-color: rgba(0,242,254,0.25); }
+.l-lestvica-top { border-color: rgba(0,242,254,0.35); box-shadow: 0 0 26px -10px var(--rang-g99); }
+.l-mesto { font-size: 17px; font-weight: 900; color: var(--g99-tekst-medlo); font-style: italic; }
+.l-ovr-chip { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; font-style: italic; color: var(--rb); background: #000; border: 2px solid var(--rb); box-shadow: 0 0 14px -4px var(--rb); }
+.l-lestvica-ime { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.l-lestvica-ime .ime { font-size: 15px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.l-lestvica-ime .rank { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+.l-lestvica-gen { font-size: 11px; font-weight: 800; color: var(--g99-tekst-medlo); letter-spacing: 1px; }
+.l-lestvica-trend { width: 30px; text-align: center; font-size: 13px; }
+.l-lestvica-trend.up { color: #2ecc71; }
+.l-lestvica-trend.down { color: #ff7675; }
+.l-lestvica-trend.flat { color: #5a6a85; }
+.l-lestvica-top .l-lestvica-trend.up { color: var(--rang-g99); }
+.l-lestvica-blur { position: relative; margin-top: 10px; }
+.l-lestvica-tvoj { filter: blur(3px); opacity: 0.5; border-style: dashed; }
+.l-lestvica-cta { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px;
+    font-size: 13px; font-weight: 800; color: #00f2fe; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+.l-lestvica-cta:hover { text-shadow: 0 0 12px rgba(0,242,254,0.6); }
+
+/* --- ZNAČKE / GAMIFIKACIJA --- */
+.l-znacke-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1000px; margin: 0 auto; }
+.l-znacka-kartica { background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); border-radius: 18px; padding: 28px 22px; text-align: center;
+    position: relative; overflow: hidden; transition: transform 0.25s, border-color 0.25s; }
+.l-znacka-kartica::before { content: ''; position: absolute; top: -40%; left: 50%; transform: translateX(-50%); width: 140px; height: 140px;
+    background: radial-gradient(circle, var(--zb), transparent 68%); opacity: 0.18; pointer-events: none; }
+.l-znacka-kartica:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--zb) 40%, transparent); }
+.l-znacka-ikona { width: 58px; height: 58px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--zb); border: 2px solid var(--zb); box-shadow: 0 0 16px -4px var(--zb); background: rgba(0,0,0,0.4); position: relative; z-index: 1; }
+.l-znacka-tier { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--zb); margin-bottom: 8px; }
+.l-znacka-ime { font-size: 17px; font-weight: 900; text-transform: uppercase; color: #fff; margin-bottom: 8px; }
+.l-znacka-opis { font-size: 12.5px; color: var(--g99-tekst-sek); line-height: 1.55; font-weight: 600; }
+.l-znacke-opomba { text-align: center; margin: 34px auto 0; max-width: 620px; color: var(--g99-tekst-medlo); font-size: 13.5px; font-weight: 600; }
+.l-znacke-opomba b { color: #fff; }
+
+/* --- RANG SCROLL --- */
+.l-rang-scroll-ovoj { position: relative; }
+.l-rang-scroll { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 20px 24px 30px;
+    scrollbar-width: none; -ms-overflow-style: none; }
+.l-rang-scroll::-webkit-scrollbar { display: none; }
+.l-rang-tile { flex: 0 0 auto; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: 26px 22px; border-radius: 20px; background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); min-width: 172px; }
+/* Mini kartica prevzame prave .rank-* razrede iz app.css (rob + sij), zato je videz
+   1:1 z resnično kartico - tu podeduje border-color in animacijo dihanja. */
+.l-rang-mini { width: 130px; height: 178px; border-radius: 14px; background: radial-gradient(circle at 50% 120%, color-mix(in srgb, var(--rb) 22%, transparent), #0b1120 62%);
+    border: 3px solid transparent; position: relative; display: flex; align-items: center; justify-content: center; }
+.l-rang-mini .notranji-rob { position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 10px; border: 1px solid transparent; }
+.l-rang-mini-ovr { font-size: 46px; font-weight: 900; font-style: italic; color: var(--rb); text-shadow: 0 0 20px color-mix(in srgb, var(--rb) 60%, transparent); z-index: 5; }
+.l-rang-tile-ime { font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; }
+.l-rang-tile-obseg { font-size: 11px; font-weight: 800; color: var(--g99-tekst-medlo); letter-spacing: 1px; margin-top: -8px; }
+.l-rang-scroll-hint { text-align: center; font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #5a6a85; margin-top: 4px; }
+.l-rang-scroll-hint i { color: #00f2fe; margin-right: 5px; }
+
+/* --- SNEAK PEEK BAZE --- */
+.l-baza-ovoj { position: relative; max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.l-baza-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.l-mini-kartica { border-radius: 14px; overflow: hidden; background: #0b1120; border: 2px solid var(--rb); position: relative;
+    box-shadow: 0 8px 22px -10px rgba(0,0,0,0.7); transition: transform 0.25s; }
+.l-mini-kartica:hover { transform: translateY(-6px); }
+.l-mini-foto { height: 120px; }
+.l-mini-ovr { position: absolute; top: 8px; left: 8px; background: #000; border: 2px solid currentColor; border-radius: 7px;
+    padding: 1px 8px; font-size: 20px; font-weight: 900; font-style: italic; line-height: 1.1; }
+.l-mini-info { padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 2px; background: #0b1120; }
+.l-mini-ime { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.l-mini-rank { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.l-baza-fade { display: flex; justify-content: center; margin-top: 30px; }
+
+/* --- DOGODKI --- */
+.l-dogodki-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1080px; margin: 0 auto; }
+.l-dogodek { background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); border-radius: 18px; overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s; }
+.l-dogodek:hover { transform: translateY(-6px); border-color: rgba(0,242,254,0.25); }
+.l-dogodek-slika { height: 160px; position: relative; }
+.l-dogodek-slika::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(11,17,32,0.9)); }
+.l-dogodek-status { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; padding: 5px 11px; border-radius: 20px; backdrop-filter: blur(4px); }
+.l-dogodek-status.odprto { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.5); }
+.l-dogodek-status.kmalu { background: rgba(0,242,254,0.15); color: #00f2fe; border: 1px solid rgba(0,242,254,0.5); }
+.l-dogodek-status.razprodano { background: rgba(255,118,117,0.15); color: #ff7675; border: 1px solid rgba(255,118,117,0.5); }
+.l-dogodek-telo { padding: 20px 22px 24px; }
+.l-dogodek-ime { font-size: 18px; font-weight: 900; text-transform: uppercase; color: #fff; margin-bottom: 14px; letter-spacing: -0.3px; }
+.l-dogodek-meta { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--g99-tekst-sek); margin-bottom: 8px; }
+.l-dogodek-meta i { color: #00f2fe; width: 15px; text-align: center; }
+.l-dogodek-gumb { display: block; text-align: center; margin-top: 18px; padding: 13px; border-radius: 10px; text-decoration: none;
+    font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #4facfe, #00f2fe); color: #041018; transition: transform 0.2s, box-shadow 0.2s; }
+.l-dogodek-gumb:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,242,254,0.4); }
+.l-dogodek-gumb.sekundarni { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+.l-dogodek-gumb.sekundarni:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); box-shadow: none; }
+
 /* ===== RESPONSIVE ===== */
+@media (max-width: 1000px) {
+    .l-znacke-grid { grid-template-columns: repeat(2, 1fr); }
+    .l-dogodki-grid { grid-template-columns: 1fr; max-width: 460px; }
+    .l-baza-grid { grid-template-columns: repeat(3, 1fr); }
+}
 @media (max-width: 900px) {
     .l-hero-inner { flex-direction: column; text-align: center; gap: 44px; }
     .l-hero-text { text-align: center; }
     .l-subtitle { margin-left: auto; margin-right: auto; }
     .l-hero-ctas { justify-content: center; }
+    .l-hero-metrike { justify-content: center; }
     .l-kategorije { grid-template-columns: repeat(3, 1fr); }
     .l-koraki { grid-template-columns: 1fr; }
-    .l-hero-card .fifa-kartica { width: 260px !important; height: 390px !important; }
 }
 @media (max-width: 720px) {
     .l-nav-links {
@@ -203,8 +340,17 @@ body.landing {
     .l-nav-links .l-btn-prijava { text-align: center; margin-top: 12px; border-bottom: none; }
     .l-nav-toggle { display: block; }
     .l-kategorije { grid-template-columns: repeat(2, 1fr); }
+    .l-baza-grid { grid-template-columns: repeat(2, 1fr); }
+    /* Flip-kartica pomanjšana prek tilt-tarce - na dotičnih napravah je tilt itak
+       izklopljen (glej landing.js), zato scale ne trči z nagibom. */
+    .l-hero-card .tilt-tarca { transform: scale(0.82); }
+    .l-lestvica-row { grid-template-columns: 34px 46px 1fr auto; gap: 10px; padding: 11px 14px; }
+    .l-lestvica-gen { display: none; }
 }
 @media (max-width: 480px) {
     .l-section { padding: 80px 20px; }
     .l-cta-band { padding: 44px 24px; margin-bottom: 80px; }
+    .l-znacke-grid { grid-template-columns: 1fr; }
+    .l-hero-metrike { gap: 16px; }
+    .l-metrika b { font-size: 22px; }
 }

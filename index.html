@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>G99 Performance — Tvoj OVR. Tvoj dokaz.</title>
-<meta name="description" content="G99 Performance - digitalni combine za športnike. Pet meritev, en OVR, devet rangov od Iron do G99 Tier.">
+<meta name="description" content="G99 Performance - digitalni combine za športnike. Pet meritev, en OVR, devet rangov od Iron do G99 Tier. Lestvica, značke, dogodki.">
 <link rel="icon" type="image/png" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#020306">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;0,700;0,800;0,900;1,900&family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,700&display=swap" rel="stylesheet">
-<!-- app.css je NAMENOMA povezan tudi tukaj - kartica in barve rangov morajo biti
+<!-- app.css je NAMENOMA povezan tudi tukaj - kartica, značke in barve rangov morajo biti
      100% enake kot v pravi aplikaciji (en vir resnice, glej CLAUDE.md pravilo #2). -->
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="landing.css">
@@ -18,17 +18,18 @@
 <body class="landing">
 
 <nav class="l-nav" id="lNav">
-    <div class="l-logo"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></div>
+    <a href="#" class="l-logo"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></a>
     <div class="l-nav-links" id="lNavLinks">
         <a href="#kaj-je-g99">Kaj je G99?</a>
+        <a href="#lestvica">Lestvica</a>
         <a href="#rangi">Rangi</a>
-        <a href="#kako-deluje">Kako deluje</a>
+        <a href="#dogodki">Dogodki</a>
         <a href="app.html" class="l-btn-prijava">Prijava</a>
     </div>
     <button class="l-nav-toggle" id="lNavToggle" aria-label="Meni"><i class="fa-solid fa-bars"></i></button>
 </nav>
 
-<!-- ===== HERO ===== -->
+<!-- ============ HERO ============ -->
 <section class="l-hero">
     <div class="l-hero-glow">
         <div class="l-blob l-blob-1"></div>
@@ -40,68 +41,102 @@
         <div class="l-hero-text">
             <div class="l-eyebrow"><span class="dot"></span> Digitalni combine za športnike</div>
             <h1 class="l-title" id="lHeroTitle">
-                <span class="word">Spoznaj</span><span class="word">svoj</span><span class="word accent">G99</span><span class="word accent">OVR</span>
+                <span class="word">Ni</span><span class="word">ekip.</span><span class="word">Ni</span><span class="word">sreče.</span><br>
+                <span class="word accent">Samo</span><span class="word accent">tvoj</span><span class="word accent">OVR.</span>
             </h1>
-            <p class="l-subtitle">Pet meritev. En rezultat. Primerjaj se z vsakim športnikom v G99 bazi — od IRON do G99 TIER.</p>
+            <p class="l-subtitle">Pet meritev se združi v en sam rezultat od 0 do 99. Zbiraj značke, plezaj po lestvici in napreduj skozi devet rangov — vse na svoji digitalni kartici.</p>
             <div class="l-hero-ctas">
-                <a href="app.html" class="l-btn-primary">Prijavi se <i class="fa-solid fa-arrow-right"></i></a>
-                <a href="#kako-deluje" class="l-btn-secondary">Kako deluje</a>
+                <a href="app.html" class="l-btn-primary">Ustvari svojo kartico <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="#lestvica" class="l-btn-secondary"><i class="fa-solid fa-ranking-star"></i> Poglej lestvico</a>
+            </div>
+            <div class="l-hero-metrike">
+                <div class="l-metrika"><b>99</b><span>najvišji OVR</span></div>
+                <div class="l-metrika-crta"></div>
+                <div class="l-metrika"><b>9</b><span>rangov</span></div>
+                <div class="l-metrika-crta"></div>
+                <div class="l-metrika"><b>50+</b><span>značk</span></div>
             </div>
         </div>
 
+        <!-- Kartica se samodejno obrača (front <-> back), da razkaže obe strani.
+             Struktura je enaka kot v pravi aplikaciji (poglej-flip / poglej-front /
+             poglej-back), zato je videz 100% identičen. -->
         <div class="l-hero-card">
             <div class="tilt-ovoj efekt-ovoj l-hero-card-float" id="lHeroCardOvoj">
                 <div class="tilt-tarca">
-                    <div class="fifa-kartica rank-g99 ima-foil foil-t4" style="margin:0;">
-                        <div class="notranji-rob"></div>
-                        <div class="foil-plast"></div>
-                        <div class="g99-pulsing-glow" style="display:block;"></div>
-                        <div class="slika-atleta-bg l-demo-photo"></div>
+                    <div class="poglej-flip" id="lHeroFlip">
+                        <!-- SPREDNJA STRAN -->
+                        <div class="poglej-face poglej-front">
+                            <div class="fifa-kartica rank-g99 ima-foil foil-t4" style="margin:0;">
+                                <div class="notranji-rob"></div>
+                                <div class="foil-plast"></div>
+                                <div class="g99-pulsing-glow" style="display:block;"></div>
+                                <div class="slika-atleta-bg l-foto l-foto-hero"></div>
 
-                        <div class="cast-okvircek cast-glasen" style="--cast-barva:#ff9f43;"><span><i class="fa-solid fa-fire"></i> V FORMI</span></div>
+                                <div class="cast-okvircek cast-glasen" style="--cast-barva:#ff9f43;"><span><i class="fa-solid fa-fire"></i> V FORMI</span></div>
 
-                        <div class="kartica-ovr-wrapper">
-                            <div class="kartica-ovr-label">
-                                <div class="ovr-stevilka">98</div>
-                                <div class="kartica-mode-text">🌍 WRLD</div>
+                                <div class="kartica-ovr-wrapper">
+                                    <div class="kartica-ovr-label">
+                                        <div class="ovr-stevilka">98</div>
+                                        <div class="kartica-mode-text">🌍 WRLD</div>
+                                    </div>
+                                </div>
+
+                                <div class="znacke-kontejner">
+                                    <div class="znacka-wrap" style="color:#f1c40f; filter: drop-shadow(0 0 6px #f1c40f);"><div class="znacka-krog" style="border-color:#f1c40f; box-shadow: 0 0 6px #f1c40f;"><i class="fa-solid fa-bolt"></i></div></div>
+                                    <div class="znacka-wrap" style="color:#ff7675; filter: drop-shadow(0 0 6px #ff7675);"><div class="znacka-krog" style="border-color:#ff7675; box-shadow: 0 0 6px #ff7675;"><i class="fa-solid fa-gauge-high"></i></div></div>
+                                    <div class="znacka-wrap" style="color:#a29bfe; filter: drop-shadow(0 0 6px #a29bfe);"><div class="znacka-krog" style="border-color:#a29bfe; box-shadow: 0 0 6px #a29bfe;"><i class="fa-solid fa-heart-pulse"></i></div></div>
+                                    <div class="znacka-wrap" style="color:#00f2fe; filter: drop-shadow(0 0 6px #00f2fe);"><div class="znacka-krog" style="border-color:#00f2fe; box-shadow: 0 0 6px #00f2fe;"><i class="fa-solid fa-crown"></i></div></div>
+                                </div>
+
+                                <div class="kartica-bottom">
+                                    <div class="kartica-bottom-ime">JAKA GROBELNIK</div>
+                                    <div class="kartica-bottom-rank" style="color:#00f2fe;">G99 TIER</div>
+                                    <div class="kartica-bottom-detajli">18 LET | M | U19 | 185 CM | 82 KG</div>
+                                    <div class="stat-panel-ikone">
+                                        <div class="ikona-box"><i class="fa-solid fa-bolt ikona-img"></i><div class="ikona-val">99</div></div>
+                                        <div class="ikona-box"><i class="fa-solid fa-dumbbell ikona-img"></i><div class="ikona-val">97</div></div>
+                                        <div class="ikona-box"><i class="fa-solid fa-heart-pulse ikona-img"></i><div class="ikona-val">98</div></div>
+                                        <div class="ikona-box"><i class="fa-solid fa-gauge-high ikona-img"></i><div class="ikona-val">99</div></div>
+                                        <div class="ikona-box"><i class="fa-solid fa-wave-square ikona-img"></i><div class="ikona-val">98</div></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="znacke-kontejner">
-                            <div class="znacka-wrap" style="color:#f1c40f; filter: drop-shadow(0 0 6px #f1c40f);"><div class="znacka-krog" style="border-color:#f1c40f; box-shadow: 0 0 6px #f1c40f;"><i class="fa-solid fa-bolt"></i></div></div>
-                            <div class="znacka-wrap" style="color:#ff7675; filter: drop-shadow(0 0 6px #ff7675);"><div class="znacka-krog" style="border-color:#ff7675; box-shadow: 0 0 6px #ff7675;"><i class="fa-solid fa-gauge-high"></i></div></div>
-                            <div class="znacka-wrap" style="color:#a29bfe; filter: drop-shadow(0 0 6px #a29bfe);"><div class="znacka-krog" style="border-color:#a29bfe; box-shadow: 0 0 6px #a29bfe;"><i class="fa-solid fa-heart-pulse"></i></div></div>
-                            <div class="znacka-wrap" style="color:#00f2fe; filter: drop-shadow(0 0 6px #00f2fe);"><div class="znacka-krog" style="border-color:#00f2fe; box-shadow: 0 0 6px #00f2fe;"><i class="fa-solid fa-crown"></i></div></div>
-                        </div>
-
-                        <div class="kartica-bottom">
-                            <div class="kartica-bottom-ime">JAKA GROBELNIK</div>
-                            <div class="kartica-bottom-rank" style="color:#00f2fe;">G99 TIER</div>
-                            <div class="kartica-bottom-detajli">18 LET | M | U19 | 185 CM | 82 KG</div>
-                            <div class="stat-panel-ikone">
-                                <div class="ikona-box"><i class="fa-solid fa-bolt ikona-img"></i><div class="ikona-val">99</div></div>
-                                <div class="ikona-box"><i class="fa-solid fa-dumbbell ikona-img"></i><div class="ikona-val">97</div></div>
-                                <div class="ikona-box"><i class="fa-solid fa-heart-pulse ikona-img"></i><div class="ikona-val">98</div></div>
-                                <div class="ikona-box"><i class="fa-solid fa-gauge-high ikona-img"></i><div class="ikona-val">99</div></div>
-                                <div class="ikona-box"><i class="fa-solid fa-wave-square ikona-img"></i><div class="ikona-val">98</div></div>
+                        <!-- HRBTNA STRAN (enak videz kot v app-u: monogram, znamka, identifikacija) -->
+                        <div class="poglej-face poglej-back rank-g99" style="--rang-barva:#00f2fe;">
+                            <div class="notranji-rob"></div>
+                            <div class="kb-vzorec"></div>
+                            <div class="kb-monogram-ovoj"><div class="kb-monogram">G99</div></div>
+                            <div class="kb-navpicni">Performance</div>
+                            <div class="foil-plast foil-plast-back"></div>
+                            <div class="kb-glava">
+                                <div class="kb-rang" style="color:#00f2fe;">G99 TIER</div>
+                                <div class="kb-ovr" style="color:#00f2fe;">98</div>
+                            </div>
+                            <div class="kb-noga">
+                                <div class="kb-znamka">G99 <span>PERFORMANCE</span></div>
+                                <div class="kb-datum">14032026</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="l-hero-card-hint"><i class="fa-solid fa-rotate"></i> obe strani kartice</div>
         </div>
     </div>
 
     <div class="l-scroll-hint">Poglej več <i class="fa-solid fa-chevron-down"></i></div>
 </section>
 
-<!-- ===== KAJ JE G99 ===== -->
+<!-- ============ KAJ JE G99 ============ -->
 <section class="l-section" id="kaj-je-g99">
     <div class="l-wrap">
         <div class="l-section-head l-reveal">
             <div class="l-kicker">Filozofija</div>
             <h2 class="l-h2">Brez izgovorov.<br>Samo <span class="accent">ti in številke</span>.</h2>
-            <p class="l-section-sub">G99 Performance je digitalni combine, ki športne rezultate spremeni v en sam, jasen kazalnik. Pet kategorij, ki štejejo — nič drugega.</p>
+            <p class="l-section-sub">G99 Performance ni le meritev na dogodku. Je cel sistem — pet kategorij, ki se združijo v en OVR, značke za tvoje posebne dosežke in lestvica, kjer se meriš z vsemi.</p>
         </div>
 
         <div class="l-kategorije l-reveal">
@@ -114,88 +149,314 @@
     </div>
 </section>
 
-<!-- ===== RANGI ===== -->
+<!-- ============ LIVE LESTVICA ============ -->
+<section class="l-section l-section-alt" id="lestvica">
+    <div class="l-wrap">
+        <div class="l-section-head l-reveal">
+            <div class="l-kicker"><span class="l-live-dot"></span> Lestvica v živo</div>
+            <h2 class="l-h2">Vsak <span class="accent">OVR</span> šteje.<br>Kje si ti?</h2>
+            <p class="l-section-sub">Vsaka meritev takoj posodobi lestvico. Spodaj je vrh baze — prijavi se in poglej, kam se uvrščaš ti.</p>
+        </div>
+
+        <div class="l-lestvica l-reveal">
+            <div class="l-lestvica-row l-lestvica-top">
+                <div class="l-mesto">#1</div>
+                <div class="l-ovr-chip" style="--rb:var(--rang-g99);">98</div>
+                <div class="l-lestvica-ime">
+                    <span class="ime">Jaka Grobelnik</span>
+                    <span class="rank" style="color:var(--rang-g99);">G99 Tier</span>
+                </div>
+                <div class="l-lestvica-gen">U19</div>
+                <div class="l-lestvica-trend up"><i class="fa-solid fa-crown"></i></div>
+            </div>
+            <div class="l-lestvica-row">
+                <div class="l-mesto">#2</div>
+                <div class="l-ovr-chip" style="--rb:var(--rang-elite);">95</div>
+                <div class="l-lestvica-ime">
+                    <span class="ime">Luka Medved</span>
+                    <span class="rank" style="color:var(--rang-elite);">Elite</span>
+                </div>
+                <div class="l-lestvica-gen">U19</div>
+                <div class="l-lestvica-trend up"><i class="fa-solid fa-arrow-up"></i></div>
+            </div>
+            <div class="l-lestvica-row">
+                <div class="l-mesto">#3</div>
+                <div class="l-ovr-chip" style="--rb:var(--rang-prime);">91</div>
+                <div class="l-lestvica-ime">
+                    <span class="ime">Nejc Kovač</span>
+                    <span class="rank" style="color:var(--rang-prime);">Prime</span>
+                </div>
+                <div class="l-lestvica-gen">U17</div>
+                <div class="l-lestvica-trend down"><i class="fa-solid fa-arrow-down"></i></div>
+            </div>
+            <div class="l-lestvica-row">
+                <div class="l-mesto">#4</div>
+                <div class="l-ovr-chip" style="--rb:var(--rang-diamond);">84</div>
+                <div class="l-lestvica-ime">
+                    <span class="ime">Tim Zupan</span>
+                    <span class="rank" style="color:var(--rang-diamond);">Diamond</span>
+                </div>
+                <div class="l-lestvica-gen">U17</div>
+                <div class="l-lestvica-trend up"><i class="fa-solid fa-arrow-up"></i></div>
+            </div>
+            <div class="l-lestvica-row">
+                <div class="l-mesto">#5</div>
+                <div class="l-ovr-chip" style="--rb:var(--rang-platinum);">76</div>
+                <div class="l-lestvica-ime">
+                    <span class="ime">Mark Horvat</span>
+                    <span class="rank" style="color:var(--rang-platinum);">Platinum</span>
+                </div>
+                <div class="l-lestvica-gen">U15</div>
+                <div class="l-lestvica-trend flat"><i class="fa-solid fa-minus"></i></div>
+            </div>
+
+            <div class="l-lestvica-blur">
+                <div class="l-lestvica-row l-lestvica-tvoj">
+                    <div class="l-mesto">#?</div>
+                    <div class="l-ovr-chip" style="--rb:var(--g99-tekst-medlo);">??</div>
+                    <div class="l-lestvica-ime">
+                        <span class="ime">Tvoje ime</span>
+                        <span class="rank">Tvoj rang</span>
+                    </div>
+                    <div class="l-lestvica-gen">—</div>
+                    <div class="l-lestvica-trend flat"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <a href="app.html" class="l-lestvica-cta">Prijavi se in poglej svoje mesto <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ GAMIFIKACIJA (značke + tierji) ============ -->
+<section class="l-section" id="gamifikacija">
+    <div class="l-wrap">
+        <div class="l-section-head l-reveal">
+            <div class="l-kicker">Gamifikacija</div>
+            <h2 class="l-h2">Vsaka kartica <span class="accent">pove zgodbo</span>.</h2>
+            <p class="l-section-sub">OVR je le začetek. Značke razkrijejo, kdo si — bliskovit šprinter, tank moči, vsestranski atlet. Vsaka ima svoj tier redkosti.</p>
+        </div>
+
+        <div class="l-znacke-grid l-reveal">
+            <div class="l-znacka-kartica" style="--zb:#00f2fe;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-crown"></i></div>
+                <div class="l-znacka-tier">Tier 4 · Legenda</div>
+                <div class="l-znacka-ime">G99 Klub</div>
+                <div class="l-znacka-opis">Med 99 najboljšimi OVR v celotni bazi.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#ff9f43;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-fire"></i></div>
+                <div class="l-znacka-tier">Tier 5 · Najredkejša</div>
+                <div class="l-znacka-ime">V Formi</div>
+                <div class="l-znacka-opis">Največji napredek OVR v bazi med sezonama.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#f1c40f;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-bolt"></i></div>
+                <div class="l-znacka-tier">Tier 3 · Elitna</div>
+                <div class="l-znacka-ime">Bliskovit</div>
+                <div class="l-znacka-opis">Hitrost 90+ — med najhitrejšimi v generaciji.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#a29bfe;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="l-znacka-tier">Tier 2 · Kakovostna</div>
+                <div class="l-znacka-ime">Vsestranski</div>
+                <div class="l-znacka-opis">Vseh pet ocen 80+ — nobene šibke točke.</div>
+            </div>
+        </div>
+
+        <div class="l-znacke-opomba l-reveal">Sistem premore <b>50+ značk</b> — od Tier 1 do najredkejšega Tier 5. Vsaka kartica prikaže do 5 najboljših.</div>
+    </div>
+</section>
+
+<!-- ============ RANGI (scroll skozi range) ============ -->
 <section class="l-section l-section-alt" id="rangi">
     <div class="l-wrap">
         <div class="l-section-head l-reveal">
             <div class="l-kicker">Napredovanje</div>
-            <h2 class="l-h2">Devet rangov.<br>Eden <span class="accent">najbolj zaželen</span>.</h2>
-            <p class="l-section-sub">Vsak rang ima svojo barvo in svoj sij na kartici. Kar višje si, bolj kartica sveti — do legendarnega G99 TIER.</p>
+            <h2 class="l-h2">Devet rangov.<br>Kartica <span class="accent">sveti močneje</span> z vsakim.</h2>
+            <p class="l-section-sub">Kar višji je tvoj OVR, bolj kartica žari. Podrsaj skozi range in poglej, kako se videz stopnjuje — od hladnega Iron do žarečega G99 Tier.</p>
         </div>
+    </div>
 
-        <div class="l-rangi-vrsta l-reveal">
-            <div class="l-rang-cekin" style="--rb:var(--rang-iron);"><span class="p"></span><span class="n">Iron</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-bronze);"><span class="p"></span><span class="n">Bronze</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-silver);"><span class="p"></span><span class="n">Silver</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-gold);"><span class="p"></span><span class="n">Gold</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-platinum);"><span class="p"></span><span class="n">Platinum</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-diamond);"><span class="p"></span><span class="n">Diamond</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-prime);"><span class="p"></span><span class="n">Prime</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-elite);"><span class="p"></span><span class="n">Elite</span></div>
-            <i class="fa-solid fa-chevron-right l-rang-arrow"></i>
-            <div class="l-rang-cekin" style="--rb:var(--rang-g99);"><span class="p"></span><span class="n">G99 Tier</span></div>
+    <div class="l-rang-scroll-ovoj l-reveal">
+        <div class="l-rang-scroll" id="lRangScroll">
+            <div class="l-rang-tile rank-iron" style="--rb:var(--rang-iron);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">32</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-iron);">Iron</div>
+                <div class="l-rang-tile-obseg">OVR 0–39</div>
+            </div>
+            <div class="l-rang-tile rank-bronze" style="--rb:var(--rang-bronze);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">45</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-bronze);">Bronze</div>
+                <div class="l-rang-tile-obseg">OVR 40–49</div>
+            </div>
+            <div class="l-rang-tile rank-silver" style="--rb:var(--rang-silver);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">55</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-silver);">Silver</div>
+                <div class="l-rang-tile-obseg">OVR 50–59</div>
+            </div>
+            <div class="l-rang-tile rank-gold" style="--rb:var(--rang-gold);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">64</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-gold);">Gold</div>
+                <div class="l-rang-tile-obseg">OVR 60–69</div>
+            </div>
+            <div class="l-rang-tile rank-platinum" style="--rb:var(--rang-platinum);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">74</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-platinum);">Platinum</div>
+                <div class="l-rang-tile-obseg">OVR 70–79</div>
+            </div>
+            <div class="l-rang-tile rank-diamond" style="--rb:var(--rang-diamond);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">84</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-diamond);">Diamond</div>
+                <div class="l-rang-tile-obseg">OVR 80–88</div>
+            </div>
+            <div class="l-rang-tile rank-prime" style="--rb:var(--rang-prime);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">91</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-prime);">Prime</div>
+                <div class="l-rang-tile-obseg">OVR 89–93</div>
+            </div>
+            <div class="l-rang-tile rank-elite" style="--rb:var(--rang-elite);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="l-rang-mini-ovr">95</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-elite);">Elite</div>
+                <div class="l-rang-tile-obseg">OVR 94–97</div>
+            </div>
+            <div class="l-rang-tile rank-g99" style="--rb:var(--rang-g99);">
+                <div class="l-rang-mini"><div class="notranji-rob"></div><div class="g99-pulsing-glow" style="display:block;"></div><div class="l-rang-mini-ovr">99</div></div>
+                <div class="l-rang-tile-ime" style="color:var(--rang-g99);">G99 Tier</div>
+                <div class="l-rang-tile-obseg">OVR 98–99</div>
+            </div>
         </div>
+        <div class="l-rang-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> podrsaj</div>
     </div>
 </section>
 
-<!-- ===== KAKO DELUJE ===== -->
-<section class="l-section" id="kako-deluje">
+<!-- ============ SNEAK PEEK BAZE ============ -->
+<section class="l-section" id="baza">
     <div class="l-wrap">
         <div class="l-section-head l-reveal">
-            <div class="l-kicker">Postopek</div>
-            <h2 class="l-h2">Od meritve do <span class="accent">kartice</span> v treh korakih.</h2>
+            <div class="l-kicker">Baza kartic</div>
+            <h2 class="l-h2">Cela <span class="accent">galerija</span> športnikov.</h2>
+            <p class="l-section-sub">Vsaka kartica je javna in deljiva. Poglej, brskaj, primerjaj — tvoja je le prijava stran.</p>
+        </div>
+    </div>
+
+    <div class="l-baza-ovoj l-reveal">
+        <div class="l-baza-grid">
+            <div class="l-mini-kartica rank-g99" style="--rb:var(--rang-g99);">
+                <div class="l-mini-foto l-foto-1"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-g99);">98</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Jaka Grobelnik</span><span class="l-mini-rank" style="color:var(--rang-g99);">G99 Tier</span></div>
+            </div>
+            <div class="l-mini-kartica rank-elite" style="--rb:var(--rang-elite);">
+                <div class="l-mini-foto l-foto-2"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-elite);">95</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Luka Medved</span><span class="l-mini-rank" style="color:var(--rang-elite);">Elite</span></div>
+            </div>
+            <div class="l-mini-kartica rank-prime" style="--rb:var(--rang-prime);">
+                <div class="l-mini-foto l-foto-3"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-prime);">91</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Nejc Kovač</span><span class="l-mini-rank" style="color:var(--rang-prime);">Prime</span></div>
+            </div>
+            <div class="l-mini-kartica rank-diamond" style="--rb:var(--rang-diamond);">
+                <div class="l-mini-foto l-foto-4"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-diamond);">84</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Tim Zupan</span><span class="l-mini-rank" style="color:var(--rang-diamond);">Diamond</span></div>
+            </div>
+            <div class="l-mini-kartica rank-platinum" style="--rb:var(--rang-platinum);">
+                <div class="l-mini-foto l-foto-5"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-platinum);">76</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Mark Horvat</span><span class="l-mini-rank" style="color:var(--rang-platinum);">Platinum</span></div>
+            </div>
+            <div class="l-mini-kartica rank-gold" style="--rb:var(--rang-gold);">
+                <div class="l-mini-foto l-foto-6"></div>
+                <div class="l-mini-ovr" style="color:var(--rang-gold);">68</div>
+                <div class="l-mini-info"><span class="l-mini-ime">Žan Novak</span><span class="l-mini-rank" style="color:var(--rang-gold);">Gold</span></div>
+            </div>
+        </div>
+        <div class="l-baza-fade">
+            <a href="app.html" class="l-btn-primary">Odpri celotno bazo <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ============ DOGODKI ============ -->
+<section class="l-section l-section-alt" id="dogodki">
+    <div class="l-wrap">
+        <div class="l-section-head l-reveal">
+            <div class="l-kicker">Combine dogodki</div>
+            <h2 class="l-h2">Izmeri se v <span class="accent">živo</span>.</h2>
+            <p class="l-section-sub">Uradni G99 combine dogodki po Sloveniji. Rezerviraj mesto, opravi vseh pet meritev in dobi uradno kartico na licu mesta.</p>
         </div>
 
-        <div class="l-koraki l-reveal">
-            <div class="l-korak">
-                <div class="l-korak-st">01</div>
-                <h3>Opravi meritve</h3>
-                <p>Pet enostavnih testov — hitrost, moč, vzdržljivost, eksplozivnost, agilnost. Na treningu ali na uradnem G99 combine dogodku.</p>
+        <div class="l-dogodki-grid l-reveal">
+            <div class="l-dogodek">
+                <div class="l-dogodek-slika l-dog-foto-1">
+                    <span class="l-dogodek-status odprto">Prijave odprte</span>
+                </div>
+                <div class="l-dogodek-telo">
+                    <div class="l-dogodek-ime">G99 Combine — Ljubljana</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 12. september 2026</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Športni park Ljubljana</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19</div>
+                    <a href="app.html" class="l-dogodek-gumb">Prijavi se — 25 €</a>
+                </div>
             </div>
-            <div class="l-korak">
-                <div class="l-korak-st">02</div>
-                <h3>Dobiš svoj OVR</h3>
-                <p>Vsaka meritev se pretvori v oceno 1–99. Povprečje vseh petih je tvoj OVR — en sam, jasen rezultat.</p>
+            <div class="l-dogodek">
+                <div class="l-dogodek-slika l-dog-foto-2">
+                    <span class="l-dogodek-status kmalu">Kmalu</span>
+                </div>
+                <div class="l-dogodek-telo">
+                    <div class="l-dogodek-ime">G99 Combine — Maribor</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 18. oktober 2026</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Dvorana Tabor, Maribor</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19 · Pro</div>
+                    <a href="app.html" class="l-dogodek-gumb sekundarni">Na čakalno listo</a>
+                </div>
             </div>
-            <div class="l-korak">
-                <div class="l-korak-st">03</div>
-                <h3>Napreduj skozi range</h3>
-                <p>Od IRON do G99 TIER. Vsak rang ima svoj sij in svoj status. Deli kartico in dokaži napredek naprej.</p>
+            <div class="l-dogodek">
+                <div class="l-dogodek-slika l-dog-foto-3">
+                    <span class="l-dogodek-status razprodano">Razprodano</span>
+                </div>
+                <div class="l-dogodek-telo">
+                    <div class="l-dogodek-ime">G99 Combine — Celje</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 8. avgust 2026</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Atletski stadion Kladivar</div>
+                    <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U17 · U19</div>
+                    <a href="app.html" class="l-dogodek-gumb sekundarni">Poglej rezultate</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ===== CTA ===== -->
+<!-- ============ CTA ============ -->
 <div class="l-cta-band l-reveal">
     <h2>Pripravljen na svoj prvi OVR?</h2>
     <p>Prijavi se in v nekaj minutah dobiš svojo digitalno G99 kartico.</p>
-    <a href="app.html" class="l-btn-primary">Prijavi se <i class="fa-solid fa-arrow-right"></i></a>
+    <a href="app.html" class="l-btn-primary">Ustvari svojo kartico <i class="fa-solid fa-arrow-right"></i></a>
 </div>
 
-<!-- ===== FOOTER ===== -->
+<!-- ============ FOOTER ============ -->
 <footer class="l-footer">
     <div class="l-footer-grid">
         <div class="l-footer-brand">
-            <div class="l-logo"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></div>
-            <p>Digitalni combine za športnike. Pet meritev, en OVR, devet rangov.</p>
+            <a href="#" class="l-logo"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></a>
+            <p>Digitalni combine za športnike. Pet meritev, en OVR, devet rangov, 50+ značk.</p>
         </div>
         <div class="l-footer-col">
             <h4>Aplikacija</h4>
             <a href="app.html">Prijava</a>
             <a href="#kaj-je-g99">Kaj je G99?</a>
-            <a href="#kako-deluje">Kako deluje</a>
+            <a href="#baza">Baza kartic</a>
         </div>
         <div class="l-footer-col">
             <h4>Napredovanje</h4>
+            <a href="#lestvica">Lestvica</a>
             <a href="#rangi">Rangi</a>
+            <a href="#gamifikacija">Značke</a>
+        </div>
+        <div class="l-footer-col">
+            <h4>Dogodki</h4>
+            <a href="#dogodki">Combine dogodki</a>
         </div>
     </div>
     <div class="l-footer-bottom">

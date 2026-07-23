@@ -45,6 +45,22 @@
         });
     }
 
+    // Hero kartica se samodejno obrača (front <-> back), da razkaže obe strani.
+    // Klik ali dotik jo tudi ročno obrne in za trenutek zaustavi samodejni cikel.
+    var flip = document.getElementById('lHeroFlip');
+    if (flip) {
+        var autoFlip = setInterval(function () { flip.classList.toggle('obrnjena'); }, 4500);
+        var flipOvoj = document.getElementById('lHeroCardOvoj');
+        if (flipOvoj) {
+            flipOvoj.style.cursor = 'pointer';
+            flipOvoj.addEventListener('click', function () {
+                flip.classList.toggle('obrnjena');
+                clearInterval(autoFlip);
+                autoFlip = setInterval(function () { flip.classList.toggle('obrnjena'); }, 4500);
+            });
+        }
+    }
+
     // 3D nagib hero kartice ob premiku miške - ista matematika kot pripniTiltInFoil()
     // v app.js (MAX_NAGIB = 9 stopinj), da se kartica na povsod v app-u obnaša enako.
     var cardOvoj = document.getElementById('lHeroCardOvoj');
