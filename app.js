@@ -8,7 +8,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     const auth = getAuth(app); window.auth = auth;
 
     window.db = db; window.doc = doc; window.setDoc = setDoc; window.addDoc = addDoc; window.collection = collection; window.deleteDoc = deleteDoc; window.getDocs = getDocs; window.getDoc = getDoc; window.onSnapshot = onSnapshot; window.query = query; window.where = where; window.documentId = documentId;
-    window.ADMIN_EMAIL = "admin@g99.com"; 
+    window.ADMIN_EMAIL = "admin@g99.com";
+    // PWA namestljivost ("Dodaj na začetni zaslon") zahteva registriran service worker.
+    // sw.js NAMENOMA ne predpomni ničesar (glej komentar v datoteki) - gre samo za to, da
+    // brskalnik app prepozna kot namestljivo, brez tveganja, da bi kdo videl zastarelo verzijo.
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
     // ⚠️ VARNOSTNO OPOZORILO: window.isAdm spodaj je SAMO frontend zastavica za skrivanje UI gumbov.
     // Kdorkoli odpre konzolo (F12) lahko ročno pokliče window.shraniAtleta(), window.brisiAtleta(),
     // window.uvoziCSV() itd. tudi če ni admin, ker so vse funkcije javno dostopne na window objektu.
