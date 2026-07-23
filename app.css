@@ -1,7 +1,33 @@
 /* ===== G99 Performance — app.css ===== */
 /* BLOK 1: glavni slogi */
+
+/* --- DIZAJN TOKENI (1. korak prenove: barve in fonti) ---
+   Vrednosti povzete iz "Premium Neon Redesign" (Claude Design). Rang barve so
+   ENA SAMA resnica - ista paleta velja tu in v window.getColorForOvr (app.js),
+   zato se JS in CSS ne moreta razidejo. Gender tema (cyan/blue vs pink/purple)
+   je NAMENOMA še izpuščena - to je nova funkcija, ne le barvni ton, in jo
+   naredimo v ločenem koraku, ko se odloči, kaj natanko naj jo sproži. */
+:root {
+    --g99-ozadje: #020306;
+    --g99-plast-bg: linear-gradient(160deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
+    --g99-plast-rob: rgba(255,255,255,.08);
+    --g99-tekst-sek: #cbd5e6;
+    --g99-tekst-medlo: #8ba0c0;
+    --g99-tekst-oznaka: #40506b;
+
+    --rang-iron:     #8794a6;
+    --rang-bronze:   #cd7f32;
+    --rang-silver:   #c7d0dc;
+    --rang-gold:     #f1c40f;
+    --rang-diamond:  #4fc3f7;
+    --rang-platinum: #5ad1e0;
+    --rang-prime:    #a29bfe;
+    --rang-elite:    #ff7675;
+    --rang-g99:      #7ee8fa;
+}
+
 * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        body { background-color: #050a18; color: #ffffff; margin: 0; padding: 20px 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; user-select: none; }
+        body { background-color: var(--g99-ozadje); color: #ffffff; margin: 0; padding: 20px 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; user-select: none; }
         
         .exporting * { animation: none !important; transition: none !important; }
         .exporting .rank-diamond::before, .exporting .rank-prime::before, .exporting .rank-elite::before, .exporting .rank-g99::before { display: none !important; }
@@ -12,11 +38,12 @@
         .exporting .znacka-krog { box-shadow: none !important; }
         .exporting .stat-diff, .exporting .ovr-diff, .exporting .history-nav { display: none !important; }
 
-        .prijava-kontejner { background: #0f172a; max-width: 400px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #1e3a5f; text-align: center; }
+        .prijava-kontejner { background: var(--g99-plast-bg); max-width: 400px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid var(--g99-plast-rob); text-align: center; }
         .prijava-kontejner h2 { color: #4facfe; margin-bottom: 20px; text-transform: uppercase; font-weight: 900; }
         .prijava-skupina { margin-bottom: 15px; text-align: left; }
         
         #g99-aplikacija { display: none; width: 100%; flex-direction: column; align-items: center; }
+
 
         .pogled-preklopnik { display: flex; background: #152238; padding: 5px; border-radius: 30px; margin-bottom: 15px; border: 1px solid #1e3a5f; z-index: 10; flex-wrap: wrap; justify-content: center; gap: 5px; align-items: center;}
         .preklop-gumb { padding: 8px 20px; border: none; background: transparent; color: #a0aec0; font-weight: bold; font-size: 13px; cursor: pointer; border-radius: 20px; transition: all 0.3s; text-transform: uppercase; }
@@ -40,7 +67,7 @@
         .gumb-odjava { position: absolute; top: 15px; left: 20px; background: #334155; color: #fff; padding: 6px 15px; font-size: 11px; border-radius: 20px; font-weight: bold; width: auto; border: 1px solid #475569; z-index: 100; cursor: pointer; text-transform: uppercase; transition: background 0.2s;}
         .gumb-odjava:hover { background: #d63031; }
 
-        .glavni-kontejner { background: #0f172a; max-width: 1100px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #1e3a5f; transition: max-width 0.4s ease; margin-top: 20px;}
+        .glavni-kontejner { background: var(--g99-plast-bg); max-width: 1100px; width: 100%; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid var(--g99-plast-rob); transition: max-width 0.4s ease; margin-top: 20px;}
         .glavni-kontejner.prikaz-nacin { max-width: 900px; padding: 30px; background: radial-gradient(circle at center, #111d35 0%, #050a18 100%); border:none;}
 
         .kontrole { flex: 1; min-width: 300px; background: #152238; padding: 20px; border-radius: 15px; border: 1px solid #1e3a5f; }
@@ -98,23 +125,23 @@
         .fifa-kartica { width: 320px; height: 480px; position: relative; overflow: hidden; border-radius: 16px; display: block; background-color: #0b1120; border: 3px solid transparent; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateZ(0); backface-visibility: hidden; will-change: transform;}
         .notranji-rob { position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 12px; z-index: 5; pointer-events: none; border: 1px solid transparent; }
 
-        .rank-iron     { border-color: #596266; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
-        .rank-bronze   { border-color: #cd7f32; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        .rank-iron     { border-color: var(--rang-iron); box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        .rank-bronze   { border-color: var(--rang-bronze); box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
         .rank-bronze .notranji-rob { border: 1px solid rgba(205,127,50,0.3); }
-        .rank-silver   { border-color: #bdc3c7; box-shadow: 0 4px 10px rgba(255,255,255,0.1); }
-        .rank-silver .notranji-rob { border: 1px solid rgba(189,195,199,0.3); }
-        .rank-gold     { border-color: #f1c40f; animation: breathe-gold 3s infinite alternate ease-in-out; }
+        .rank-silver   { border-color: var(--rang-silver); box-shadow: 0 4px 10px rgba(255,255,255,0.1); }
+        .rank-silver .notranji-rob { border: 1px solid rgba(199,208,220,0.3); }
+        .rank-gold     { border-color: var(--rang-gold); animation: breathe-gold 3s infinite alternate ease-in-out; }
         .rank-gold .notranji-rob { border-color: rgba(241,196,15,0.3); }
-        .rank-platinum { border-color: #00cec9; animation: breathe-plat 3s infinite alternate ease-in-out; }
+        .rank-platinum { border-color: var(--rang-platinum); animation: breathe-plat 3s infinite alternate ease-in-out; }
         .rank-platinum .notranji-rob { border-color: rgba(255,255,255,0.3); border-style: dashed; }
-        .rank-diamond  { border-color: #0984e3; animation: breathe-dia 3s infinite alternate ease-in-out; }
-        .rank-diamond .notranji-rob { border-top-color: rgba(255,255,255,0.5); border-bottom-color: rgba(255,255,255,0.5); border-left-color: rgba(9,132,227,0.3); border-right-color: rgba(9,132,227,0.3); }
-        .rank-prime    { border-color: #a29bfe; animation: breathe-pri 3s infinite alternate ease-in-out; }
+        .rank-diamond  { border-color: var(--rang-diamond); animation: breathe-dia 3s infinite alternate ease-in-out; }
+        .rank-diamond .notranji-rob { border-top-color: rgba(255,255,255,0.5); border-bottom-color: rgba(255,255,255,0.5); border-left-color: rgba(79,195,247,0.3); border-right-color: rgba(79,195,247,0.3); }
+        .rank-prime    { border-color: var(--rang-prime); animation: breathe-pri 3s infinite alternate ease-in-out; }
         .rank-prime .notranji-rob { border: 1px solid rgba(255,255,255,0.5); box-shadow: inset 0 0 10px rgba(162,155,254,0.3); }
-        .rank-elite    { border-color: #ff7675; animation: breathe-eli 3s infinite alternate ease-in-out; }
-        .rank-elite .notranji-rob { border: 1px solid rgba(255,255,255,0.7); box-shadow: inset 0 0 15px rgba(214,48,49,0.5); }
-        .rank-g99      { border-color: #00f2fe; animation: breathe-g99 3s infinite alternate ease-in-out; }
-        .rank-g99 .notranji-rob { border: 1px solid rgba(255,255,255,0.9); box-shadow: inset 0 0 20px rgba(0,242,254,0.6); }
+        .rank-elite    { border-color: var(--rang-elite); animation: breathe-eli 3s infinite alternate ease-in-out; }
+        .rank-elite .notranji-rob { border: 1px solid rgba(255,255,255,0.7); box-shadow: inset 0 0 15px rgba(255,118,117,0.5); }
+        .rank-g99      { border-color: var(--rang-g99); animation: breathe-g99 3s infinite alternate ease-in-out; }
+        .rank-g99 .notranji-rob { border: 1px solid rgba(255,255,255,0.9); box-shadow: inset 0 0 20px rgba(126,232,250,0.6); }
 
         @keyframes breathe-gold { 0% { box-shadow: 0 0 5px rgba(241,196,15,0.1); } 100% { box-shadow: 0 0 10px rgba(241,196,15,0.4); } }
         @keyframes breathe-plat { 0% { box-shadow: 0 0 5px rgba(0,206,201,0.1); } 100% { box-shadow: 0 0 10px rgba(0,206,201,0.4); } }

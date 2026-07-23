@@ -521,9 +521,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     };
 
     window.getColorForOvr = function(ovr) { 
-        if (ovr>=98) return "#00f2fe"; if (ovr>=94) return "#ff7675"; if (ovr>=89) return "#a29bfe"; 
-        if (ovr>=80) return "#74b9ff"; if (ovr>=70) return "#00cec9"; if (ovr>=60) return "#f1c40f"; 
-        if (ovr>=50) return "#bdc3c7"; if (ovr>=40) return "#cd7f32"; return "#707b82"; 
+        if (ovr>=98) return "#7ee8fa"; if (ovr>=94) return "#ff7675"; if (ovr>=89) return "#a29bfe"; 
+        if (ovr>=80) return "#4fc3f7"; if (ovr>=70) return "#5ad1e0"; if (ovr>=60) return "#f1c40f"; 
+        if (ovr>=50) return "#c7d0dc"; if (ovr>=40) return "#cd7f32"; return "#8794a6"; 
     };
     
     // Napredek do naslednjega ranga - psihološko močan motivator ("še +2 do DIAMOND").
