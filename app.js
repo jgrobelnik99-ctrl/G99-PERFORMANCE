@@ -541,7 +541,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let lng = window.prevodi[window.tJezik];
         let ri = window.getRankClassAndName(o, lng);
         let col = window.getColorForOvr(o);
-        return `<div class="poglej-face poglej-back ${ri.c}" style="border-color:${col}; box-shadow: 0 0 30px ${col}; --rang-barva:${col};">
+        return `<div class="poglej-face poglej-back ${ri.c}" style="--rang-barva:${col};">
                     <div class="notranji-rob"></div>
                     <div class="kb-vzorec"></div>
                     <div class="kb-monogram-ovoj"><div class="kb-monogram">G99</div></div>
@@ -1327,7 +1327,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             return `<div class="znacka-wrap tier-${z.t}" style="color:${bC};"><div class="znacka-krog" style="border-color:${bC};"><i class="fa-solid ${z.ikona}"></i></div></div>`;
         }).join('');
 
-        return `<div class="fifa-kartica ${ri.c}" style="margin:0; box-shadow: 0 0 34px ${col};">
+        return `<div class="fifa-kartica ${ri.c}" style="margin:0;">
             <div class="notranji-rob"></div>
             ${o >= 98 ? '<div class="g99-pulsing-glow"></div>' : ''}
             <div class="slika-atleta-bg" style="background-image:${bg};"></div>
@@ -2515,7 +2515,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 </div>
             </div>
             <div id="modalTabKartica" style="display:flex; flex-direction: column; align-items: center; width: 100%;">
-                <div class="tilt-ovoj efekt-ovoj ima-foil ${window.dobiFoilTier(o)}" style="margin:0;"><div class="tilt-tarca" style="width:320px; height:480px;"><div class="poglej-flip" id="poglejFlip" onclick="window.obrniPoglejKartico()"><div class="poglej-face poglej-front${window.inFormRazred(a.id)}">${window.inFormTrakHTML(a.id)}<div class="fifa-kartica ${rC}" style="margin:0; box-shadow: 0 0 30px ${col};"><div class="foil-plast"></div>
+                <div class="tilt-ovoj efekt-ovoj ima-foil ${window.dobiFoilTier(o)}" style="margin:0;"><div class="tilt-tarca" style="width:320px; height:480px;"><div class="poglej-flip" id="poglejFlip" onclick="window.obrniPoglejKartico()"><div class="poglej-face poglej-front${window.inFormRazred(a.id)}">${window.inFormTrakHTML(a.id)}<div class="fifa-kartica ${rC}" style="margin:0;"><div class="foil-plast"></div>
                     <div class="notranji-rob"></div>
                     ${o >= 98 ? '<div class="g99-pulsing-glow" style="display:block;"></div>' : ''}
                     <div class="slika-atleta-bg" style="background-image: ${bgS}; border-bottom-color: ${col};"></div>
