@@ -5279,6 +5279,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.setH('btnSlikoVnos', `📸 ${lng.gumbSliko}`); window.setT('btnShraniSliko2Txt', lng.gumbPrenos); window.setT('btnShraniIGTxt', lng.btnIG); window.setH('btnShraniBazo', `💾 ${lng.gumbBaza}`); window.setH('btnIzvozi', `📤 ${lng.btnIzvozi}`); window.setH('btnUvozi', `📥 Uvozi (CSV)`);
         window.setT('btnGenerirajPorociloTxt', lng.btnGenerirajPorocilo); window.setT('btnPrenesiPorociloTxt', lng.btnPrenesiPorocilo);
         window.setT('btnPrikazNormativiTxt', lng.btnPrikazNormativi); window.setT('btnPrikazZnackeTxt', lng.btnPrikazZnacke); window.setT('naslovVseZnacke', lng.naslovVseZnacke); window.setT('btnPrikazMetodologijaTxt', lng.btnMetodologija);
+        window.setT('akcijePomocTxt', j === 'sl' ? 'Pomoč in razlage' : 'Help & explanations');
         window.setT('lblSekcijaSestava', lng.lblSekcijaSestava); window.setT('lblInMascoba', lng.lblInMascoba); window.setT('lblInMisicna', lng.lblInMisicna); window.setT('lblProfilSposobnosti', lng.porociloProfil); window.setT('gumbNadzorTxt', window.tJezik === 'sl' ? 'Nadzorna plošča' : 'Dashboard');
         window.setT('gumbMojKlubTxt', window.tJezik === 'sl' ? 'Moj Klub' : 'My Club');
         window.setT('prijavaPodnaslov', j === 'sl' ? 'Prijavi se in odpri svojo digitalno kartico.' : 'Sign in and open your digital card.'); window.setT('oznakaCombine', '');

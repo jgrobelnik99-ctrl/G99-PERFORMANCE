@@ -113,6 +113,21 @@
             }
             .nav-vec-meni .preklop-gumb i { margin-right: 0; font-size: 15px; width: 18px; text-align: center; }
             .nav-vec-meni .preklop-gumb.aktivno { background: rgba(0,242,254,0.12); color: #00f2fe; box-shadow: none; }
+
+            /* Moja Kartica = osrednji "hero" zavihek: dvignjen žareč cyan krog nad vrstico.
+               Vrstni red postavi Prikaz na sredino (admin: točno sredina med 5 zavihki;
+               športnik brez Vnosa: takoj desno od Baze), da ni več stisnjen ob rob. */
+            #gumbVnos { order: 1; } #gumbBaza { order: 2; } #gumbPrikaz { order: 3; }
+            #gumbLestvica { order: 4; } #gumbVec { order: 5; }
+            .pogled-preklopnik #gumbPrikaz i {
+                width: 48px; height: 48px; border-radius: 50%; margin-top: -20px; font-size: 21px !important;
+                background: linear-gradient(135deg, #4facfe, #00f2fe); color: #041018;
+                box-shadow: 0 6px 18px rgba(0,242,254,0.45); border: 3px solid var(--g99-ozadje);
+                transition: box-shadow 0.25s, transform 0.25s;
+            }
+            .pogled-preklopnik #gumbPrikaz { color: #8ba3c4; }
+            .pogled-preklopnik #gumbPrikaz.aktivno { color: #00f2fe; text-shadow: none; }
+            .pogled-preklopnik #gumbPrikaz.aktivno i { box-shadow: 0 8px 26px rgba(0,242,254,0.72); transform: translateY(-2px); filter: none; }
         }
         
         .mode-switch-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; background: #111d35; padding: 8px 20px; border-radius: 30px; border: 1px solid #1e3a5f; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -308,6 +323,18 @@
                      color: #6b7c94; font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px; cursor: pointer;
                      font-family: 'Montserrat', sans-serif; transition: all 0.2s; }
         .btn-pomoc:hover { color: #cfd8e6; border-color: #1e3a5f; background: rgba(255,255,255,0.03); }
+
+        /* Zložljiva pomoč (native <details>): privzeto skrita -> manj vidnih gumbov. */
+        .akcije-pomoc-ovoj { width: 100%; max-width: 560px; margin: 16px auto 0; text-align: center;
+                             border-top: 1px solid rgba(255,255,255,0.07); padding-top: 14px; }
+        .akcije-pomoc-ovoj > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+                             font-size: 10.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #6b7c94;
+                             padding: 7px 15px; border-radius: 20px; border: 1px solid transparent; transition: all 0.2s; user-select: none; }
+        .akcije-pomoc-ovoj > summary::-webkit-details-marker { display: none; }
+        .akcije-pomoc-ovoj > summary::marker { content: ''; }
+        .akcije-pomoc-ovoj > summary:hover { color: #cfd8e6; border-color: #1e3a5f; background: rgba(255,255,255,0.03); }
+        .akcije-pomoc-ovoj[open] > summary { color: #cfd8e6; margin-bottom: 6px; }
+        .akcije-pomoc-ovoj .akcije-pomoc { border-top: none; padding-top: 0; margin-top: 0; }
 
         /* ===== MOJA KARTICA: levi stolpec + prefinjeni gumbi ===== */
         .leva-kolona-prikaz { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 320px; }

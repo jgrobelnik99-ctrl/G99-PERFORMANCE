@@ -409,11 +409,16 @@
                     </div>
                     <button class="gumb" id="btnDeliProfil" onclick="window.deliProfil()" style="margin-top:8px; background:linear-gradient(90deg,#2ecc71,#27ae60); color:#052; font-weight:900;">🔗 <span id="btnDeliProfilTxt">Deli profil (za Instagram bio)</span></button>
 
-                    <div class="akcije-pomoc">
-                        <button class="btn-pomoc" id="btnPrikazNormativi" onclick="window.pokaziNormative()">📊 <span id="btnPrikazNormativiTxt">Normativi</span></button>
-                        <button class="btn-pomoc" id="btnPrikazZnacke" onclick="window.pokaziVseZnacke()">🏆 <span id="btnPrikazZnackeTxt">Legenda Značk</span></button>
-                        <button class="btn-pomoc" id="btnPrikazMetodologija" onclick="window.pokaziMetodologijo()">📐 <span id="btnPrikazMetodologijaTxt">Kako se računa OVR?</span></button>
-                    </div>
+                    <!-- Pomožne razlage so zložene v spustnik (native <details>), da je privzeto
+                         manj vidnih gumbov. Gumbi (ID-ji/onclick) so nedotaknjeni. -->
+                    <details class="akcije-pomoc-ovoj">
+                        <summary><i class="fa-solid fa-circle-info"></i> <span id="akcijePomocTxt">Pomoč in razlage</span></summary>
+                        <div class="akcije-pomoc">
+                            <button class="btn-pomoc" id="btnPrikazNormativi" onclick="window.pokaziNormative()">📊 <span id="btnPrikazNormativiTxt">Normativi</span></button>
+                            <button class="btn-pomoc" id="btnPrikazZnacke" onclick="window.pokaziVseZnacke()">🏆 <span id="btnPrikazZnackeTxt">Legenda Značk</span></button>
+                            <button class="btn-pomoc" id="btnPrikazMetodologija" onclick="window.pokaziMetodologijo()">📐 <span id="btnPrikazMetodologijaTxt">Kako se računa OVR?</span></button>
+                        </div>
+                    </details>
                 </div>
             </div>
 
