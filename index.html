@@ -41,8 +41,8 @@
         <div class="l-hero-text">
             <div class="l-eyebrow"><span class="dot"></span> Digitalni combine za športnike</div>
             <h1 class="l-title" id="lHeroTitle">
-                <span class="l-title-rot" id="lHeroRot">Ni ekip. Ni sreče.</span><br>
-                <span class="accent">Samo tvoj OVR.</span>
+                <span class="l-title-rot" id="lHeroRot">Ni ekip. Ni sreče.</span>
+                <span class="accent l-title-fix">Samo tvoj OVR.</span>
             </h1>
             <p class="l-subtitle">Pet meritev se združi v en sam rezultat od 0 do 99. Zbiraj značke, plezaj po lestvici in napreduj skozi devet rangov — vse na svoji digitalni kartici.</p>
             <div class="l-hero-ctas">
@@ -54,7 +54,7 @@
                 <div class="l-metrika-crta"></div>
                 <div class="l-metrika"><b>9</b><span>rangov</span></div>
                 <div class="l-metrika-crta"></div>
-                <div class="l-metrika"><b>50+</b><span>značk</span></div>
+                <div class="l-metrika"><b>54</b><span>značk</span></div>
             </div>
         </div>
 
@@ -236,34 +236,61 @@
             <p class="l-section-sub">OVR je le začetek. Značke razkrijejo, kdo si — bliskovit šprinter, tank moči, vsestranski atlet. Vsaka ima svoj tier redkosti.</p>
         </div>
 
+        <!-- SAMO prave značke iz app.js (z_ic/z_t/z_sl_t). Barve so točno tiste, ki jih
+             app dodeli po tieru: t5=#ff9f43, t4=#00f2fe, t3=#a29bfe, t2=#ff7675,
+             t1=#f1c40f, t0=#2ecc71. Ne izmišljuj novih. -->
         <div class="l-znacke-grid l-reveal">
-            <div class="l-znacka-kartica" style="--zb:#00f2fe;">
-                <div class="l-znacka-ikona"><i class="fa-solid fa-crown"></i></div>
-                <div class="l-znacka-tier">Tier 4 · Legenda</div>
-                <div class="l-znacka-ime">G99 Klub</div>
-                <div class="l-znacka-opis">Med 99 najboljšimi OVR v celotni bazi.</div>
-            </div>
             <div class="l-znacka-kartica" style="--zb:#ff9f43;">
-                <div class="l-znacka-ikona"><i class="fa-solid fa-fire"></i></div>
-                <div class="l-znacka-tier">Tier 5 · Najredkejša</div>
-                <div class="l-znacka-ime">V Formi</div>
-                <div class="l-znacka-opis">Največji napredek OVR v bazi med sezonama.</div>
+                <div class="l-znacka-ikona"><i class="fa-solid fa-skull"></i></div>
+                <div class="l-znacka-tier">Tier 5 · Mitska</div>
+                <div class="l-znacka-ime">The One</div>
+                <div class="l-znacka-opis">Absolutno najvišji OVR v celotni bazi.</div>
             </div>
-            <div class="l-znacka-kartica" style="--zb:#f1c40f;">
-                <div class="l-znacka-ikona"><i class="fa-solid fa-bolt"></i></div>
-                <div class="l-znacka-tier">Tier 3 · Elitna</div>
-                <div class="l-znacka-ime">Bliskovit</div>
-                <div class="l-znacka-opis">Hitrost 90+ — med najhitrejšimi v generaciji.</div>
+            <div class="l-znacka-kartica" style="--zb:#00f2fe;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-trophy"></i></div>
+                <div class="l-znacka-tier">Tier 4 · Legendarna</div>
+                <div class="l-znacka-ime">G.O.A.T.</div>
+                <div class="l-znacka-opis">OVR 98 ali 99 — sam vrh lestvice.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#00f2fe;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-user-astronaut"></i></div>
+                <div class="l-znacka-tier">Tier 4 · Legendarna</div>
+                <div class="l-znacka-ime">Nezemljan</div>
+                <div class="l-znacka-opis">Vseh pet ocen nad 90.</div>
             </div>
             <div class="l-znacka-kartica" style="--zb:#a29bfe;">
-                <div class="l-znacka-ikona"><i class="fa-solid fa-shield-halved"></i></div>
-                <div class="l-znacka-tier">Tier 2 · Kakovostna</div>
-                <div class="l-znacka-ime">Vsestranski</div>
-                <div class="l-znacka-opis">Vseh pet ocen 80+ — nobene šibke točke.</div>
+                <div class="l-znacka-ikona"><i class="fa-solid fa-crown"></i></div>
+                <div class="l-znacka-tier">Tier 3 · Elitna</div>
+                <div class="l-znacka-ime">G99 Klub</div>
+                <div class="l-znacka-opis">Med top 99 igralci po OVR.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#a29bfe;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div class="l-znacka-tier">Tier 3 · Elitna</div>
+                <div class="l-znacka-ime">Švicarski Nož</div>
+                <div class="l-znacka-opis">Vseh pet ocen nad 85 — brez šibke točke.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#ff7675;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-truck"></i></div>
+                <div class="l-znacka-tier">Tier 2 · Redka</div>
+                <div class="l-znacka-ime">Dizel</div>
+                <div class="l-znacka-opis">Vzdržljivost 90+ in moč 85+.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#f1c40f;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-forward-fast"></i></div>
+                <div class="l-znacka-tier">Tier 1 · Kakovostna</div>
+                <div class="l-znacka-ime">Speed Demon</div>
+                <div class="l-znacka-opis">Hitrost 90+.</div>
+            </div>
+            <div class="l-znacka-kartica" style="--zb:#2ecc71;">
+                <div class="l-znacka-ikona"><i class="fa-solid fa-shoe-prints"></i></div>
+                <div class="l-znacka-tier">Tier 0 · Osnovna</div>
+                <div class="l-znacka-ime">Sveža Kri</div>
+                <div class="l-znacka-opis">OVR med 65 in 79 — dober začetek.</div>
             </div>
         </div>
 
-        <div class="l-znacke-opomba l-reveal">Sistem premore <b>50+ značk</b> — od Tier 1 do najredkejšega Tier 5. Vsaka kartica prikaže do 5 najboljših.</div>
+        <div class="l-znacke-opomba l-reveal">Sistem premore <b>54 značk</b> v šestih stopnjah redkosti — od osnovne (Tier 0) do mitske (Tier 5). Vsaka kartica prikaže do 5 najboljših.</div>
     </div>
 </section>
 
@@ -367,7 +394,7 @@
     <div class="l-footer-grid">
         <div class="l-footer-brand">
             <a href="#" class="l-logo"><img src="icon-192.png" alt="G99"> G99 <b>PERFORMANCE</b></a>
-            <p>Digitalni combine za športnike. Pet meritev, en OVR, devet rangov, 50+ značk.</p>
+            <p>Digitalni combine za športnike. Pet meritev, en OVR, devet rangov, 54 značk.</p>
         </div>
         <div class="l-footer-col">
             <h4>Aplikacija</h4>

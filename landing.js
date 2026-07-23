@@ -51,13 +51,11 @@
         var ri = 0;
         setInterval(function () {
             rot.style.opacity = '0';
-            rot.style.transform = 'translateY(10px)';
             setTimeout(function () {
                 ri = (ri + 1) % slogani.length;
                 rot.textContent = slogani[ri];
                 rot.style.opacity = '1';
-                rot.style.transform = 'translateY(0)';
-            }, 350);
+            }, 300);
         }, 3200);
     }
 
