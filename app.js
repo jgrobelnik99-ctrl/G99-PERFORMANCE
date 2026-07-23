@@ -1261,8 +1261,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             if(!tarca && foili.length === 0) return;
             let cakaNaSlicico = false;
 
+            // Sledenje pritisku: da kartica sledi PRSTU na dotik (touch-action:none v CSS),
+            // hkrati pa razlikujemo TAP (obrat) od POVLEKA (nagib). ovoj._premik označi povlek,
+            // da obrat (obrniMojoKartico) ne sproži pomotoma ob koncu vlečenja.
+            let pritisnjen = false, zacX = 0, zacY = 0;
+            ovoj.addEventListener('pointerdown', (e) => { pritisnjen = true; zacX = e.clientX; zacY = e.clientY; ovoj._premik = false; });
+
             ovoj.addEventListener('pointermove', (e) => {
                 if(window.cMode || window.dMode) return; // med izbiranjem kartic naj bo mirno
+                if(pritisnjen && (Math.abs(e.clientX - zacX) > 6 || Math.abs(e.clientY - zacY) > 6)) ovoj._premik = true;
                 if(cakaNaSlicico) return;
                 cakaNaSlicico = true;
                 requestAnimationFrame(() => {
@@ -1288,6 +1295,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             ovoj.addEventListener('pointerleave', () => {
                 if(tarca) { tarca.style.setProperty('--tilt-x', '0deg'); tarca.style.setProperty('--tilt-y', '0deg'); }
             });
+            // Na dotik ni "pointerleave", zato nagib povrnemo ob dvigu prsta.
+            let konec = () => {
+                pritisnjen = false;
+                if(tarca) { tarca.style.setProperty('--tilt-x', '0deg'); tarca.style.setProperty('--tilt-y', '0deg'); }
+                // _premik pustimo do konca click cikla, nato ponastavimo
+                setTimeout(() => { ovoj._premik = false; }, 50);
+            };
+            ovoj.addEventListener('pointerup', konec);
+            ovoj.addEventListener('pointercancel', konec);
         });
     };
 
@@ -1446,6 +1462,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     };
 
     window.obrniMojoKartico = function(e) {
+        // Če je bil to POVLEK (nagib kartice s prstom), ne obračaj - obrat je samo za TAP.
+        let ovoj = document.getElementById('karticaTiltOvoj');
+        if(ovoj && ovoj._premik) return;
         let f = document.getElementById('mojaFlip');
         if(f) f.classList.toggle('obrnjena');
     };
@@ -5270,7 +5289,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let slGumb = document.getElementById('slGumb'); let enGumb = document.getElementById('enGumb');
         if (slGumb) slGumb.classList.toggle('aktivno', j === 'sl'); if (enGumb) enGumb.classList.toggle('aktivno', j === 'en');
         
-        window.setT('naslovPrijava', j === 'sl' ? 'Tvoj OVR te čaka.' : 'Your OVR awaits.'); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava);
+        window.setT('naslovPrijava', j === 'sl' ? 'Tvoj OVR te čaka.' : 'Your OVR awaits.'); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava); window.setT('gumbOdjavaVecTxt', lng.odjava);
         // Ikone (namesto emoji) so tu, ker gumbVnos/Prikaz/Baza/Lestvica/Slava/Izzivi/Sobe
         // dobijo CELOTEN innerHTML na novo ob vsakem preklopu jezika - .nav-oznaka ovija
         // besedilo, da ga lahko app.css na mobilni spodnji vrstici ločeno postavi pod ikono.

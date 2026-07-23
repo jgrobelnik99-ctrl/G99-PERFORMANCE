@@ -95,18 +95,27 @@
          app-like tab-bar. Razdelitev na "glavne" (nav-primarno, vedno vidni spodaj)
          in "več" (nav-vec-meni, skriti za gumbom Več) je SAMO vizualna (CSS) - ID-ji
          in onclick vezave so nedotaknjene, da se nič ne pokvari. -->
+    <!-- Skupine nav-levo / Prikaz / nav-desno: na PC so skupine "display:contents"
+         (gumbi tečejo v vrstici kot prej), na telefonu pa sta levo in desno flex:1,
+         zato je Moja Kartica VEDNO na sredini - tudi ko navadni uporabnik nima Vnosa. -->
     <div class="pogled-preklopnik" id="navPreklopnik">
-        <button class="preklop-gumb nav-primarno" id="gumbVnos" onclick="window.pripraviNovVnos(); window.preklopiPogled('vnos')">⚙️ Vnos</button>
+        <div class="nav-grupa nav-levo">
+            <button class="preklop-gumb nav-primarno" id="gumbVnos" onclick="window.pripraviNovVnos(); window.preklopiPogled('vnos')">⚙️ Vnos</button>
+            <button class="preklop-gumb nav-primarno" id="gumbBaza" onclick="window.preklopiPogled('baza')">🗂️ Baza</button>
+        </div>
         <button class="preklop-gumb nav-primarno aktivno" id="gumbPrikaz" onclick="window.preklopiPogled('prikaz')">👤 Moja Kartica</button>
-        <button class="preklop-gumb nav-primarno" id="gumbBaza" onclick="window.preklopiPogled('baza')">🗂️ Baza</button>
-        <button class="preklop-gumb nav-primarno" id="gumbLestvica" onclick="window.preklopiPogled('lestvica')">🏆 Lestvica</button>
-        <button class="preklop-gumb nav-vec-gumb" id="gumbVec" onclick="window.preklopiVecMeni()"><i class="fa-solid fa-ellipsis"></i><span class="nav-oznaka" id="gumbVecTxt">Več</span></button>
-        <div class="nav-vec-meni" id="navVecMeni">
-            <button class="preklop-gumb" id="gumbMojKlub" onclick="window.preklopiVecMeni(true); window.odpriMojKlub()" style="display:none;"><i class="fa-solid fa-building"></i> <span id="gumbMojKlubTxt">Moj Klub</span></button>
-            <button class="preklop-gumb" id="gumbSlava" onclick="window.preklopiPogled('slava')">🏛️ <span id="gumbSlavaTxt">Hall of Fame</span></button>
-            <button class="preklop-gumb" id="gumbIzzivi" onclick="window.preklopiPogled('izzivi')">⚔️ <span id="gumbIzziviTxt">Izzivi</span></button>
-            <button class="preklop-gumb" id="gumbSobe" onclick="window.preklopiPogled('sobe')">🔒 <span id="gumbSobeTxt">Sobe</span></button>
-            <button class="preklop-gumb" id="gumbNadzor" onclick="window.preklopiVecMeni(true); window.preklopiPogled('nadzor')" style="display:none;"><i class="fa-solid fa-gauge-high"></i> <span id="gumbNadzorTxt">Nadzorna plošča</span></button>
+        <div class="nav-grupa nav-desno">
+            <button class="preklop-gumb nav-primarno" id="gumbLestvica" onclick="window.preklopiPogled('lestvica')">🏆 Lestvica</button>
+            <button class="preklop-gumb nav-vec-gumb" id="gumbVec" onclick="window.preklopiVecMeni()"><i class="fa-solid fa-ellipsis"></i><span class="nav-oznaka" id="gumbVecTxt">Več</span></button>
+            <div class="nav-vec-meni" id="navVecMeni">
+                <button class="preklop-gumb" id="gumbMojKlub" onclick="window.preklopiVecMeni(true); window.odpriMojKlub()" style="display:none;"><i class="fa-solid fa-building"></i> <span id="gumbMojKlubTxt">Moj Klub</span></button>
+                <button class="preklop-gumb" id="gumbSlava" onclick="window.preklopiPogled('slava')">🏛️ <span id="gumbSlavaTxt">Hall of Fame</span></button>
+                <button class="preklop-gumb" id="gumbIzzivi" onclick="window.preklopiPogled('izzivi')">⚔️ <span id="gumbIzziviTxt">Izzivi</span></button>
+                <button class="preklop-gumb" id="gumbSobe" onclick="window.preklopiPogled('sobe')">🔒 <span id="gumbSobeTxt">Sobe</span></button>
+                <button class="preklop-gumb" id="gumbNadzor" onclick="window.preklopiVecMeni(true); window.preklopiPogled('nadzor')" style="display:none;"><i class="fa-solid fa-gauge-high"></i> <span id="gumbNadzorTxt">Nadzorna plošča</span></button>
+                <!-- Odjava je v meniju Več (samo na telefonu; na PC ostane gumb zgoraj levo). -->
+                <button class="preklop-gumb nav-vec-odjava" id="gumbOdjavaVec" onclick="window.preklopiVecMeni(true); window.odjaviUporabnika()"><i class="fa-solid fa-right-from-bracket"></i> <span id="gumbOdjavaVecTxt">Odjava</span></button>
+            </div>
         </div>
     </div>
 

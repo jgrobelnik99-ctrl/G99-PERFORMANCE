@@ -70,6 +70,8 @@
         .preklop-gumb i { margin-right: 6px; }
         .nav-vec-gumb { display: none; } /* na PC je vse že v vrstici, gumb "Več" ni potreben */
         .nav-vec-meni { display: contents; } /* na PC brez efekta - gumbi ostanejo naravnost v pill-vrstici */
+        .nav-grupa { display: contents; } /* na PC skupine ne vplivajo - gumbi tečejo v vrstici */
+        .nav-vec-odjava { display: none; } /* Odjava v Več meniju je samo za telefon (na PC je gumb zgoraj levo) */
 
         /* ===== MOBILNA SPODNJA NAVIGACIJA (tab-bar) =====
            Ista vrstica (isti ID-ji/onclick kot na PC) se pod 768px preseli na dno
@@ -114,20 +116,40 @@
             .nav-vec-meni .preklop-gumb i { margin-right: 0; font-size: 15px; width: 18px; text-align: center; }
             .nav-vec-meni .preklop-gumb.aktivno { background: rgba(0,242,254,0.12); color: #00f2fe; box-shadow: none; }
 
-            /* Moja Kartica = osrednji "hero" zavihek: dvignjen žareč cyan krog nad vrstico.
-               Vrstni red postavi Prikaz na sredino (admin: točno sredina med 5 zavihki;
-               športnik brez Vnosa: takoj desno od Baze), da ni več stisnjen ob rob. */
-            #gumbVnos { order: 1; } #gumbBaza { order: 2; } #gumbPrikaz { order: 3; }
-            #gumbLestvica { order: 4; } #gumbVec { order: 5; }
+            /* Skupini levo/desno sta flex:1, Moja Kartica je fiksna med njima -> VEDNO
+               na sredini, ne glede na to, ali je Vnos viden (admin) ali ne (športnik). */
+            .nav-grupa { display: flex; flex: 1; min-width: 0; align-items: stretch; justify-content: space-around; }
+            .pogled-preklopnik #gumbPrikaz { flex: 0 0 auto; color: #8ba3c4; padding: 6px 12px; }
+            /* Moja Kartica = dvignjen žareč cyan krog (FAB); glyf je centriran (display:flex),
+               zato ikona ni več popačena. */
             .pogled-preklopnik #gumbPrikaz i {
-                width: 48px; height: 48px; border-radius: 50%; margin-top: -20px; font-size: 21px !important;
+                display: flex; align-items: center; justify-content: center;
+                width: 50px; height: 50px; border-radius: 50%; margin: -22px auto 0; font-size: 22px !important;
                 background: linear-gradient(135deg, #4facfe, #00f2fe); color: #041018;
                 box-shadow: 0 6px 18px rgba(0,242,254,0.45); border: 3px solid var(--g99-ozadje);
                 transition: box-shadow 0.25s, transform 0.25s;
             }
-            .pogled-preklopnik #gumbPrikaz { color: #8ba3c4; }
             .pogled-preklopnik #gumbPrikaz.aktivno { color: #00f2fe; text-shadow: none; }
             .pogled-preklopnik #gumbPrikaz.aktivno i { box-shadow: 0 8px 26px rgba(0,242,254,0.72); transform: translateY(-2px); filter: none; }
+
+            /* Odjava v Več meniju (samo telefon), rdečkast poudarek. */
+            #gumbOdjavaVec { display: flex; color: #ff8f8f; }
+            #gumbOdjavaVec:hover { background: rgba(255,118,117,0.12); }
+
+            /* Vrhnja letev razbremenjena: brez branda in gumba Odjava (ta je v Več);
+               preklopnik načina (GLOBAL/LOCAL) je manjši in nižji. */
+            .app-oznaka { display: none; }
+            #btnOdjavaTekst { display: none !important; }
+            .mode-switch-wrapper { margin-bottom: 12px; padding: 5px 14px; transform: scale(0.9); }
+            .jezikovni-meni { top: 10px; right: 12px; }
+
+            /* MOJA KARTICA: kartica pomanjšana, da je CELA vidna nad navigacijo. Negativna
+               spodnja meja izniči prazen prostor, ki ga scale pusti (layout ostane tesen). */
+            body[data-pogled="prikaz"] #karticaTiltOvoj { transform: scale(0.84); transform-origin: top center; margin-bottom: -78px; }
+            /* Kartica sledi prstu (tilt) tudi na dotik - drsanje po kartici ne premakne strani. */
+            body[data-pogled="prikaz"] #karticaTiltOvoj { touch-action: none; }
+            /* Med izvozom slike pomanjšanje izničimo, da PNG kartice ni scalan/popačen. */
+            body.exporting #karticaTiltOvoj { transform: none !important; margin-bottom: 0 !important; }
         }
         
         .mode-switch-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; background: #111d35; padding: 8px 20px; border-radius: 30px; border: 1px solid #1e3a5f; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -406,8 +428,10 @@
         body[data-pogled="slava"] .glavni-kontejner.prikaz-nacin,
         body[data-pogled="sobe"] .glavni-kontejner.prikaz-nacin { max-width: 1480px; }
 
-        /* BAZA: gostejša mreža, ki zapolni stran kot prava kolekcija. */
-        #panelBaza .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 26px 22px; }
+        /* BAZA: mreža z OMEJENO širino kartice (max 270px), da razmerje ostane pravilno.
+           Prej je "1fr" na telefonu raztegnil eno kartico čez celo širino -> popačeno.
+           Zdaj so kartice fiksne širine in centrirane, torej vedno v FIFA razmerju. */
+        #panelBaza .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 270px)); gap: 26px 22px; justify-content: center; }
 
         /* Filtri kot prefinjen stekleni pas (namesto raztresenih kontrol). */
         #panelBaza .galerija-filtri, #panelLestvica .galerija-filtri {
@@ -439,7 +463,7 @@
         #panelLestvica .lestvica-sekcija {
             background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob);
             border-radius: 20px; padding: 24px 24px 32px; margin-bottom: 26px; }
-        #panelLestvica .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 24px 18px; }
+        #panelLestvica .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 250px)); gap: 24px 18px; justify-content: center; }
         
         .atlet-vrstica-container { perspective: 1200px; width: 100%; height: 400px; background: transparent; cursor: pointer; position: relative; }
         .atlet-vrstica-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d;}
