@@ -5777,7 +5777,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 let gPrikaz = document.getElementById('gumbPrikaz'); if(gPrikaz) gPrikaz.style.display = 'inline-flex';
                 
                 if (!user.emailVerified && !window.isAdm) {
-                    document.getElementById('panelPrijava').style.display = 'block'; 
+                    document.getElementById('panelPrijava').style.display = 'flex';
                     document.getElementById('g99-aplikacija').style.display = 'none';
                     let errDiv = document.getElementById('prijavaNapaka');
                     errDiv.innerText = window.prevodi[window.tJezik].potrdiMail; 
@@ -5799,7 +5799,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 } else { 
                     document.getElementById('gumbVnos').style.display = 'none'; document.getElementById('gumbBaza').style.display = 'block'; document.getElementById('btnIzvozi').style.display = 'none'; document.getElementById('btnUvozi').style.display = 'none'; document.getElementById('btnToggleDelete').style.display = 'none'; document.getElementById('btnRunDelete').style.display = 'none'; window.dMode = false; document.body.classList.remove('delete-mode'); window.preklopiPogled('prikaz'); window.naloziKarticoZaSportnika(window.tEmail); 
                 }
-            } else { document.getElementById('panelPrijava').style.display = 'block'; document.getElementById('g99-aplikacija').style.display = 'none'; let bOdj = document.getElementById('btnOdjavaTekst'); if(bOdj) bOdj.style.display = 'none'; }
+            } else { document.getElementById('panelPrijava').style.display = 'flex'; document.getElementById('g99-aplikacija').style.display = 'none'; let bOdj = document.getElementById('btnOdjavaTekst'); if(bOdj) bOdj.style.display = 'none'; }
         });
     };
 
