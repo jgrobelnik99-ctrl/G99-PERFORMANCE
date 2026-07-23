@@ -45,9 +45,56 @@
         #g99-aplikacija { display: none; width: 100%; flex-direction: column; align-items: center; }
 
 
-        .pogled-preklopnik { display: flex; background: #152238; padding: 5px; border-radius: 30px; margin-bottom: 15px; border: 1px solid #1e3a5f; z-index: 10; flex-wrap: wrap; justify-content: center; gap: 5px; align-items: center;}
+        .pogled-preklopnik { display: flex; background: #152238; padding: 5px; border-radius: 30px; margin-bottom: 15px; border: 1px solid #1e3a5f; z-index: 10; flex-wrap: wrap; justify-content: center; gap: 5px; align-items: center; position: relative; }
         .preklop-gumb { padding: 8px 20px; border: none; background: transparent; color: #a0aec0; font-weight: bold; font-size: 13px; cursor: pointer; border-radius: 20px; transition: all 0.3s; text-transform: uppercase; }
         .preklop-gumb.aktivno { background: #4facfe; color: #0b1120; box-shadow: 0 0 10px rgba(79, 172, 254, 0.5); }
+        .preklop-gumb i { margin-right: 6px; }
+        .nav-vec-gumb { display: none; } /* na PC je vse že v vrstici, gumb "Več" ni potreben */
+        .nav-vec-meni { display: contents; } /* na PC brez efekta - gumbi ostanejo naravnost v pill-vrstici */
+
+        /* ===== MOBILNA SPODNJA NAVIGACIJA (tab-bar) =====
+           Ista vrstica (isti ID-ji/onclick kot na PC) se pod 768px preseli na dno
+           zaslona v "app" stilu: nav-primarno (Vnos/Kartica/Baza/Lestvica) + gumb
+           Več, ki odpre nav-vec-meni (Hall of Fame/Izzivi/Sobe/Moj Klub/Nadzor). */
+        @media (max-width: 768px) {
+            body { padding-bottom: 84px; }
+            .pogled-preklopnik {
+                position: fixed; left: 0; right: 0; bottom: 0; z-index: 500;
+                width: 100%; margin: 0; border-radius: 0; gap: 0;
+                justify-content: space-around; align-items: stretch;
+                padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+                background: rgba(8,13,26,0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+                border: none; border-top: 1px solid rgba(255,255,255,0.08);
+                box-shadow: 0 -6px 24px rgba(0,0,0,0.5);
+            }
+            .pogled-preklopnik .preklop-gumb { display: none; }
+            .pogled-preklopnik .nav-primarno, .pogled-preklopnik .nav-vec-gumb {
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                gap: 3px; flex: 1; padding: 6px 2px; border-radius: 12px; font-size: 9px;
+                letter-spacing: 0.3px; color: #6b7d99;
+            }
+            .pogled-preklopnik .nav-primarno i, .pogled-preklopnik .nav-vec-gumb i { margin-right: 0; font-size: 17px; }
+            .pogled-preklopnik .nav-primarno.aktivno, .pogled-preklopnik .nav-vec-gumb.aktivno {
+                background: transparent; color: #00f2fe; box-shadow: none; text-shadow: 0 0 12px rgba(0,242,254,0.6);
+            }
+            .pogled-preklopnik .nav-primarno.aktivno i, .pogled-preklopnik .nav-vec-gumb.aktivno i {
+                filter: drop-shadow(0 0 6px rgba(0,242,254,0.7));
+            }
+            .nav-vec-meni {
+                display: none; position: absolute; bottom: calc(100% + 8px); right: 8px;
+                flex-direction: column; gap: 2px; min-width: 172px; padding: 8px;
+                background: rgba(10,16,30,0.98); border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            }
+            .pogled-preklopnik.meni-odprt .nav-vec-meni { display: flex; }
+            .nav-vec-meni .preklop-gumb {
+                display: flex; flex-direction: row; align-items: center; justify-content: flex-start;
+                gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px;
+                font-size: 12.5px; text-transform: none; color: #cbd5e6;
+            }
+            .nav-vec-meni .preklop-gumb i { margin-right: 0; font-size: 15px; width: 18px; text-align: center; }
+            .nav-vec-meni .preklop-gumb.aktivno { background: rgba(0,242,254,0.12); color: #00f2fe; box-shadow: none; }
+        }
         
         .mode-switch-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; background: #111d35; padding: 8px 20px; border-radius: 30px; border: 1px solid #1e3a5f; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .mode-switch-label { font-weight: 900; font-size: 12px; color: #a0aec0; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; cursor: pointer;}
@@ -1763,7 +1810,7 @@
       html.profil-priprava #panelLestvica,
       html.profil-priprava #panelNadzor,
       html.profil-priprava #panelPrikaz { display: none !important; }
-      html.profil-priprava body { background: #050a18; }
+      html.profil-priprava body { background: #050a18; padding-bottom: 0 !important; }
 
       /* Na javnem profilu SKRIJEMO le notranja orodja (preklop načina ocenjevanja in
          poročilo). Meritve OSTANEJO vidne - z njimi se športnik pohvali.
