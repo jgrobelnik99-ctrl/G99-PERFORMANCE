@@ -2374,6 +2374,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         // ga pošljemo na "Moj Klub".
         if(p === 'prikaz' && window.jeTrener && !window.isAdm) { window.odpriMojKlub(); return; }
         window.preklopiVecMeni(true);
+        // Zapiše trenutni pogled na <body> - CSS lahko potem posamezen zaslon (baza,
+        // lestvica, Moja Kartica ...) postavi drugače (npr. baza čez celo širino strani).
+        document.body.setAttribute('data-pogled', p);
         window.posodobiStanjeModePreklopnika(false);
         let gS = document.getElementById('gumbSlava'); if(gS) gS.classList.toggle('aktivno', p === 'slava');
         let gI = document.getElementById('gumbIzzivi'); if(gI) gI.classList.toggle('aktivno', p === 'izzivi');

@@ -347,6 +347,37 @@
         @media (max-width: 620px) { .lestvica-mesto.stopnicke { transform: none; } }
 
         .galerija-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px 25px; width: 100%; }
+
+        /* ============================================================
+           MODERNIZACIJA v3 (web + mobil): baza čez celo stran, lestvica
+           kot ločene plošče, Moja Kartica kot sredinski "hero".
+           Vse je vezano na body[data-pogled] (nastavi preklopiPogled),
+           NIČ funkcionalnega (ID-ji, onclick) se ne dotika.
+           ============================================================ */
+        /* Baza/lestvica/slava/sobe dobijo širši oder kot Moja Kartica (900px). */
+        body[data-pogled="baza"] .glavni-kontejner.prikaz-nacin,
+        body[data-pogled="lestvica"] .glavni-kontejner.prikaz-nacin,
+        body[data-pogled="slava"] .glavni-kontejner.prikaz-nacin,
+        body[data-pogled="sobe"] .glavni-kontejner.prikaz-nacin { max-width: 1480px; }
+
+        /* BAZA: gostejša mreža, ki zapolni stran kot prava kolekcija. */
+        #panelBaza .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 26px 22px; }
+
+        /* Filtri kot prefinjen stekleni pas (namesto raztresenih kontrol). */
+        #panelBaza .galerija-filtri, #panelLestvica .galerija-filtri {
+            background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob);
+            border-radius: 16px; padding: 13px 16px; }
+
+        /* MOJA KARTICA kot sredinski hero: kartica na sredini, panel pod njo.
+           Scope na data-pogled="prikaz", da NE spremeni postavitve v načinu Vnos
+           (kjer sta obrazec + predogled kartice namenoma eden ob drugem). */
+        body[data-pogled="prikaz"] #panelPrikaz { flex-direction: column; align-items: center; }
+
+        /* LESTVICA: vsaka kategorija je svoja "plošča" - drugačen občutek kot baza. */
+        #panelLestvica .lestvica-sekcija {
+            background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob);
+            border-radius: 20px; padding: 24px 24px 32px; margin-bottom: 26px; }
+        #panelLestvica .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 24px 18px; }
         
         .atlet-vrstica-container { perspective: 1200px; width: 100%; height: 400px; background: transparent; cursor: pointer; position: relative; }
         .atlet-vrstica-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d;}
