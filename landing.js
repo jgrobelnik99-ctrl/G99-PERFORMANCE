@@ -86,7 +86,7 @@
 
     // Rang lestvica: ista oseba napreduje - vsak rang je bolj epska kartica.
     var RANGI = [
-        { rank: 'Iron',     varc: '--rang-iron',     ovr: 32, obseg: 'OVR 0–39',  foto: 5, name: 'Rok Zajc' },
+        { rank: 'Iron',     varc: '--rang-iron',     ovr: 32, obseg: 'OVR 1–39',  foto: 5, name: 'Rok Zajc' },
         { rank: 'Bronze',   varc: '--rang-bronze',   ovr: 45, obseg: 'OVR 40–49', foto: 6, name: 'Miha Kos' },
         { rank: 'Silver',   varc: '--rang-silver',   ovr: 55, obseg: 'OVR 50–59', foto: 2, name: 'Lan Perko' },
         { rank: 'Gold',     varc: '--rang-gold',     ovr: 64, obseg: 'OVR 60–69', foto: 3, name: 'Žan Novak' },
@@ -200,5 +200,98 @@
         cardOvoj.addEventListener('pointerleave', function () {
             if (tarca) { tarca.style.setProperty('--tilt-x', '0deg'); tarca.style.setProperty('--tilt-y', '0deg'); }
         });
+    }
+
+    // ===== Nav dropdown "Dogodki" =====
+    // Na računalniku odpre hover (CSS), na dotik pa klik prek razreda .odprto.
+    var dd = document.getElementById('lNavDD');
+    var ddGumb = document.getElementById('lNavDDGumb');
+    if (dd && ddGumb) {
+        ddGumb.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var odprt = dd.classList.toggle('odprto');
+            ddGumb.setAttribute('aria-expanded', odprt ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (!dd.contains(e.target)) { dd.classList.remove('odprto'); ddGumb.setAttribute('aria-expanded', 'false'); }
+        });
+    }
+
+    // ===== Modal G99 Event (podroben opis dogodkov) =====
+    // Globalni funkciji, ker ju kličejo inline onclick v index.html.
+    window.odpriDogodekModal = function (id) {
+        var m = document.getElementById('lDogodekModal');
+        if (!m) return;
+        m.classList.add('odprto');
+        m.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('l-modal-lock');
+        // zapri odprta navigacijska menija (hamburger + dropdown)
+        var lin = document.getElementById('lNavLinks'); if (lin) lin.classList.remove('l-nav-links-odprto');
+        var d = document.getElementById('lNavDD'); if (d) d.classList.remove('odprto');
+        var okno = m.querySelector('.l-modal-okno'); if (okno) okno.scrollTop = 0;
+        // če je podan konkreten termin, ga označi in pripelji v pogled
+        m.querySelectorAll('.l-md-dogodek').forEach(function (r) { r.classList.remove('poudarjen'); });
+        if (id) {
+            var row = m.querySelector('.l-md-dogodek[data-dog="' + id + '"]');
+            if (row) {
+                row.classList.add('poudarjen');
+                setTimeout(function () { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 160);
+            }
+        }
+    };
+    window.zapriDogodekModal = function () {
+        var m = document.getElementById('lDogodekModal');
+        if (!m) return;
+        m.classList.remove('odprto');
+        m.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('l-modal-lock');
+    };
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') window.zapriDogodekModal();
+    });
+
+    // ===== Radar / pajkova mreža (poročilo) =====
+    // Petkotnik s pet osmi (Hitrost, Moč, Vzdržljivost, Eksplozivnost, Agilnost).
+    // Enak vrstni red in barve kategorij kot ikone na kartici.
+    var radarEl = document.getElementById('lRadar');
+    if (radarEl) {
+        var kat = [
+            { ime: 'HITROST',       barva: '#f1c40f', val: 99 },
+            { ime: 'MOČ',           barva: '#ff7675', val: 97 },
+            { ime: 'VZDRŽLJIVOST',  barva: '#a29bfe', val: 98 },
+            { ime: 'EKSPLOZIVNOST', barva: '#fdcb6e', val: 99 },
+            { ime: 'AGILNOST',      barva: '#00cec9', val: 98 }
+        ];
+        var cx = 200, cy = 180, R = 120, n = kat.length;
+        function tocka(i, r) {
+            var a = -Math.PI / 2 + i * 2 * Math.PI / n;
+            return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+        }
+        var svg = '<svg viewBox="0 0 400 384" class="l-radar-svg" role="img" aria-label="Radarski graf sposobnosti">';
+        // koncentrični obroči (mreža)
+        [0.25, 0.5, 0.75, 1].forEach(function (f) {
+            var pts = kat.map(function (_, i) { var p = tocka(i, R * f); return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+            svg += '<polygon points="' + pts + '" class="l-radar-ring"/>';
+        });
+        // radialne osi
+        kat.forEach(function (_, i) {
+            var p = tocka(i, R);
+            svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" class="l-radar-spoke"/>';
+        });
+        // podatkovni petkotnik
+        var dataPts = kat.map(function (k, i) { var p = tocka(i, R * k.val / 99); return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+        svg += '<polygon points="' + dataPts + '" class="l-radar-data"/>';
+        // pike na ogliščih + oznake
+        kat.forEach(function (k, i) {
+            var pd = tocka(i, R * k.val / 99);
+            svg += '<circle cx="' + pd[0].toFixed(1) + '" cy="' + pd[1].toFixed(1) + '" r="4" fill="' + k.barva + '"/>';
+            var pl = tocka(i, R + 22);
+            var anchor = Math.abs(pl[0] - cx) < 6 ? 'middle' : (pl[0] > cx ? 'start' : 'end');
+            var dy = pl[1] < cy - 20 ? -3 : (pl[1] > cy + 20 ? 11 : 4);
+            svg += '<text x="' + pl[0].toFixed(1) + '" y="' + (pl[1] + dy).toFixed(1) + '" text-anchor="' + anchor + '" class="l-radar-label" fill="' + k.barva + '">' + k.ime + '</text>';
+            svg += '<text x="' + pl[0].toFixed(1) + '" y="' + (pl[1] + dy + 13).toFixed(1) + '" text-anchor="' + anchor + '" class="l-radar-val">' + k.val + '</text>';
+        });
+        svg += '</svg>';
+        radarEl.innerHTML = svg;
     }
 })();

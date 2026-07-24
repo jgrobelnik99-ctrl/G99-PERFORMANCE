@@ -24,7 +24,16 @@
         <a href="#kaj-je-g99">Kaj je G99?</a>
         <a href="#lestvica">Lestvica</a>
         <a href="#rangi">Rangi</a>
-        <a href="#dogodki">Dogodki</a>
+        <a href="#porocilo">Poročilo</a>
+        <!-- "Dogodki" je spustni meni: klik na računalniku odpre ob hoverju, na dotik pa
+             preko razreda .odprto (glej landing.js). "Testiraj se" odpre podroben modal. -->
+        <div class="l-nav-dd" id="lNavDD">
+            <button type="button" class="l-nav-dd-gumb" id="lNavDDGumb" aria-haspopup="true" aria-expanded="false">Dogodki <i class="fa-solid fa-chevron-down"></i></button>
+            <div class="l-nav-dd-meni" id="lNavDDMeni">
+                <a href="#dogodki"><i class="fa-solid fa-calendar-days"></i> Prihajajoči termini</a>
+                <button type="button" class="l-nav-dd-akcija" onclick="odpriDogodekModal()"><i class="fa-solid fa-stopwatch"></i> Testiraj se — G99 Event</button>
+            </div>
+        </div>
         <a href="app.html" class="l-btn-prijava">Prijava</a>
     </div>
     <button class="l-nav-toggle" id="lNavToggle" aria-label="Meni"><i class="fa-solid fa-bars"></i></button>
@@ -45,7 +54,7 @@
                 <span class="l-title-rot" id="lHeroRot">Ni ekip. Ni sreče.</span>
                 <span class="accent l-title-fix">Samo tvoj OVR.</span>
             </h1>
-            <p class="l-subtitle">Pet meritev se združi v en sam rezultat od 0 do 99. Zbiraj značke, plezaj po lestvici in napreduj skozi devet rangov — vse na svoji digitalni kartici.</p>
+            <p class="l-subtitle">Pet meritev se združi v en sam rezultat od 1 do 99. Zbiraj značke, plezaj po lestvici in napreduj skozi devet rangov — vse na svoji digitalni kartici.</p>
             <div class="l-hero-ctas">
                 <a href="app.html" class="l-btn-primary">Ustvari svojo kartico <i class="fa-solid fa-arrow-right"></i></a>
                 <a href="#lestvica" class="l-btn-secondary"><i class="fa-solid fa-ranking-star"></i> Poglej lestvico</a>
@@ -350,6 +359,53 @@
     </div>
 </section>
 
+<!-- ============ POROČILO / RADAR (pajkova mreža) ============ -->
+<section class="l-section" id="porocilo">
+    <div class="l-wrap">
+        <div class="l-section-head l-reveal">
+            <div class="l-kicker">Analiza</div>
+            <h2 class="l-h2">Ne le ocena —<br><span class="accent">poročilo</span>.</h2>
+            <p class="l-section-sub">Vsaka kartica pokaže tvoj profil kot radarski graf — pajkovo mrežo petih sposobnosti — in podrobno poročilo napredka. Takoj vidiš, kje si močan in kaj potisniti naprej.</p>
+        </div>
+
+        <div class="l-porocilo-grid l-reveal">
+            <!-- LEVO: radar / pajkova mreža (SVG zgradi landing.js) -->
+            <div class="l-radar-ovoj">
+                <div class="l-radar-glava">
+                    <div>
+                        <div class="l-radar-ime">Jaka Grobelnik</div>
+                        <div class="l-radar-rank" style="color:var(--rang-g99);">G99 Tier</div>
+                    </div>
+                    <div class="l-radar-ovr" style="--rb:var(--rang-g99);">98</div>
+                </div>
+                <div class="l-radar" id="lRadar"><!-- SVG napolni landing.js --></div>
+            </div>
+
+            <!-- DESNO: poročilo napredka -->
+            <div class="l-porocilo-panel">
+                <div class="l-porocilo-vrstica-naslov">Razčlenitev sposobnosti</div>
+                <div class="l-pbar" style="--pc:#f1c40f;"><span class="l-pbar-ime"><i class="fa-solid fa-bolt"></i> Hitrost</span><div class="l-pbar-tir"><i style="width:99%;"></i></div><b>99</b></div>
+                <div class="l-pbar" style="--pc:#ff7675;"><span class="l-pbar-ime"><i class="fa-solid fa-dumbbell"></i> Moč</span><div class="l-pbar-tir"><i style="width:97%;"></i></div><b>97</b></div>
+                <div class="l-pbar" style="--pc:#a29bfe;"><span class="l-pbar-ime"><i class="fa-solid fa-heart-pulse"></i> Vzdržljivost</span><div class="l-pbar-tir"><i style="width:98%;"></i></div><b>98</b></div>
+                <div class="l-pbar" style="--pc:#fdcb6e;"><span class="l-pbar-ime"><i class="fa-solid fa-gauge-high"></i> Eksplozivnost</span><div class="l-pbar-tir"><i style="width:99%;"></i></div><b>99</b></div>
+                <div class="l-pbar" style="--pc:#00cec9;"><span class="l-pbar-ime"><i class="fa-solid fa-wave-square"></i> Agilnost</span><div class="l-pbar-tir"><i style="width:98%;"></i></div><b>98</b></div>
+
+                <div class="l-porocilo-loci"></div>
+
+                <div class="l-porocilo-vrstica-naslov">Napredek OVR</div>
+                <div class="l-napredek">
+                    <div class="l-nap-tocka"><b>88</b><span>1. test</span></div>
+                    <div class="l-nap-crta"></div>
+                    <div class="l-nap-tocka"><b>94</b><span>2. test</span></div>
+                    <div class="l-nap-crta"></div>
+                    <div class="l-nap-tocka aktiv"><b>98</b><span>zdaj</span></div>
+                </div>
+                <div class="l-porocilo-trend"><i class="fa-solid fa-arrow-trend-up"></i> +10 OVR v treh meritvah</div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ============ SNEAK PEEK BAZE ============ -->
 <section class="l-section" id="baza">
     <div class="l-wrap">
@@ -388,7 +444,7 @@
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 12. september 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Športni park Ljubljana</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19</div>
-                    <a href="app.html" class="l-dogodek-gumb">Prijavi se — 25 €</a>
+                    <button type="button" class="l-dogodek-gumb" onclick="odpriDogodekModal('lj')">Prijavi se — 25 €</button>
                 </div>
             </div>
             <div class="l-dogodek">
@@ -400,7 +456,7 @@
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 18. oktober 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Dvorana Tabor, Maribor</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19 · Pro</div>
-                    <a href="app.html" class="l-dogodek-gumb sekundarni">Na čakalno listo</a>
+                    <button type="button" class="l-dogodek-gumb sekundarni" onclick="odpriDogodekModal('mb')">Na čakalno listo</button>
                 </div>
             </div>
             <div class="l-dogodek">
@@ -412,7 +468,7 @@
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 8. avgust 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Atletski stadion Kladivar</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U17 · U19</div>
-                    <a href="app.html" class="l-dogodek-gumb sekundarni">Poglej rezultate</a>
+                    <button type="button" class="l-dogodek-gumb sekundarni" onclick="odpriDogodekModal('ce')">Poglej rezultate</button>
                 </div>
             </div>
         </div>
@@ -455,6 +511,102 @@
         <span>Zgrajeno za športnike, ki hočejo dokaz, ne izgovorov.</span>
     </div>
 </footer>
+
+<!-- ============ MODAL: G99 EVENT (podroben opis + termini) ============ -->
+<!-- Odpre se ob kliku na "Prijavi se na dogodek" ali na navigacijski "Testiraj se — G99 Event".
+     Vsa logika (odpri/zapri/označi termin) je v landing.js (odpriDogodekModal / zapriDogodekModal). -->
+<div class="l-modal" id="lDogodekModal" aria-hidden="true">
+    <div class="l-modal-ozadje" onclick="zapriDogodekModal()"></div>
+    <div class="l-modal-okvir">
+        <button class="l-modal-zapri" onclick="zapriDogodekModal()" aria-label="Zapri okno"><i class="fa-solid fa-xmark"></i></button>
+        <div class="l-modal-okno" role="dialog" aria-modal="true" aria-label="G99 Event">
+
+            <div class="l-modal-hero">
+                <div class="l-modal-znacka"><span class="l-live-dot"></span> G99 Event · Uradni protokol</div>
+                <h2 class="l-modal-naslov">Testiraj se v <span class="accent">živo</span>.</h2>
+                <p class="l-modal-podnaslov">G99 Event je uradno merjenje po standardiziranem protokolu. Opraviš pet postaj pod nadzorom, sistem sproti izračuna tvoj OVR (1–99), ti pa odideš z digitalno kartico, rangom in značkami — na licu mesta.</p>
+                <div class="l-modal-hitro">
+                    <div class="l-mh"><b>~90 min</b><span>trajanje</span></div>
+                    <div class="l-mh-crta"></div>
+                    <div class="l-mh"><b>5</b><span>postaj</span></div>
+                    <div class="l-mh-crta"></div>
+                    <div class="l-mh"><b>Takoj</b><span>rezultat</span></div>
+                    <div class="l-mh-crta"></div>
+                    <div class="l-mh"><b>Uradna</b><span>kartica</span></div>
+                </div>
+            </div>
+
+            <div class="l-modal-sekcija">
+                <div class="l-modal-h3"><i class="fa-solid fa-flag-checkered"></i> Kako poteka dan</div>
+                <div class="l-koraki-mini">
+                    <div class="l-km"><div class="l-km-st">1</div><div class="l-km-t"><b>Prijava &amp; ogrevanje</b><span>Registracija, meritev telesnih podatkov in vodeno ogrevanje.</span></div></div>
+                    <div class="l-km"><div class="l-km-st">2</div><div class="l-km-t"><b>Pet postaj</b><span>V manjših skupinah skozi vseh pet meritev, vsak dobi po tri poskuse.</span></div></div>
+                    <div class="l-km"><div class="l-km-st">3</div><div class="l-km-t"><b>Obdelava</b><span>Sistem primerja rezultate z bazo in izračuna OVR ter rang.</span></div></div>
+                    <div class="l-km"><div class="l-km-st">4</div><div class="l-km-t"><b>Kartica</b><span>Prejmeš digitalno kartico z OVR, rangom in značkami — deljivo takoj.</span></div></div>
+                </div>
+            </div>
+
+            <div class="l-modal-sekcija">
+                <div class="l-modal-h3"><i class="fa-solid fa-list-check"></i> Pet postaj — pet sposobnosti</div>
+                <div class="l-postaje">
+                    <div class="l-postaja" style="--pc:#f1c40f;"><i class="fa-solid fa-bolt"></i><b>Hitrost</b><span>Šprint na kratke razdalje z merjenjem časa.</span></div>
+                    <div class="l-postaja" style="--pc:#ff7675;"><i class="fa-solid fa-dumbbell"></i><b>Moč</b><span>Meritev največje sile in relativne moči.</span></div>
+                    <div class="l-postaja" style="--pc:#a29bfe;"><i class="fa-solid fa-heart-pulse"></i><b>Vzdržljivost</b><span>Progresivni test aerobne zmogljivosti.</span></div>
+                    <div class="l-postaja" style="--pc:#fdcb6e;"><i class="fa-solid fa-gauge-high"></i><b>Eksplozivnost</b><span>Višina naskoka in odrivna moč.</span></div>
+                    <div class="l-postaja" style="--pc:#00cec9;"><i class="fa-solid fa-wave-square"></i><b>Agilnost</b><span>Test spretnosti in hitre menjave smeri.</span></div>
+                </div>
+            </div>
+
+            <div class="l-modal-sekcija">
+                <div class="l-modal-h3"><i class="fa-solid fa-calendar-days"></i> Razpoložljivi termini</div>
+                <div class="l-modal-dogodki">
+                    <div class="l-md-dogodek" data-dog="lj">
+                        <div class="l-md-slika l-dog-foto-1"></div>
+                        <div class="l-md-info">
+                            <div class="l-md-glava">
+                                <div class="l-md-ime">G99 Protokol — Ljubljana</div>
+                                <span class="l-dogodek-status odprto">Prijave odprte</span>
+                            </div>
+                            <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 12. sep 2026</span><span><i class="fa-solid fa-location-dot"></i> Športni park LJ</span><span><i class="fa-solid fa-user-group"></i> U15 · U17 · U19</span><span><i class="fa-solid fa-clock"></i> 09:00–15:00</span></div>
+                            <div class="l-md-cena"><b>25 €</b> / atlet · vključena uradna kartica</div>
+                        </div>
+                        <a href="app.html" class="l-md-gumb">Prijavi se</a>
+                    </div>
+                    <div class="l-md-dogodek" data-dog="mb">
+                        <div class="l-md-slika l-dog-foto-2"></div>
+                        <div class="l-md-info">
+                            <div class="l-md-glava">
+                                <div class="l-md-ime">G99 Protokol — Maribor</div>
+                                <span class="l-dogodek-status kmalu">Kmalu</span>
+                            </div>
+                            <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 18. okt 2026</span><span><i class="fa-solid fa-location-dot"></i> Dvorana Tabor</span><span><i class="fa-solid fa-user-group"></i> U15 · U17 · U19 · Pro</span><span><i class="fa-solid fa-clock"></i> 10:00–16:00</span></div>
+                            <div class="l-md-cena"><b>25 €</b> / atlet · prijave se odprejo septembra</div>
+                        </div>
+                        <a href="app.html" class="l-md-gumb sekundarni">Na čakalno listo</a>
+                    </div>
+                    <div class="l-md-dogodek" data-dog="ce">
+                        <div class="l-md-slika l-dog-foto-3"></div>
+                        <div class="l-md-info">
+                            <div class="l-md-glava">
+                                <div class="l-md-ime">G99 Protokol — Celje</div>
+                                <span class="l-dogodek-status razprodano">Razprodano</span>
+                            </div>
+                            <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 8. avg 2026</span><span><i class="fa-solid fa-location-dot"></i> Stadion Kladivar</span><span><i class="fa-solid fa-user-group"></i> U17 · U19</span><span><i class="fa-solid fa-clock"></i> 09:00–14:00</span></div>
+                            <div class="l-md-cena">Dogodek je zaključen · rezultati so v bazi</div>
+                        </div>
+                        <a href="app.html" class="l-md-gumb sekundarni">Poglej rezultate</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-modal-cta">
+                <div class="l-modal-cta-txt"><b>Nimaš termina blizu?</b><span>Prijavi se v aplikacijo in prvi izveš, ko odpremo nov G99 Event.</span></div>
+                <a href="app.html" class="l-btn-primary">Odpri aplikacijo <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script src="landing.js"></script>
 </body>
