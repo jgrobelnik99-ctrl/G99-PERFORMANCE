@@ -170,6 +170,7 @@
     if (cardOvoj && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         var tarca = cardOvoj.querySelector('.tilt-tarca');
         var foil = cardOvoj.querySelector('.foil-plast');
+        var holos = cardOvoj.querySelectorAll('.holo-live');
         var MAX_NAGIB = 9;
         var pending = false;
         cardOvoj.addEventListener('pointermove', function (e) {
@@ -189,6 +190,11 @@
                     foil.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
                     foil.style.setProperty('--my', (py * 100).toFixed(1) + '%');
                 }
+                holos.forEach(function (h) {
+                    var hmx = h.classList.contains('holo-back') ? (100 - px * 100) : (px * 100);
+                    h.style.setProperty('--mx', hmx.toFixed(1) + '%');
+                    h.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+                });
             });
         });
         cardOvoj.addEventListener('pointerleave', function () {

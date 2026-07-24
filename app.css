@@ -481,25 +481,25 @@
             border-radius: 20px; padding: 24px 24px 32px; margin-bottom: 26px; }
         #panelLestvica .galerija-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 250px)); gap: 24px 18px; justify-content: center; }
         
-        .atlet-vrstica-container { perspective: 1200px; width: 100%; height: 400px; background: transparent; cursor: pointer; position: relative; }
-        .atlet-vrstica-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d;}
-        /* Obrat na hover ima smisel SAMO pri miški. Na zaslonu na dotik se :hover sproži
-           ob dotiku in nato "obtiči", zato so se kartice ob drsenju obračale naključno,
-           namerno pa se jih ni dalo obrniti. Zato je pravilo omejeno na fin kazalec,
-           na dotik pa obrat prevzame razred .obrnjena (dotik = obrat). */
+        .atlet-vrstica-container { width: 100%; height: 400px; background: transparent; cursor: pointer; position: relative; transition: transform 0.2s ease; }
+        .atlet-vrstica-flipper { position: relative; width: 100%; height: 100%; }
+        /* Kartice v mreži se NE obračajo več (prej rotateY na hover in na dotik). Klik na CELO
+           kartico odpre okno "Poglej"; obrat je ostal SAMO znotraj tega okna. Namesto obrata dobi
+           kartica ob hoverju blag dvig in sij v barvi ranga (--rb), da je razvidno, da je klikljiva.
+           Med izbiranjem (compare/delete) dviga ni - takrat ima kartica svoj označevalni prekrivek. */
         @media (hover: hover) and (pointer: fine) {
-            body:not(.compare-mode) .atlet-vrstica-container:hover .atlet-vrstica-flipper { transform: rotateY(180deg); }
+            body:not(.compare-mode):not(.delete-mode) .atlet-vrstica-container:hover { transform: translateY(-6px); }
+            body:not(.compare-mode):not(.delete-mode) .atlet-vrstica-container:hover .atlet-vrstica-front {
+                box-shadow: 0 16px 34px -14px rgba(0,0,0,0.85), 0 0 18px -2px var(--rb, rgba(255,255,255,0.35));
+            }
         }
-        body:not(.compare-mode) .atlet-vrstica-flipper.obrnjena { transform: rotateY(180deg); }
 
         /* Namig se pokaže samo na napravah brez miške. */
         .namig-dotik { display: none; width: 100%; text-align: center; font-size: 11px; font-weight: 700;
                        letter-spacing: 1px; text-transform: uppercase; color: #4a5568; margin-bottom: 14px; }
         @media (hover: none) { .namig-dotik { display: block; } }
         
-        .atlet-vrstica-front, .atlet-vrstica-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; background-color: #0b1120; border: 3px solid transparent; transition: border-width 0.2s;}
-        .atlet-vrstica-front { z-index: 2; transform: rotateY(0deg); }
-        .atlet-vrstica-back { transform: rotateY(180deg); background: radial-gradient(circle at center, #111d35 0%, #050a18 100%); padding: 15px; justify-content: space-between; align-items: center; z-index: 1; border-color: #1e3a5f !important; border-width: 3px !important; }
+        .atlet-vrstica-front { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; border-radius: 12px; background-color: #0b1120; border: 3px solid transparent; transition: border-width 0.2s, box-shadow 0.2s; z-index: 2; }
         
         .atlet-mini-slika { position: absolute; top: 0; left: 0; width: 100%; height: 215px; background-size: cover; background-position: top center; border-bottom: 2px solid rgba(255,255,255,0.1);}
         /* Dokler slika ni naložena, kartica nežno utripa (skeleton) - uporabnik vidi, da se
@@ -551,12 +551,20 @@
         .mini-ikona-img { font-size: 15px; margin-bottom: 3px;}
         .mini-ikona-val { font-size: 17px; font-weight: 900; color: #fff;}
 
-        .mini-chart-container { width: 100%; height: 150px; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 8px;}
-        .atlet-vrstica-akcije { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; position: relative; z-index: 6;}
         .btn-mali { flex: 1; padding: 10px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 11px; transition: all 0.2s;}
-        .btn-poglej { background: #4facfe; color: #000; }
         .btn-uredi { background: #f1c40f; color: #000; }
         .btn-brisi { background: #d63031; color: #fff; }
+
+        /* Uredi/Briši (samo admin) sta zdaj na SPREDNJI strani kartice (hrbtne v mreži ni več).
+           Majhna, navpično zložena gumba ob levem robu, čez sliko - edini pas, ki se ne prekriva
+           z OVR (levo zgoraj), znakom časti (sredina zgoraj), značkami (desno zgoraj) ne z
+           besedilom spodaj (poravnano na sredino). Klik nanju ne odpre okna (event.stopPropagation). */
+        .atlet-admin-gumbi { position: absolute; top: 84px; left: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 16; }
+        .atlet-admin-gumbi .btn-mali { flex: none; width: 30px; height: 30px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: 7px; box-shadow: 0 2px 8px rgba(0,0,0,0.6); opacity: 0.92; }
+        .atlet-admin-gumbi .btn-mali:hover { opacity: 1; transform: scale(1.08); }
+        /* Med izbiranjem (primerjava/brisanje) admin gumbov ne kažemo - klik na kartico takrat
+           izbira, ne ureja. Enako kot prej, ko sta bila skrita na hrbtni strani. */
+        body.compare-mode .atlet-admin-gumbi, body.delete-mode .atlet-admin-gumbi { display: none; }
 
         .btn-toggle-compare { background: transparent; border: 2px solid #f1c40f; color: #f1c40f; font-weight: 900; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: all 0.3s;}
         .btn-toggle-compare.active { background: #f1c40f; color: #000; box-shadow: 0 0 15px rgba(241,196,15,0.5); }
@@ -852,11 +860,17 @@
         .tilt-tarca { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; will-change: transform;
                       transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); }
         .tilt-ovoj:hover .tilt-tarca { transition: transform 0.07s linear; }
+        /* Na dotik: vlek po VELIKI kartici jo nagne (holo sledi prstu) in NE premakne strani.
+           Na landing strani tega NE delamo - tam kartica nima nagiba na dotik in drsenje mora teči. */
+        body:not(.landing) .tilt-tarca { touch-action: none; }
 
         /* Med izvozom v PNG te efekte izklopimo - html2canvas ne zna izrisati 3D transformacij,
            mix-blend-mode in animacij, zato bi se slika popačila ali izrisala napačno.
            Uporabljamo obstoječi razred 'exporting', ki ga izvozne funkcije že nastavljajo. */
         body.exporting .foil-plast { display: none !important; }
+        /* html2canvas ne podpira mix-blend-mode ne color-mix(): holo plast ob izvozu POPOLNOMA
+           odstranimo (display:none, ne le zbledimo), sicer izvoz PNG pade / se izriše napačno. */
+        body.exporting .holo-plast { display: none !important; }
         body.exporting .tilt-tarca { --tilt-x: 0deg; --tilt-y: 0deg; transition: none !important; }
         body.exporting .prelevitev, body.exporting .prelevitev-rang, body.exporting .napredek-utrip { animation: none !important; }
         body.exporting .prelevitev-sij, body.exporting .prelevitev-obroc, body.exporting .prelevitev-napis { display: none !important; }

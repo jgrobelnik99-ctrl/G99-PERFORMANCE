@@ -1,0 +1,185 @@
+/* ============================================================================
+   G99 HOLO  —  holografska površina kartic
+   ----------------------------------------------------------------------------
+   LASTNA implementacija. Tehnika (plasti + blend načini + sledenje kazalcu prek
+   CSS spremenljivk) je splošno znana; spodnja koda je napisana povsem na novo in
+   NE povzema odprtokodne GPL knjižnice iz mape reference/ (GPL ni združljiv s tem
+   projektom - iz nje je razbrana le IDEJA, ne koda).
+
+   BARVE: izključno obstoječi --rang-* tokeni iz app.css. Nobene nove barve.
+   Spekter za PRIME+ je zgrajen IZ rang-tokenov (bron→zlato→emerald→diamant→prime→
+   elite), ki skupaj tvorijo mavrico - tako spoštujemo "samo obstoječi toni".
+
+   ARHITEKTURA: ena osnovna plast (.holo-plast) + 9 rang-razredov, ki prepišejo
+   SAMO spremenljivke (--holo-op / --holo-barva / --holo-blend / --holo-tex ...).
+   Nič podvojenih blokov.
+
+   DVA NAČINA:
+     .holo-static  - mreža (Baza/Lestvica). Samo blag statičen mono sloj.
+                     BREZ sledenja prstu, BREZ animacije, BREZ ::after spektra
+                     (20+ kartic hkrati → zmogljivost je prioriteta).
+     .holo-live    - velika kartica (Poglej, Moja kartica, prelevitev, hero).
+                     Glare sledi prstu, spekter od PRIME naprej je animiran.
+
+   PROGRESIJA (do DIAMANTA ENOBARVNO, pri PRIME kvalitativni preskok v spekter):
+     1 IRON    = 0 (mat)      6 DIAMOND = hladen oster mono
+     2 BRONZE  = topel mono    7 PRIME   = PRVIČ barvni spekter
+     3 SILVER  = bel mono      8 ELITE   = poln mavrični pretok
+     4 GOLD    = zlat mono     9 G99     = galaksija (vrtinec), stalno živ
+     5 EMERALD = zelen mono
+   ========================================================================== */
+
+.holo-plast {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;   /* prevzame zaokroženost kartice (12px mreža / 16px velika) */
+    overflow: hidden;         /* obreže povečan vrtinec pri G99, ne glede na starša */
+    pointer-events: none;     /* nikoli ne prestreza klika/obrata - vse gre skozi na kartico */
+    z-index: 26;              /* tik nad foilom (25); besedilo ostane berljivo prek blend+opacity */
+
+    /* --- PRIVZETKI = IRON = brez efekta --- */
+    --holo-op: 0;                 /* jakost (opacity) */
+    --holo-nacin: 1;              /* množitelj načina: static ga zmanjša */
+    --holo-barva: transparent;    /* mono ton (rang barva) */
+    --holo-blend: soft-light;     /* način mešanja mono plasti */
+    --holo-glare: transparent;    /* svetla pika, ki sledi prstu (samo live) */
+    --holo-kot: 115deg;           /* kot mono prelivnega pasu */
+    --holo-band-size: 300% 300%;
+    --holo-band-pos: 50% 50%;
+
+    opacity: calc(var(--holo-op) * var(--holo-nacin));
+    mix-blend-mode: var(--holo-blend);
+    background:
+        /* glare - sledi kazalcu (--mx/--my nastavlja pripniTiltInFoil); pri static prosojen */
+        radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+            var(--holo-glare) 0%, transparent 55%),
+        /* mono prelivni pas v barvi ranga z belim jedrom */
+        linear-gradient(var(--holo-kot),
+            transparent 33%,
+            var(--holo-barva) 47%,
+            rgba(255,255,255,0.42) 50%,
+            var(--holo-barva) 53%,
+            transparent 67%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%, var(--holo-band-size);
+    background-position: 0 0, var(--holo-band-pos);
+}
+
+/* SPEKTER (PRIME+). Ločena plast, da lahko teče lastna animacija NEODVISNO od glare-a
+   (glare = kazalec, spekter = animiran pretok). Pri nižjih rangih je --holo-tex "none"
+   in plast ne izriše ničesar. */
+.holo-plast::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    mix-blend-mode: var(--holo-tex-blend, color-dodge);
+    background: var(--holo-tex, none);
+    background-repeat: no-repeat;
+    background-size: var(--holo-tex-size, 220% 220%);
+    background-position: var(--holo-tex-pos, 50% 50%);
+    opacity: var(--holo-tex-op, 0.9);
+}
+
+/* ---------- NAČINA ---------- */
+
+/* Mreža: blag statičen mono sloj, fiksen kot, brez glare/spektra/animacije. */
+.holo-static { --holo-nacin: 0.55; --holo-glare: transparent; --holo-band-pos: 32% 30%; }
+.holo-static::after { display: none; }   /* v mreži NIKOLI spektra - zmogljivost (20+ kartic) */
+
+/* Velika kartica: glare sledi prstu; pas se premakne z --mx/--my. */
+.holo-live {
+    --holo-nacin: 1;
+    --holo-glare: rgba(255,255,255,0.5);
+    --holo-band-pos: calc(var(--mx, 50%) * -0.7 + 85%) calc(var(--my, 50%) * -0.7 + 85%);
+}
+
+/* ---------- 9 RANGOV (prepišejo SAMO spremenljivke) ---------- */
+
+/* 1 IRON — brez efekta, mat površina */
+.holo-iron    { --holo-op: 0; }
+
+/* 2 BRONZE — komaj zaznaven topel odsev */
+.holo-bronze  { --holo-op: 0.16; --holo-barva: var(--rang-bronze); --holo-blend: soft-light; }
+
+/* 3 SILVER — čist bel sijaj (silver token je skoraj bel), brez barve */
+.holo-silver  { --holo-op: 0.24; --holo-barva: var(--rang-silver); --holo-blend: soft-light; }
+
+/* 4 GOLD — zlat sweep, izrazitejši */
+.holo-gold    { --holo-op: 0.38; --holo-barva: var(--rang-gold); --holo-blend: overlay; }
+
+/* 5 EMERALD — globok zelen odsev, počasnejši pas */
+.holo-emerald { --holo-op: 0.40; --holo-barva: var(--rang-emerald); --holo-blend: overlay; --holo-kot: 108deg; }
+
+/* 6 DIAMOND — hladen, oster, prizmatičen; color-dodge naredi belo jedro ostro. ŠE mono. */
+.holo-diamond { --holo-op: 0.50; --holo-barva: var(--rang-diamond); --holo-blend: color-dodge; --holo-kot: 128deg; }
+
+/* ===== PRESKOK: od tu naprej barvni SPEKTER (--holo-tex), zgrajen iz rang-tokenov ===== */
+
+/* 7 PRIME — prvič spekter (kvalitativni skok). Mono pas ostane (prime vijolična) + mavrica. */
+.holo-prime {
+    --holo-op: 0.50; --holo-barva: var(--rang-prime); --holo-blend: overlay; --holo-tex-blend: overlay;
+    --holo-tex: repeating-linear-gradient(125deg,
+        var(--rang-elite)   0%,
+        var(--rang-gold)    12%,
+        var(--rang-emerald) 24%,
+        var(--rang-diamond) 36%,
+        var(--rang-prime)   48%,
+        var(--rang-elite)   60%);
+    --holo-hitrost: 6s;
+}
+
+/* 8 ELITE — poln mavrični pretok, gostejši spekter, hitrejši */
+.holo-elite {
+    --holo-op: 0.56; --holo-barva: var(--rang-elite); --holo-blend: overlay; --holo-tex-blend: color-dodge;
+    --holo-tex: repeating-linear-gradient(118deg,
+        var(--rang-elite)   0%,
+        var(--rang-gold)    10%,
+        var(--rang-emerald) 20%,
+        var(--rang-diamond) 30%,
+        var(--rang-g99)     38%,
+        var(--rang-prime)   48%,
+        var(--rang-elite)   58%);
+    --holo-hitrost: 4.5s;
+}
+
+/* 9 G99 — galaksija: spektralni vrtinec (conic), stalno živ */
+.holo-g99 {
+    --holo-op: 0.60; --holo-barva: var(--rang-g99); --holo-blend: screen; --holo-tex-blend: color-dodge;
+    --holo-tex: conic-gradient(from 0deg at 50% 50%,
+        var(--rang-elite), var(--rang-gold), var(--rang-emerald),
+        var(--rang-g99), var(--rang-prime), var(--rang-diamond), var(--rang-elite));
+    --holo-tex-size: 200% 200%;
+    --holo-hitrost: 7s;
+}
+
+/* ---------- ANIMACIJE — SAMO v live načinu (mreža ostane povsem statična) ---------- */
+
+/* PRIME/ELITE: mavrica se pretaka po pasu. */
+.holo-live.holo-prime::after,
+.holo-live.holo-elite::after {
+    animation: holoTok var(--holo-hitrost, 6s) linear infinite;
+}
+@keyframes holoTok {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+/* G99: počasen vrtinec galaksije. ::after je povečan (inset:-45%), da rotacija nikoli
+   ne razkrije robov; .holo-plast overflow:hidden ga obreže nazaj na kartico. */
+.holo-live.holo-g99::after {
+    inset: -45%;
+    will-change: transform;
+    animation: holoVrtinec var(--holo-hitrost, 7s) linear infinite;
+}
+@keyframes holoVrtinec {
+    to { transform: rotate(360deg); }
+}
+
+/* Uporabniki, ki ne želijo gibanja (dostopnost): brez animacij, efekt ostane statičen. */
+@media (prefers-reduced-motion: reduce) {
+    .holo-live.holo-prime::after,
+    .holo-live.holo-elite::after,
+    .holo-live.holo-g99::after { animation: none; }
+}

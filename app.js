@@ -225,7 +225,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         csvUvozeno: "Uvoženih / posodobljenih športnikov: ", csvNapake: "Napake: ",
         csvNeprepoznani: "Neprepoznani stolpci (preskočeni): ",
         slikaShranjeno: "✅ SHRANJENO!", slikaShrani: "💾 Shrani Mojo Sliko v Bazo",
-        javniCombine: "Javni Combine", namigDotik: "Dotakni se kartice za obrat",
+        javniCombine: "Javni Combine", namigDotik: "Tapni kartico za ogled",
         qrNamig: "Skeniraj za celoten profil",
         tvCakanje: "Čakam na naslednji rezultat", tvZazeni: "Zaženi zaslon",
         tvNamig: "Zvok in celozaslonski način se vklopita ob zagonu",
@@ -308,7 +308,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         csvUvozeno: "Athletes imported / updated: ", csvNapake: "Errors: ",
         csvNeprepoznani: "Unrecognized columns (skipped): ",
         slikaShranjeno: "✅ SAVED!", slikaShrani: "💾 Save My Photo to Database",
-        javniCombine: "Public Combine", namigDotik: "Tap a card to flip it",
+        javniCombine: "Public Combine", namigDotik: "Tap a card to view it",
         qrNamig: "Scan for the full profile",
         tvCakanje: "Waiting for the next result", tvZazeni: "Start screen",
         tvNamig: "Sound and fullscreen turn on when you start",
@@ -551,6 +551,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                     <div class="kb-monogram-ovoj"><div class="kb-monogram">G99</div></div>
                     <div class="kb-navpicni">Performance</div>
                     <div class="foil-plast foil-plast-back"></div>
+                    <div class="holo-plast holo-live holo-back ${ri.c.replace('rank-','holo-')}"></div>
 
                     <div class="kb-glava">
                         <div class="kb-rang" style="color:${col};">${ri.n}</div>
@@ -1257,7 +1258,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             ovoj.dataset.tiltPripet = '1';
 
             let tarca = ovoj.querySelector('.tilt-tarca');   // lahko je null (kartice v Bazi)
-            let foili = ovoj.querySelectorAll('.foil-plast'); // vsi foili (sprednji + hrbtni)
+            let foili = ovoj.querySelectorAll('.foil-plast, .holo-live'); // foili + žive holo plasti (sprednja + hrbtna)
             if(!tarca && foili.length === 0) return;
             let cakaNaSlicico = false;
 
@@ -1285,7 +1286,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                     foili.forEach(f => {
                         // Hrbtna stran je zrcaljena (rotateY 180deg), zato na njej obrnemo X,
                         // da svetloba sledi miški v pravilno smer.
-                        let mx = f.classList.contains('foil-plast-back') ? (100 - px * 100) : (px * 100);
+                        let mx = (f.classList.contains('foil-plast-back') || f.classList.contains('holo-back')) ? (100 - px * 100) : (px * 100);
                         f.style.setProperty('--mx', mx.toFixed(1) + '%');
                         f.style.setProperty('--my', (py * 100).toFixed(1) + '%');
                     });
@@ -1349,6 +1350,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
         return `<div class="fifa-kartica ${ri.c}" style="margin:0;">
             <div class="notranji-rob"></div>
+            <div class="holo-plast holo-live ${ri.c.replace('rank-','holo-')}"></div>
             ${o >= 98 ? '<div class="g99-pulsing-glow"></div>' : ''}
             <div class="slika-atleta-bg" style="background-image:${bg};"></div>
             <div class="kartica-ovr-wrapper" style="--rang-barva:${col};"><div class="kartica-ovr-label"><div class="ovr-stevilka">${o}</div></div></div>
@@ -1471,6 +1473,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
     window.obrniPoglejKartico = function() {
         let f = document.getElementById('poglejFlip');
+        // Vlek za nagib (holo) ne sme sprožiti obrata: če je bil to POVLEK (ovoj._premik nastavi
+        // pripniTiltInFoil ob premiku > 6px), obrat preskočimo. Kratek tap = obrat, vlek = nagib.
+        let ovoj = f ? f.closest('.efekt-ovoj') : null;
+        if(ovoj && ovoj._premik) return;
         if(f) f.classList.toggle('obrnjena');
     };
 
@@ -1610,7 +1616,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         
         // POZOR: className tu prepiše VSE razrede. Nagib (tilt) je zdaj na ZUNANJEM ovoju,
         // obračanje na vmesnem elementu - kartica sama nosi le svoj rang.
-        if(k) k.className = "fifa-kartica " + rC; 
+        if(k) k.className = "fifa-kartica " + rC;
+        // Sprednja stran Moje kartice je v HTML statična (#karticaHolo), zato ji rang-razred
+        // holo plasti (holo-emerald ...) nastavimo tukaj. Hrbet dobi svojega prek dobiHrbtnoStranHTML.
+        let kh = document.getElementById('karticaHolo'); if(kh) kh.className = 'holo-plast holo-live ' + rC.replace('rank-','holo-');
         let glo = document.getElementById('karticaGlow'); 
         if(glo) glo.style.display = (o >= 98) ? 'block' : 'none';
 
@@ -2571,7 +2580,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
                 </div>
             </div>
             <div id="modalTabKartica" style="display:flex; flex-direction: column; align-items: center; width: 100%;">
-                <div class="tilt-ovoj efekt-ovoj ima-foil ${window.dobiFoilTier(o)}" style="margin:0;"><div class="tilt-tarca" style="width:320px; height:480px;"><div class="poglej-flip" id="poglejFlip" onclick="window.obrniPoglejKartico()"><div class="poglej-face poglej-front${window.inFormRazred(a.id)}">${window.inFormTrakHTML(a.id)}<div class="fifa-kartica ${rC}" style="margin:0;"><div class="foil-plast"></div>
+                <div class="tilt-ovoj efekt-ovoj ima-foil ${window.dobiFoilTier(o)}" style="margin:0;"><div class="tilt-tarca" style="width:320px; height:480px;"><div class="poglej-flip" id="poglejFlip" onclick="window.obrniPoglejKartico()"><div class="poglej-face poglej-front${window.inFormRazred(a.id)}">${window.inFormTrakHTML(a.id)}<div class="fifa-kartica ${rC}" style="margin:0;"><div class="foil-plast"></div><div class="holo-plast holo-live ${rC.replace('rank-','holo-')}"></div>
                     <div class="notranji-rob"></div>
                     ${o >= 98 ? '<div class="g99-pulsing-glow" style="display:block;"></div>' : ''}
                     <div class="slika-atleta-bg" style="background-image: ${bgS}; border-bottom-color: ${col};"></div>
@@ -3672,7 +3681,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         // Stara vgrajena slika ali že predpomnjena; sicer prazno - dopolni jo leno nalaganje.
         let sCache = a.slika || window.slikeCache[a.id] || "";
         let bgS = sCache ? `url('${sCache}')` : ""; 
-        let cI = `mini-graf-${a.id}-${Date.now()}-${Math.floor(Math.random()*1000)}`; let iS = !fC && ((window.cMode && window.cIzbrani.includes(a.id)) || (window.dMode && window.dIzbrani.includes(a.id))); let iK = iS ? (window.dMode ? "kartica-za-brisanje" : "kartica-izbrana") : ""; 
+        let iS = !fC && ((window.cMode && window.cIzbrani.includes(a.id)) || (window.dMode && window.dIzbrani.includes(a.id))); let iK = iS ? (window.dMode ? "kartica-za-brisanje" : "kartica-izbrana") : ""; 
         
         let zL = window.izracunajZnacke(sH, sM, sV, sE, sA, o, aG, parseFloat(vT), vS, vH, vM, vVz, vE, vAg);
         let mZH = ""; 
@@ -3683,7 +3692,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
             });
         }
 
-        let aGumb = window.jeTrener && !isL && !fC ? `<button class="btn-mali btn-uredi" onclick="window.urediAtleta('${a.id}')"><i class="fa-solid fa-pen"></i></button><button class="btn-mali btn-brisi" onclick="window.brisiAtleta('${a.id}', this)"><i class="fa-solid fa-trash"></i></button>` : ""; let oCC = window.cMode && !fC ? `onclick="window.izberiIgralcaZaCompare('${a.id}')"` : (window.dMode && window.isAdm && !fC ? `onclick="window.izberiZaBrisanje('${a.id}')"` : ""); let rBH = isL ? `<div style="position:absolute; top:-12px; left:-12px; background:${lB}; color:#000; font-weight:900; font-size:20px; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; border:3px solid #0b1120; z-index:100; box-shadow: 0 0 10px ${lB};">#${iN}</div>` : ""; let viS = vV ? ` | ${vV} ${lng.cm}` : ""; let modeTxt = window.ratingMode === 'LOCAL' ? '📍 LOC' : '🌍 WRLD';
+        let aGumb = window.jeTrener && !isL && !fC ? `<div class="atlet-admin-gumbi"><button class="btn-mali btn-uredi" onclick="event.stopPropagation(); window.urediAtleta('${a.id}')" title="${lng.btnUredi}" aria-label="${lng.btnUredi}"><i class="fa-solid fa-pen"></i></button><button class="btn-mali btn-brisi" onclick="event.stopPropagation(); window.brisiAtleta('${a.id}', this)" title="${lng.btnBrisi}" aria-label="${lng.btnBrisi}"><i class="fa-solid fa-trash"></i></button></div>` : "";
+        // Klik na CELO kartico. Dispatcher (window.klikNaKartico) se odloči ob KLIKU glede na trenutni
+        // način - zato preklop primerjave ne zahteva ponovnega izrisa mreže. fC (kartice v oknu
+        // primerjave) ostanejo brez klika. tabindex/role/onkeydown = dostopnost s tipkovnico (Enter).
+        let klikAtr = !fC ? `onclick="window.klikNaKartico('${a.id}')" onkeydown="window.klikNaKarticoTipka(event,'${a.id}')" role="button" tabindex="0" aria-label="${window.escapeHtml(a.ime) || lng.neznan}"` : ""; let rBH = isL ? `<div style="position:absolute; top:-12px; left:-12px; background:${lB}; color:#000; font-weight:900; font-size:20px; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; border:3px solid #0b1120; z-index:100; box-shadow: 0 0 10px ${lB};">#${iN}</div>` : ""; let viS = vV ? ` | ${vV} ${lng.cm}` : ""; let modeTxt = window.ratingMode === 'LOCAL' ? '📍 LOC' : '🌍 WRLD';
         // Foil ima VSAKA kartica, a stopnjevano po rangu (nižji rang = nežnejši lesk).
         let foilTier = window.dobiFoilTier(o);
         let lngG = window.prevodi[window.tJezik];
@@ -3693,7 +3706,25 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         // V primerjalnem pogledu (fC) ga ne prikazujemo, da ne moti primerjave.
         let okvHTML = window.dobiZnakCastiHTML(fC ? null : a.id, false);
 
-        return `<div class="atlet-vrstica-container efekt-ovoj ${iK} ima-foil ${foilTier}${window.inFormOvojRazred(a.id)}" data-canvas-id="${cI}" data-stats="${sH},${sM},${sV},${sE},${sA}" data-rank-color="${col}" style="position: relative;">${rBH}<div class="atlet-vrstica-flipper" ${oCC}><div class="atlet-vrstica-front ${rC}">${window.inFormTrakHTML(a.id)}<div class="notranji-rob"></div><div class="foil-plast"></div><div class="atlet-mini-slika" data-slika-atlet="${a.id}" style="background-image: ${bgS}; border-bottom-color: ${col};"><div class="mini-ovr-ovoj" style="--rang-barva:${col};"><div class="mini-ovr-box"><div class="mini-ovr-val">${o}</div><div class="mini-mode-text">${modeTxt}</div></div>${window.starostniZnakHTML(a, true)}</div>${okvHTML}<div class="mini-znacke-kontejner">${mZH}</div></div><div class="atlet-vrstica-info"><div class="atlet-vrstica-ime">${window.escapeHtml(a.ime) || lng.neznan}</div><div class="atlet-vrstica-rank" style="color: ${col};">${rNText}</div><div class="atlet-vrstica-detajli">${vS} ${lng.leta} | ${sT} | ${aG}${viS} | ${vT} ${lng.kg}</div><div class="mini-stat-panel"><div class="mini-ikona-box" data-namig-ime="${lng.ttHit}" data-namig-vrednost="${sH} / 99" data-namig-barva="${col}"><i class="fa-solid fa-bolt mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sH}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttMoc}" data-namig-vrednost="${sM} / 99" data-namig-barva="${col}"><i class="fa-solid fa-dumbbell mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sM}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttVzd}" data-namig-vrednost="${sV} / 99" data-namig-barva="${col}"><i class="fa-solid fa-heart-pulse mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sV}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttEks}" data-namig-vrednost="${sE} / 99" data-namig-barva="${col}"><i class="fa-solid fa-gauge-high mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sE}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttAgi}" data-namig-vrednost="${sA} / 99" data-namig-barva="${col}"><i class="fa-solid fa-wave-square mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sA}</span></div></div></div></div>${!fC ? `<div class="atlet-vrstica-back ${rC}"><div class="mini-chart-container"><canvas id="${cI}" style="width: 100%; height: 100%;"></canvas></div>${window.dobiSestavaHTML(a, true)}<div class="atlet-vrstica-akcije"><div style="display: flex; width: 100%; gap: 8px;"><button class="btn-mali btn-poglej" onclick="window.poglejKartico('${a.id}')">${lng.btnPoglej}</button>${aGumb}</div></div></div>` : ''}</div></div>`;
+        return `<div class="atlet-vrstica-container efekt-ovoj ${iK} ima-foil ${foilTier}${window.inFormOvojRazred(a.id)}" data-stats="${sH},${sM},${sV},${sE},${sA}" data-rank-color="${col}" style="position: relative; --rb:${col};" ${klikAtr}>${rBH}<div class="atlet-vrstica-flipper"><div class="atlet-vrstica-front ${rC}">${window.inFormTrakHTML(a.id)}<div class="notranji-rob"></div><div class="foil-plast"></div><div class="holo-plast holo-static ${rC.replace('rank-','holo-')}"></div><div class="atlet-mini-slika" data-slika-atlet="${a.id}" style="background-image: ${bgS}; border-bottom-color: ${col};"><div class="mini-ovr-ovoj" style="--rang-barva:${col};"><div class="mini-ovr-box"><div class="mini-ovr-val">${o}</div><div class="mini-mode-text">${modeTxt}</div></div>${window.starostniZnakHTML(a, true)}</div>${okvHTML}<div class="mini-znacke-kontejner">${mZH}</div></div><div class="atlet-vrstica-info"><div class="atlet-vrstica-ime">${window.escapeHtml(a.ime) || lng.neznan}</div><div class="atlet-vrstica-rank" style="color: ${col};">${rNText}</div><div class="atlet-vrstica-detajli">${vS} ${lng.leta} | ${sT} | ${aG}${viS} | ${vT} ${lng.kg}</div><div class="mini-stat-panel"><div class="mini-ikona-box" data-namig-ime="${lng.ttHit}" data-namig-vrednost="${sH} / 99" data-namig-barva="${col}"><i class="fa-solid fa-bolt mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sH}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttMoc}" data-namig-vrednost="${sM} / 99" data-namig-barva="${col}"><i class="fa-solid fa-dumbbell mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sM}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttVzd}" data-namig-vrednost="${sV} / 99" data-namig-barva="${col}"><i class="fa-solid fa-heart-pulse mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sV}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttEks}" data-namig-vrednost="${sE} / 99" data-namig-barva="${col}"><i class="fa-solid fa-gauge-high mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sE}</span></div><div class="mini-ikona-box" data-namig-ime="${lng.ttAgi}" data-namig-vrednost="${sA} / 99" data-namig-barva="${col}"><i class="fa-solid fa-wave-square mini-ikona-img" style="color:${col};"></i><span class="mini-ikona-val">${sA}</span></div></div></div>${aGumb}</div></div></div>`;
+    };
+
+    // Dispatcher za klik na mini kartico v mreži (Baza + Lestvica). Odloči se ob KLIKU glede na
+    // trenutni način - zato preklop primerjave NE zahteva ponovnega izrisa mreže, da bi klik dobil
+    // pravo vedenje. Bere ISTO stanje kot razred body.compare-mode (window.cMode) in body.delete-mode
+    // (window.dMode) - brez nove zastavice ali novega stanja.
+    window.klikNaKartico = function(id) {
+        if(window.cMode) { window.izberiIgralcaZaCompare(id); return; }  // primerjava: izberi kartico
+        if(window.dMode) { window.izberiZaBrisanje(id); return; }         // brisanje: označi kartico
+        window.poglejKartico(id);                                         // sicer: odpri okno "Poglej"
+    };
+    // Dostopnost s tipkovnico: Enter na fokusirani kartici (role="button") jo odpre. Če je fokus na
+    // gumbu Uredi/Briši znotraj kartice, pustimo privzeto vedenje gumba (gumb ima svoj onclick).
+    window.klikNaKarticoTipka = function(e, id) {
+        if(e.key !== 'Enter') return;
+        if(e.target.closest && e.target.closest('button, a, input, select, textarea')) return;
+        e.preventDefault();
+        window.klikNaKartico(id);
     };
 
     // Sledi vsem mini-radar Chart.js instancam iz hover-predogleda, da jih lahko
@@ -3729,10 +3760,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 
         f.sort((a,b) => { if(fSort === 'desc') return b.dynamicOvr - a.dynamicOvr; else return a.dynamicOvr - b.dynamicOvr; }).forEach((a) => {
             let hK = window.dobiHTMLMaleKartice(a, false); let oW = document.createElement('div'); oW.innerHTML = hK; let d = oW.firstElementChild; k.appendChild(d);
-            d.addEventListener('mouseenter', () => {
-                if(window.cMode) return; let cI = d.getAttribute('data-canvas-id'); let rC = d.getAttribute('data-rank-color'); let sR = d.getAttribute('data-stats'); if(!sR) return; let s = sR.split(',').map(Number); let mC = document.getElementById(cI);
-                if(mC && !mC.classList.contains('narisan')) { mC.classList.add('narisan'); window.miniCharts.push(new Chart(mC.getContext('2d'), { type: 'radar', data: { labels: ['SPD', 'PWR', 'END', 'EXP', 'AGI'], datasets: [{ data: s, backgroundColor: rC + '33', borderColor: rC, borderWidth: 1.5, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { display:false }, grid: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { color: '#888', font:{size:8} }, ticks: { display: false }, min: 0, max: 100 } }, plugins: { legend: { display: false } } } })); }
-            });
         });
 
         // Šele zdaj, ko so vse kartice dejansko zgrajene (prikazana številka mora ujemati
@@ -3925,8 +3952,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.zazeniLenoNalaganjeSlik(c);
         window.pripniTiltInFoil(c);
         window.prednaloziVseSlike(vA.map(x => x.id));
-
-        setTimeout(() => { document.querySelectorAll('#panelLestvica .atlet-vrstica-container').forEach(el => { el.addEventListener('mouseenter', () => { let cI = el.getAttribute('data-canvas-id'); let rC = el.getAttribute('data-rank-color'); let sR = el.getAttribute('data-stats'); if(!sR) return; let s = sR.split(',').map(Number); let mC = document.getElementById(cI); if(mC && !mC.classList.contains('narisan')) { mC.classList.add('narisan'); window.miniCharts.push(new Chart(mC.getContext('2d'), { type: 'radar', data: { labels: ['SPD', 'PWR', 'END', 'EXP', 'AGI'], datasets: [{ data: s, backgroundColor: rC + '33', borderColor: rC, borderWidth: 1.5, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { display:false }, grid: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { color: '#888', font:{size:8} }, ticks: { display: false }, min: 0, max: 100 } }, plugins: { legend: { display: false } } } })); } }); }); }, 100);
     };
 
     window.osveziGalerijo = async function() {
@@ -5428,40 +5453,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         noga.appendChild(t);
         return noga;
     };
-    // OBRAT NA DOTIK za male kartice (Baza, Lestvica).
-    // Poslušalec je en sam na dokumentu, ker se kartice ves čas na novo izrisujejo -
-    // pripenjanje na vsako posebej bi puščalo mrtve poslušalce.
-    // Dotik ločimo od drsenja po premiku prsta in trajanju: če se je prst premaknil
-    // več kot 12 px ali je držal dlje kot 700 ms, to ni bil dotik in kartice ne obrnemo.
-    window.namestiObratNaDotik = function() {
-        if(window._obratDotikPripet) return;
-        window._obratDotikPripet = true;
-        let cilj = null, zX = 0, zY = 0, zT = 0;
-
-        document.addEventListener('pointerdown', (e) => {
-            cilj = null;
-            if(e.pointerType === 'mouse') return;     // miška ima hover, ne rabi dotika
-            let f = e.target.closest ? e.target.closest('.atlet-vrstica-flipper') : null;
-            if(!f) return;
-            cilj = f; zX = e.clientX; zY = e.clientY; zT = Date.now();
-        }, true);
-
-        document.addEventListener('pointerup', (e) => {
-            let f = cilj; cilj = null;
-            if(!f || e.pointerType === 'mouse') return;
-            if(window.cMode || window.dMode) return;  // izbiranje za primerjavo/brisanje ima prednost
-            if(e.target.closest && e.target.closest('button, a, input, select, textarea')) return;
-            if(Math.abs(e.clientX - zX) > 12 || Math.abs(e.clientY - zY) > 12) return;
-            if(Date.now() - zT > 700) return;
-            f.classList.toggle('obrnjena');
-            window.vibriraj(12);
-        }, true);
-
-        // Ob prehodu v način izbiranja vse obrnjene kartice vrnemo na sprednjo stran.
-        window.vrniObrnjene = function() {
-            document.querySelectorAll('.atlet-vrstica-flipper.obrnjena').forEach(f => f.classList.remove('obrnjena'));
-        };
-    };
+    // Male kartice (Baza, Lestvica) se NE obračajo več - klik/tap na celo kartico odpre okno
+    // "Poglej" (window.klikNaKartico). Prejšnji obrat na dotik (namestiObratNaDotik / .obrnjena)
+    // je zato odstranjen; obrat je ostal samo pri VELIKI kartici v oknu Poglej (#poglejFlip).
 
     // Kratka vibracija ob dogodku. Deluje na Androidu; iOS Safari jo ignorira.
     window.vibriraj = function(vzorec) {
@@ -5772,7 +5766,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.radarGrafVnos = new Chart(document.getElementById('radarChartVnos').getContext('2d'), { type: 'radar', data: { labels: window.prevodi[window.tJezik].grafLabele, datasets: [{ data: [50, 50, 50, 50, 50], backgroundColor: 'rgba(79, 172, 254, 0.2)', borderColor: '#4facfe', borderWidth: 3 }] }, options: window.chartOptions });
         window.spremeniJezik(window.tJezik); 
     window.pripraviNamige();
-    window.namestiObratNaDotik();
 
         // TV NAČIN (?tv=1): projektorski zaslon za dogodek. Bere javno bazo, zato brez prijave.
         if(window.jeTVNacin()) { window.zazeniTVNacin(); return; }
