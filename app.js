@@ -2429,11 +2429,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let gS = document.getElementById('gumbSlava'); if(gS) gS.classList.toggle('aktivno', p === 'slava');
         let gI = document.getElementById('gumbIzzivi'); if(gI) gI.classList.toggle('aktivno', p === 'izzivi');
         let gVec = document.getElementById('gumbVec'); if(gVec) gVec.classList.toggle('aktivno', ['slava','izzivi','sobe','nadzor'].includes(p));
-        document.getElementById('gumbVnos').classList.toggle('aktivno', p === 'vnos'); document.getElementById('gumbPrikaz').classList.toggle('aktivno', p === 'prikaz'); document.getElementById('gumbBaza').classList.toggle('aktivno', p === 'baza'); document.getElementById('gumbLestvica').classList.toggle('aktivno', p === 'lestvica');
+        document.getElementById('gumbVnos').classList.toggle('aktivno', p === 'vnos'); document.getElementById('gumbPrikaz').classList.toggle('aktivno', p === 'prikaz'); document.getElementById('gumbBaza').classList.toggle('aktivno', p === 'baza'); document.getElementById('gumbLestvica').classList.toggle('aktivno', p === 'lestvica'); { let gD = document.getElementById('gumbDogodek'); if(gD) gD.classList.toggle('aktivno', p === 'dogodek'); }
         document.getElementById('panelVnos').style.display = 'none'; document.getElementById('panelPrikaz').style.display = 'none'; document.getElementById('panelBaza').style.display = 'none'; document.getElementById('panelLestvica').style.display = 'none'; document.getElementById('panelNadzor').style.display = 'none'; document.getElementById('zajem-slike').classList.remove('prikaz-nacin');
         let pS = document.getElementById('panelSlava'); if(pS) pS.style.display = 'none';
         let pI = document.getElementById('panelIzzivi'); if(pI) pI.style.display = 'none';
         let pSo = document.getElementById('panelSobe'); if(pSo) pSo.style.display = 'none';
+        let pDg = document.getElementById('panelDogodek'); if(pDg) pDg.style.display = 'none';
         if(p === 'vnos') { document.getElementById('panelVnos').style.display = 'block'; document.getElementById('panelPrikaz').style.display = 'flex'; document.getElementById('btnSamoShraniSliko').style.display = 'none'; }
         else if (p === 'prikaz') { 
             document.getElementById('panelPrikaz').style.display = 'flex'; document.getElementById('zajem-slike').classList.add('prikaz-nacin');
@@ -2444,6 +2445,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         }
         else if (p === 'baza') { document.getElementById('panelBaza').style.display = 'flex'; document.getElementById('zajem-slike').classList.add('prikaz-nacin'); window.osveziGalerijo(); }
         else if (p === 'lestvica') { document.getElementById('panelLestvica').style.display = 'flex'; document.getElementById('zajem-slike').classList.add('prikaz-nacin'); window.izrisiLestvice(); }
+        else if (p === 'dogodek') { let pd = document.getElementById('panelDogodek'); if(pd) pd.style.display = 'flex'; document.getElementById('zajem-slike').classList.add('prikaz-nacin'); window.naloziDogodke().then(() => window.izrisiDogodke()); }
         else if (p === 'izzivi') {
             let pi = document.getElementById('panelIzzivi');
             if(pi) pi.style.display = 'flex';
@@ -4002,6 +4004,239 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         window.prednaloziVseSlike(razvrsceni.map(x => x.id));
     };
 
+    // ============================================================
+    // G99 DOGODKI (eventi): admin ustvarja/ureja, vsi vidijo; prijave v aplikaciji.
+    // Zbirki: "dogodki" (javno branje, admin piše), "prijave" (uporabnik ustvari svojo,
+    // admin bere vse). Per-dogodek lestvica pride v naslednjem koraku.
+    // Vzorec mirrorja izzivi/sobe (addDoc / setDoc / deleteDoc + nalozi/izrisi).
+    // ============================================================
+    window.prevodiDogodki = {
+        sl: {
+            podtabProsti: 'Prihajajoči', podtabRez: 'Rezultati', dodaj: 'Dodaj dogodek',
+            uredi: 'Uredi', brisi: 'Izbriši', prijava: 'Prijavi se', cakalna: 'Na čakalno listo',
+            prijavljen: 'Prijavljen ✓', rezultati: 'Poglej rezultate', razprodano: 'Razprodano',
+            statusOdprto: 'Prijave odprte', statusKmalu: 'Kmalu', statusRazprodano: 'Razprodano', statusKoncano: 'Zaključeno',
+            praznoProsti: 'Trenutno ni napovedanih dogodkov.', praznoRez: 'Še ni zaključenih dogodkov.',
+            novNaslov: 'Nov G99 Dogodek', urediNaslov: 'Uredi dogodek', shrani: 'Shrani dogodek',
+            potrdiBrisi: 'Zares izbrišem ta dogodek?', napakaShrani: 'Napaka pri shranjevanju dogodka.',
+            potrdiPrijavo: 'Potrdi prijavo', prijavaOk: 'Prijava oddana!', prijavaNapaka: 'Napaka pri prijavi.',
+            zeprijavljen: 'Na ta dogodek si že prijavljen.', prijaviSe: 'Najprej se prijavi v aplikacijo.',
+            mestPrijav: 'prijav', lblIme: 'Ime dogodka', lblMesto: 'Mesto', lblKraj: 'Prizorišče',
+            lblDatum: 'Datum', lblCas: 'Čas', lblKat: 'Kategorije', lblCena: 'Cena', lblStatus: 'Status', lblOpis: 'Opis (neobvezno)',
+            lblTvojeIme: 'Tvoje ime', lblKategorija: 'Kategorija', lestvicaKmalu: 'Lestvica dogodka pride v naslednji posodobitvi.'
+        },
+        en: {
+            podtabProsti: 'Upcoming', podtabRez: 'Results', dodaj: 'Add event',
+            uredi: 'Edit', brisi: 'Delete', prijava: 'Register', cakalna: 'Join waitlist',
+            prijavljen: 'Registered ✓', rezultati: 'View results', razprodano: 'Sold out',
+            statusOdprto: 'Registration open', statusKmalu: 'Soon', statusRazprodano: 'Sold out', statusKoncano: 'Finished',
+            praznoProsti: 'No upcoming events right now.', praznoRez: 'No finished events yet.',
+            novNaslov: 'New G99 Event', urediNaslov: 'Edit event', shrani: 'Save event',
+            potrdiBrisi: 'Delete this event?', napakaShrani: 'Error saving event.',
+            potrdiPrijavo: 'Confirm registration', prijavaOk: 'Registration submitted!', prijavaNapaka: 'Registration error.',
+            zeprijavljen: 'You are already registered for this event.', prijaviSe: 'Please sign in first.',
+            mestPrijav: 'signups', lblIme: 'Event name', lblMesto: 'City', lblKraj: 'Venue',
+            lblDatum: 'Date', lblCas: 'Time', lblKat: 'Categories', lblCena: 'Price', lblStatus: 'Status', lblOpis: 'Description (optional)',
+            lblTvojeIme: 'Your name', lblKategorija: 'Category', lestvicaKmalu: 'Event leaderboard coming soon.'
+        }
+    };
+    window.dgT = function() { return window.prevodiDogodki[window.tJezik] || window.prevodiDogodki.sl; };
+
+    window.dogodki = [];
+    window.prijaveMoje = new Set();       // ID-ji dogodkov, na katere je prijavljen trenutni uporabnik
+    window.prijaveStevec = {};            // dogodekId -> število prijav (samo admin)
+    window.dogodekAktivniPodtab = 'prihajajoci';
+
+    window.naloziDogodke = async function() {
+        try {
+            let s = await window.getDocs(window.collection(window.db, "dogodki"));
+            window.dogodki = [];
+            s.forEach(d => window.dogodki.push({ id: d.id, ...d.data() }));
+            window.dogodki.sort((a, b) => (a.datum || '').localeCompare(b.datum || ''));  // najbližji prvi
+        } catch(e) { console.warn('Dogodkov ni bilo mogoče naložiti:', e); window.dogodki = []; }
+        await window.naloziPrijaveStanje();
+    };
+
+    // Prijave: uporabnik vidi SVOJE (filter po uid); admin prešteje vse.
+    window.naloziPrijaveStanje = async function() {
+        window.prijaveMoje = new Set(); window.prijaveStevec = {};
+        try {
+            if(window.isAdm) {   // le glavni admin bere VSE prijave (pravila: read if jeAdmin())
+                let s = await window.getDocs(window.collection(window.db, "prijave"));
+                s.forEach(d => { let p = d.data(); window.prijaveStevec[p.dogodekId] = (window.prijaveStevec[p.dogodekId] || 0) + 1; if(p.uid === window.tUid) window.prijaveMoje.add(p.dogodekId); });
+            } else if(window.tUid) {
+                let s = await window.getDocs(window.query(window.collection(window.db, "prijave"), window.where("uid", "==", window.tUid)));
+                s.forEach(d => window.prijaveMoje.add(d.data().dogodekId));
+            }
+        } catch(e) { console.warn('Prijave:', e); }
+    };
+
+    window.formatDatumDG = function(iso) {
+        if(!iso) return '';
+        let d = new Date(iso + 'T00:00:00'); if(isNaN(d.getTime())) return iso;
+        let mes = window.tJezik === 'sl' ? ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'] : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return d.getDate() + '. ' + mes[d.getMonth()] + ' ' + d.getFullYear();
+    };
+
+    window.dogodekPodtab = function(t) {
+        window.dogodekAktivniPodtab = t;
+        let a = document.getElementById('dgPodtabProsti'); let b = document.getElementById('dgPodtabRez');
+        if(a) a.classList.toggle('aktiven', t === 'prihajajoci');
+        if(b) b.classList.toggle('aktiven', t === 'rezultati');
+        window.izrisiDogodke();
+    };
+
+    // Napisi (podtabi, gumb Dodaj, labele obrazca) iz prevodiDogodki - brez novih ključev v glavnem prevodu.
+    window.dogodekPosodobiLabele = function() {
+        let T = window.dgT();
+        let m = { dgPodtabProsti: T.podtabProsti, dgPodtabRez: T.podtabRez, lblDgIme: T.lblIme, lblDgMesto: T.lblMesto, lblDgKraj: T.lblKraj, lblDgDatum: T.lblDatum, lblDgCas: T.lblCas, lblDgKat: T.lblKat, lblDgCena: T.lblCena, lblDgStatus: T.lblStatus, lblDgOpis: T.lblOpis, lblDgPrijIme: T.lblTvojeIme, lblDgPrijKat: T.lblKategorija };
+        for(let id in m) { let el = document.getElementById(id); if(el) el.textContent = m[id]; }
+        let s1 = document.querySelector('#dgDodajGumb span'); if(s1) s1.textContent = T.dodaj;
+        let s2 = document.querySelector('#dgShraniGumb span'); if(s2) s2.textContent = T.shrani;
+        let s3 = document.querySelector('#dgPrijavaGumb span'); if(s3) s3.textContent = T.potrdiPrijavo;
+        let so = document.getElementById('dgStatus');
+        if(so && so.options.length >= 4) { so.options[0].textContent = T.statusOdprto; so.options[1].textContent = T.statusKmalu; so.options[2].textContent = T.statusRazprodano; so.options[3].textContent = T.statusKoncano; }
+    };
+
+    window.izrisiDogodke = function() {
+        let c = document.getElementById('dgSeznam'); if(!c) return;
+        let T = window.dgT(); let admin = !!window.isAdm;   // upravljanje dogodkov = SAMO glavni admin (ujema se z jeAdmin() v pravilih)
+        window.dogodekPosodobiLabele();
+        let dodaj = document.getElementById('dgDodajGumb'); if(dodaj) dodaj.style.display = admin ? 'inline-flex' : 'none';
+        let prihajajoci = window.dogodekAktivniPodtab !== 'rezultati';
+        let sez = window.dogodki.filter(d => prihajajoci ? d.status !== 'koncano' : d.status === 'koncano');
+        if(sez.length === 0) { c.innerHTML = '<div class="dg-prazno">' + (prihajajoci ? T.praznoProsti : T.praznoRez) + '</div>'; return; }
+        c.innerHTML = sez.map((d, i) => window.dogodekKarticaHTML(d, admin, i)).join('');
+    };
+
+    window.dogodekKarticaHTML = function(d, admin, i) {
+        let T = window.dgT();
+        let statusMap = { odprto: ['odprto', T.statusOdprto], kmalu: ['kmalu', T.statusKmalu], razprodano: ['razprodano', T.statusRazprodano], koncano: ['koncano', T.statusKoncano] };
+        let st = statusMap[d.status] || statusMap.odprto;
+        let fotoIdx = (i % 6) + 1;
+        let datum = window.formatDatumDG(d.datum);
+        let jePrij = window.prijaveMoje.has(d.id);
+        let stevec = window.prijaveStevec[d.id];
+        let gumb = '';
+        if(d.status === 'koncano') gumb = '<button class="dg-gumb sekundarni" onclick="window.odpriDogodekLestvico(\'' + d.id + '\')">' + T.rezultati + '</button>';
+        else if(d.status === 'razprodano') gumb = '<button class="dg-gumb sekundarni" disabled>' + T.razprodano + '</button>';
+        else if(jePrij) gumb = '<button class="dg-gumb prijavljen" disabled>' + T.prijavljen + '</button>';
+        else if(d.status === 'kmalu') gumb = '<button class="dg-gumb sekundarni" onclick="window.odpriPrijavo(\'' + d.id + '\')">' + T.cakalna + '</button>';
+        else gumb = '<button class="dg-gumb" onclick="window.odpriPrijavo(\'' + d.id + '\')">' + T.prijava + (d.cena ? ' — ' + window.escapeHtml(d.cena) : '') + '</button>';
+        let adminGumbi = admin ? '<div class="dg-admin-gumbi"><button onclick="event.stopPropagation(); window.urediDogodek(\'' + d.id + '\')" title="' + T.uredi + '"><i class="fa-solid fa-pen"></i></button><button onclick="event.stopPropagation(); window.brisiDogodek(\'' + d.id + '\')" title="' + T.brisi + '"><i class="fa-solid fa-trash"></i></button></div>' : '';
+        let stevecHTML = (admin && stevec) ? '<span class="dg-stevec"><i class="fa-solid fa-user-group"></i> ' + stevec + ' ' + T.mestPrijav + '</span>' : '';
+        return '<div class="dg-kartica">'
+            + '<div class="dg-slika dg-foto-' + fotoIdx + '"><span class="dg-status ' + st[0] + '">' + st[1] + '</span>' + adminGumbi + '</div>'
+            + '<div class="dg-telo">'
+            + '<div class="dg-ime">' + window.escapeHtml(d.ime || '') + '</div>'
+            + (datum ? '<div class="dg-meta"><i class="fa-solid fa-calendar"></i> ' + datum + (d.cas ? ' · ' + window.escapeHtml(d.cas) : '') + '</div>' : '')
+            + ((d.kraj || d.mesto) ? '<div class="dg-meta"><i class="fa-solid fa-location-dot"></i> ' + window.escapeHtml(d.kraj || '') + (d.kraj && d.mesto ? ', ' : '') + window.escapeHtml(d.mesto || '') + '</div>' : '')
+            + (d.kategorije ? '<div class="dg-meta"><i class="fa-solid fa-user-group"></i> ' + window.escapeHtml(d.kategorije) + '</div>' : '')
+            + (d.opis ? '<div class="dg-opis">' + window.escapeHtml(d.opis) + '</div>' : '')
+            + stevecHTML
+            + gumb
+            + '</div></div>';
+    };
+
+    // ---- Admin: obrazec za dogodek ----
+    window.odpriDogodekObrazec = function() {
+        let T = window.dgT();
+        document.getElementById('dgId').value = '';
+        ['dgIme','dgMesto','dgKraj','dgDatum','dgCas','dgKategorije','dgCena','dgOpis'].forEach(id => { let el = document.getElementById(id); if(el) el.value = ''; });
+        let stt = document.getElementById('dgStatus'); if(stt) stt.value = 'odprto';
+        let nas = document.getElementById('dgObrazecNaslov'); if(nas) nas.textContent = T.novNaslov;
+        window.dogodekPosodobiLabele();
+        document.getElementById('dgObrazecModal').style.display = 'flex';
+    };
+    window.zapriDogodekObrazec = function() { let m = document.getElementById('dgObrazecModal'); if(m) m.style.display = 'none'; };
+    window.urediDogodek = function(id) {
+        let d = window.dogodki.find(x => x.id === id); if(!d) return; let T = window.dgT();
+        document.getElementById('dgId').value = d.id;
+        document.getElementById('dgIme').value = d.ime || '';
+        document.getElementById('dgMesto').value = d.mesto || '';
+        document.getElementById('dgKraj').value = d.kraj || '';
+        document.getElementById('dgDatum').value = d.datum || '';
+        document.getElementById('dgCas').value = d.cas || '';
+        document.getElementById('dgKategorije').value = d.kategorije || '';
+        document.getElementById('dgCena').value = d.cena || '';
+        document.getElementById('dgStatus').value = d.status || 'odprto';
+        document.getElementById('dgOpis').value = d.opis || '';
+        let nas = document.getElementById('dgObrazecNaslov'); if(nas) nas.textContent = T.urediNaslov;
+        window.dogodekPosodobiLabele();
+        document.getElementById('dgObrazecModal').style.display = 'flex';
+    };
+    window.shraniDogodek = async function() {
+        let T = window.dgT();
+        let id = document.getElementById('dgId').value;
+        let data = {
+            ime: document.getElementById('dgIme').value.trim(),
+            mesto: document.getElementById('dgMesto').value.trim(),
+            kraj: document.getElementById('dgKraj').value.trim(),
+            datum: document.getElementById('dgDatum').value,
+            cas: document.getElementById('dgCas').value.trim(),
+            kategorije: document.getElementById('dgKategorije').value.trim(),
+            cena: document.getElementById('dgCena').value.trim(),
+            status: document.getElementById('dgStatus').value,
+            opis: document.getElementById('dgOpis').value.trim(),
+            posodobljeno: new Date().toISOString()
+        };
+        if(!data.ime) { alert(T.lblIme + '?'); return; }
+        try {
+            if(id) await window.setDoc(window.doc(window.db, "dogodki", id), data, { merge: true });
+            else { data.ustvarjeno = new Date().toISOString(); await window.addDoc(window.collection(window.db, "dogodki"), data); }
+            window.zapriDogodekObrazec();
+            await window.naloziDogodke();
+            window.izrisiDogodke();
+        } catch(e) { console.error('Dogodek shrani:', e); alert(T.napakaShrani); }
+    };
+    window.brisiDogodek = async function(id) {
+        let T = window.dgT();
+        if(!confirm(T.potrdiBrisi)) return;
+        try { await window.deleteDoc(window.doc(window.db, "dogodki", id)); await window.naloziDogodke(); window.izrisiDogodke(); }
+        catch(e) { console.error('Dogodek brisi:', e); alert(T.napakaShrani); }
+    };
+
+    // ---- Prijava na dogodek (uporabnik) ----
+    window.odpriPrijavo = function(dogodekId) {
+        let T = window.dgT();
+        if(!window.tUid) { alert(T.prijaviSe); return; }
+        if(window.prijaveMoje.has(dogodekId)) { alert(T.zeprijavljen); return; }
+        let d = window.dogodki.find(x => x.id === dogodekId); if(!d) return;
+        document.getElementById('dgPrijavaDogodekId').value = dogodekId;
+        document.getElementById('dgPrijavaNaslov').textContent = d.ime || '';
+        let sel = document.getElementById('dgPrijavaKat'); sel.innerHTML = '';
+        let kats = (d.kategorije || '').split(/[·,\/|]/).map(s => s.trim()).filter(Boolean);
+        if(kats.length === 0) kats = ['U15', 'U17', 'U19'];
+        kats.forEach(k => { let o = document.createElement('option'); o.value = k; o.textContent = k; sel.appendChild(o); });
+        let moja = (window.aBaza || []).find(a => (a.emailSportnika || '').toLowerCase() === (window.tEmail || '').toLowerCase());
+        document.getElementById('dgPrijavaIme').value = (moja && moja.ime) ? moja.ime : '';
+        window.dogodekPosodobiLabele();
+        document.getElementById('dgPrijavaModal').style.display = 'flex';
+    };
+    window.zapriPrijavo = function() { let m = document.getElementById('dgPrijavaModal'); if(m) m.style.display = 'none'; };
+    window.potrdiPrijavo = async function() {
+        let T = window.dgT();
+        let dogodekId = document.getElementById('dgPrijavaDogodekId').value;
+        let d = window.dogodki.find(x => x.id === dogodekId); if(!d) return;
+        let ime = document.getElementById('dgPrijavaIme').value.trim();
+        let kat = document.getElementById('dgPrijavaKat').value;
+        if(!ime) { alert(T.lblTvojeIme + '?'); return; }
+        try {
+            await window.addDoc(window.collection(window.db, "prijave"), {
+                dogodekId: dogodekId, dogodekIme: d.ime || '', uid: window.tUid, email: window.tEmail || '',
+                ime: ime, kategorija: kat, status: (d.status === 'kmalu') ? 'cakalna' : 'prijava', cas: new Date().toISOString()
+            });
+            window.prijaveMoje.add(dogodekId);
+            window.zapriPrijavo();
+            await window.naloziPrijaveStanje();
+            window.izrisiDogodke();
+            alert(T.prijavaOk);
+        } catch(e) { console.error('Prijava:', e); alert(T.prijavaNapaka); }
+    };
+    // Per-dogodek lestvica pride v naslednjem koraku (2c).
+    window.odpriDogodekLestvico = function(id) { alert(window.dgT().lestvicaKmalu); };
+
+
     window.osveziGalerijo = async function() {
         try { 
             // 1) JAVNI COMBINE - vsi (tudi neprijavljeni) berejo javno kolekcijo "atleti".
@@ -5386,7 +5621,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         // Ikone (namesto emoji) so tu, ker gumbVnos/Prikaz/Baza/Lestvica/Slava/Izzivi/Sobe
         // dobijo CELOTEN innerHTML na novo ob vsakem preklopu jezika - .nav-oznaka ovija
         // besedilo, da ga lahko app.css na mobilni spodnji vrstici ločeno postavi pod ikono.
-        window.setH('gumbVnos', `<i class="fa-solid fa-gear"></i><span class="nav-oznaka">${lng.btnVnos}</span>`); window.setH('gumbPrikaz', `<i class="fa-solid fa-id-card"></i><span class="nav-oznaka">${lng.btnKartica}</span>`); window.setH('gumbBaza', `<i class="fa-solid fa-layer-group"></i><span class="nav-oznaka">${lng.btnBaza}</span>`); window.setH('gumbLestvica', `<i class="fa-solid fa-trophy"></i><span class="nav-oznaka">${lng.btnLestvica}</span>`); window.setH('gumbSlava', `<i class="fa-solid fa-award"></i><span class="nav-oznaka">${lng.btnSlava || 'Hall of Fame'}</span>`); window.setH('gumbIzzivi', `<i class="fa-solid fa-bolt"></i><span class="nav-oznaka">${lng.btnIzzivi || 'Izzivi'}</span>`); window.setH('gumbSobe', `<i class="fa-solid fa-lock"></i><span class="nav-oznaka">${lng.gumbSobe}</span>`); window.setT('gumbVecTxt', lng.btnVec || 'Več');
+        window.setH('gumbVnos', `<i class="fa-solid fa-gear"></i><span class="nav-oznaka">${lng.btnVnos}</span>`); window.setH('gumbPrikaz', `<i class="fa-solid fa-id-card"></i><span class="nav-oznaka">${lng.btnKartica}</span>`); window.setH('gumbBaza', `<i class="fa-solid fa-layer-group"></i><span class="nav-oznaka">${lng.btnBaza}</span>`); window.setH('gumbDogodek', `<i class="fa-solid fa-calendar-days"></i><span class="nav-oznaka">${window.tJezik === 'sl' ? 'Dogodek' : 'Event'}</span>`); window.setH('gumbLestvica', `<i class="fa-solid fa-trophy"></i><span class="nav-oznaka">${lng.btnLestvica}</span>`); window.setH('gumbSlava', `<i class="fa-solid fa-award"></i><span class="nav-oznaka">${lng.btnSlava || 'Hall of Fame'}</span>`); window.setH('gumbIzzivi', `<i class="fa-solid fa-bolt"></i><span class="nav-oznaka">${lng.btnIzzivi || 'Izzivi'}</span>`); window.setH('gumbSobe', `<i class="fa-solid fa-lock"></i><span class="nav-oznaka">${lng.gumbSobe}</span>`); window.setT('gumbVecTxt', lng.btnVec || 'Več');
         window.setT('lblVnosEmail', lng.lblVnosEmail); window.setT('labelIme', lng.labelIme); window.setT('labelStarost', lng.labelStarost); window.setT('labelTeza', lng.labelTeza); window.setT('labelVisina', lng.labelVisina); window.setT('labelSpol', lng.labelSpol); window.setT('labelGen', lng.labelGen); window.setT('lblInHit', lng.inHit); window.setT('lblInMoc', lng.inMoc); window.setT('lblInEks', lng.inEks); window.setT('lblInAgi', lng.inAgi); window.setT('lblInVzd', lng.inVzd); window.setT('labelSezona', lng.lblSezona); window.setT('tabBtnKartica', lng.tabKar); window.setT('tabBtnAnalitika', lng.tabAna);
         window.setH('btnSlikoVnos', `📸 ${lng.gumbSliko}`); window.setT('btnShraniSliko2Txt', lng.gumbPrenos); window.setT('btnShraniIGTxt', lng.btnIG); window.setH('btnShraniBazo', `💾 ${lng.gumbBaza}`); window.setH('btnIzvozi', `📤 ${lng.btnIzvozi}`); window.setH('btnUvozi', `📥 Uvozi (CSV)`);
         window.setT('btnGenerirajPorociloTxt', lng.btnGenerirajPorocilo); window.setT('btnPrenesiPorociloTxt', lng.btnPrenesiPorocilo);

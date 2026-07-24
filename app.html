@@ -101,14 +101,17 @@
          zato je Moja Kartica VEDNO na sredini - tudi ko navadni uporabnik nima Vnosa. -->
     <div class="pogled-preklopnik" id="navPreklopnik">
         <div class="nav-grupa nav-levo">
-            <button class="preklop-gumb nav-primarno" id="gumbVnos" onclick="window.pripraviNovVnos(); window.preklopiPogled('vnos')">⚙️ Vnos</button>
             <button class="preklop-gumb nav-primarno" id="gumbBaza" onclick="window.preklopiPogled('baza')">🗂️ Baza</button>
+            <button class="preklop-gumb nav-primarno" id="gumbDogodek" onclick="window.preklopiPogled('dogodek')">📅 Dogodek</button>
         </div>
         <button class="preklop-gumb nav-primarno aktivno" id="gumbPrikaz" onclick="window.preklopiPogled('prikaz')">👤 Moja Kartica</button>
         <div class="nav-grupa nav-desno">
             <button class="preklop-gumb nav-primarno" id="gumbLestvica" onclick="window.preklopiPogled('lestvica')">🏆 Lestvica</button>
             <button class="preklop-gumb nav-vec-gumb" id="gumbVec" onclick="window.preklopiVecMeni()"><i class="fa-solid fa-ellipsis"></i><span class="nav-oznaka" id="gumbVecTxt">Več</span></button>
             <div class="nav-vec-meni" id="navVecMeni">
+                <!-- Vnos je pri adminu preseljen sem (v Več), da ostane Moja Kartica na sredini
+                     (levo Baza+Dogodek, desno Lestvica+Več = uravnoteženo). Skrit za navadne uporabnike. -->
+                <button class="preklop-gumb" id="gumbVnos" onclick="window.preklopiVecMeni(true); window.pripraviNovVnos(); window.preklopiPogled('vnos')" style="display:none;">⚙️ <span id="gumbVnosTxt">Vnos</span></button>
                 <button class="preklop-gumb" id="gumbMojKlub" onclick="window.preklopiVecMeni(true); window.odpriMojKlub()" style="display:none;"><i class="fa-solid fa-building"></i> <span id="gumbMojKlubTxt">Moj Klub</span></button>
                 <button class="preklop-gumb" id="gumbSlava" onclick="window.preklopiPogled('slava')">🏛️ <span id="gumbSlavaTxt">Hall of Fame</span></button>
                 <button class="preklop-gumb" id="gumbIzzivi" onclick="window.preklopiPogled('izzivi')">⚔️ <span id="gumbIzziviTxt">Izzivi</span></button>
@@ -507,6 +510,18 @@
                 <div id="lestvicaVsebina" style="width: 100%;"></div>
             </div>
 
+            <!-- ===== G99 DOGODEK zavihek (Compete): prihajajoči termini + rezultati. Admin ima "+ Dodaj". ===== -->
+            <div class="prikaz-sekcija" id="panelDogodek" style="display:none; width:100%; flex-direction:column;">
+                <div class="dg-glava">
+                    <div class="dg-podtabi">
+                        <button class="dg-podtab aktiven" id="dgPodtabProsti" onclick="window.dogodekPodtab('prihajajoci')">Prihajajoči</button>
+                        <button class="dg-podtab" id="dgPodtabRez" onclick="window.dogodekPodtab('rezultati')">Rezultati</button>
+                    </div>
+                    <button class="dg-dodaj-gumb" id="dgDodajGumb" onclick="window.odpriDogodekObrazec()" style="display:none;"><i class="fa-solid fa-plus"></i> <span>Dodaj dogodek</span></button>
+                </div>
+                <div id="dgSeznam" class="dg-seznam"></div>
+            </div>
+
             <!-- HALL OF FAME: muzej rekordov. Ločen zavihek (ne pri lestvici), ker gre za
                  drugačno psihologijo: lestvica kaže trenutni vrstni red, tu pa so VEČNI
                  rekorderji - biti tu mora biti prestiž. -->
@@ -539,6 +554,54 @@
             </div>
 
         </div>
+    </div>
+</div>
+
+<!-- ===== G99 DOGODEK: admin obrazec + prijava (modala) ===== -->
+<div class="dg-modal" id="dgObrazecModal" style="display:none;">
+    <div class="dg-modal-oz" onclick="window.zapriDogodekObrazec()"></div>
+    <div class="dg-modal-box">
+        <button class="dg-modal-x" onclick="window.zapriDogodekObrazec()"><i class="fa-solid fa-xmark"></i></button>
+        <h3 id="dgObrazecNaslov">Nov G99 Dogodek</h3>
+        <input type="hidden" id="dgId">
+        <label id="lblDgIme">Ime dogodka</label>
+        <input id="dgIme" placeholder="G99 Dogodek — Ljubljana">
+        <div class="dg-vrsta2">
+            <div><label id="lblDgMesto">Mesto</label><input id="dgMesto" placeholder="Ljubljana"></div>
+            <div><label id="lblDgKraj">Prizorišče</label><input id="dgKraj" placeholder="Športni park LJ"></div>
+        </div>
+        <div class="dg-vrsta2">
+            <div><label id="lblDgDatum">Datum</label><input id="dgDatum" type="date"></div>
+            <div><label id="lblDgCas">Čas</label><input id="dgCas" placeholder="09:00–15:00"></div>
+        </div>
+        <div class="dg-vrsta2">
+            <div><label id="lblDgKat">Kategorije</label><input id="dgKategorije" placeholder="U15 · U17 · U19"></div>
+            <div><label id="lblDgCena">Cena</label><input id="dgCena" placeholder="25 €"></div>
+        </div>
+        <label id="lblDgStatus">Status</label>
+        <select id="dgStatus">
+            <option value="odprto">Prijave odprte</option>
+            <option value="kmalu">Kmalu</option>
+            <option value="razprodano">Razprodano</option>
+            <option value="koncano">Zaključeno</option>
+        </select>
+        <label id="lblDgOpis">Opis (neobvezno)</label>
+        <textarea id="dgOpis" rows="2"></textarea>
+        <button class="dg-shrani" id="dgShraniGumb" onclick="window.shraniDogodek()"><i class="fa-solid fa-check"></i> <span>Shrani dogodek</span></button>
+    </div>
+</div>
+<div class="dg-modal" id="dgPrijavaModal" style="display:none;">
+    <div class="dg-modal-oz" onclick="window.zapriPrijavo()"></div>
+    <div class="dg-modal-box dg-modal-ozek">
+        <button class="dg-modal-x" onclick="window.zapriPrijavo()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="dg-prijava-oznaka"><i class="fa-solid fa-flag-checkered"></i> G99 Dogodek</div>
+        <h3 id="dgPrijavaNaslov">Dogodek</h3>
+        <input type="hidden" id="dgPrijavaDogodekId">
+        <label id="lblDgPrijIme">Tvoje ime</label>
+        <input id="dgPrijavaIme" placeholder="Ime in priimek">
+        <label id="lblDgPrijKat">Kategorija</label>
+        <select id="dgPrijavaKat"></select>
+        <button class="dg-shrani" id="dgPrijavaGumb" onclick="window.potrdiPrijavo()"><i class="fa-solid fa-check"></i> <span>Potrdi prijavo</span></button>
     </div>
 </div>
 

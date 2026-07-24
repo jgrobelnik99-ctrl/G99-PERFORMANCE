@@ -1,4 +1,4 @@
-# G99 Performance — Firestore pravila (z IZZIVI in ZASEBNIMI SOBAMI)
+# G99 Performance — Firestore pravila (z IZZIVI, SOBAMI, DOGODKI in PRIJAVAMI)
 
 Kopiraj spodnja pravila v Firebase konzolo:
 **Firestore Database → Rules → prilepi → Publish**
@@ -122,6 +122,26 @@ service cloud.firestore {
                     || (jePotrjen() && imamClanstvo()
                         && resource.data.lastnik == mojKljuc()
                         && resource.data.clani.size() <= 1);
+    }
+
+    // G99 DOGODKI: javno branje (landing/app/TV), pise SAMO admin.
+    match /dogodki/{doc} {
+      allow read: if true;
+      allow write: if jeAdmin();
+    }
+
+    // PRIJAVE na dogodke: prijavljen uporabnik ustvari SVOJO prijavo (uid == njegov).
+    // Bere jo lahko lastnik (za svoj status) ali admin (za seznam vseh prijav).
+    // Brise jo lastnik ali admin. Update ni dovoljen (prijava je nespremenljiva).
+    match /prijave/{doc} {
+      allow read: if jeAdmin()
+                  || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow create: if jePotrjen()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.keys().hasAll(['dogodekId','uid','ime','kategorija']);
+      allow delete: if jeAdmin()
+                    || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow update: if false;
     }
 
     // Vse ostalo je zaprto.

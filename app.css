@@ -492,6 +492,68 @@
         .galerija-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px 25px; width: 100%; }
 
         /* ============================================================
+           G99 DOGODEK zavihek (Compete): podtabi + kartice dogodkov + admin CRUD + prijava.
+           ============================================================ */
+        #panelDogodek { align-items: center; }
+        .dg-glava { width: 100%; max-width: 1080px; margin: 0 auto 22px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+        .dg-podtabi { display: inline-flex; background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); border-radius: 12px; padding: 4px; gap: 4px; }
+        .dg-podtab { padding: 10px 22px; border: none; background: none; color: var(--g99-tekst-medlo); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; font-family: 'Chakra Petch', sans-serif; transition: background 0.2s, color 0.2s; }
+        .dg-podtab.aktiven { background: linear-gradient(90deg, #4facfe, #00f2fe); color: #041018; }
+        .dg-dodaj-gumb { align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; border: 1px solid rgba(0,242,254,0.4); background: rgba(0,242,254,0.08); color: #00f2fe; font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; font-family: 'Chakra Petch', sans-serif; transition: background 0.2s; }
+        .dg-dodaj-gumb:hover { background: rgba(0,242,254,0.16); }
+
+        .dg-seznam { width: 100%; max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+        .dg-kartica { background: var(--g99-plast-bg); border: 1px solid var(--g99-plast-rob); border-radius: 18px; overflow: hidden; transition: transform 0.25s, border-color 0.25s; }
+        .dg-kartica:hover { transform: translateY(-5px); border-color: rgba(0,242,254,0.25); }
+        .dg-slika { position: relative; height: 150px; background-size: cover; background-position: center 30%; background-repeat: no-repeat;
+            background-image: var(--foto), radial-gradient(circle at 50% 120%, rgba(0,242,254,0.22), transparent 60%), linear-gradient(160deg, #0d1b2e 0%, #050a14 78%); }
+        .dg-slika::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(11,17,32,0.92)); }
+        .dg-status { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 5px 11px; border-radius: 20px; backdrop-filter: blur(4px); }
+        .dg-status.odprto { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.5); }
+        .dg-status.kmalu { background: rgba(0,242,254,0.15); color: #00f2fe; border: 1px solid rgba(0,242,254,0.5); }
+        .dg-status.razprodano { background: rgba(255,118,117,0.15); color: #ff7675; border: 1px solid rgba(255,118,117,0.5); }
+        .dg-status.koncano { background: rgba(139,160,192,0.15); color: #8ba0c0; border: 1px solid rgba(139,160,192,0.45); }
+        .dg-admin-gumbi { position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; gap: 6px; }
+        .dg-admin-gumbi button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); background: rgba(10,16,30,0.85); color: #fff; cursor: pointer; font-size: 12px; backdrop-filter: blur(4px); transition: background 0.2s; }
+        .dg-admin-gumbi button:hover { background: rgba(0,242,254,0.3); }
+        .dg-telo { padding: 18px 20px 20px; }
+        .dg-ime { font-size: 17px; font-weight: 900; text-transform: uppercase; color: #fff; margin-bottom: 12px; letter-spacing: -0.3px; }
+        .dg-meta { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--g99-tekst-sek); margin-bottom: 7px; }
+        .dg-meta i { color: #00f2fe; width: 15px; text-align: center; }
+        .dg-opis { font-size: 12.5px; color: var(--g99-tekst-medlo); line-height: 1.5; margin: 10px 0 4px; }
+        .dg-stevec { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; font-size: 11.5px; font-weight: 700; color: #00f2fe; }
+        .dg-gumb { display: block; width: 100%; margin-top: 16px; padding: 13px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #041018; transition: transform 0.2s, box-shadow 0.2s; }
+        .dg-gumb:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,242,254,0.4); }
+        .dg-gumb.sekundarni { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .dg-gumb.prijavljen { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
+        .dg-gumb:disabled { cursor: default; opacity: 0.85; }
+        .dg-prazno { grid-column: 1 / -1; text-align: center; color: var(--g99-tekst-medlo); font-weight: 700; padding: 50px 20px; }
+        .dg-foto-1 { --foto: url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=520&q=68'); }
+        .dg-foto-2 { --foto: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=520&q=68'); }
+        .dg-foto-3 { --foto: url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=520&q=68'); }
+        .dg-foto-4 { --foto: url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=520&q=68'); }
+        .dg-foto-5 { --foto: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=520&q=68'); }
+        .dg-foto-6 { --foto: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=520&q=68'); }
+
+        /* Modala dogodka (admin obrazec + prijava). display vodi inline (JS: none/flex). */
+        .dg-modal { position: fixed; inset: 0; z-index: 7500; align-items: center; justify-content: center; padding: 20px; }
+        .dg-modal-oz { position: absolute; inset: 0; background: rgba(2,3,6,0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+        .dg-modal-box { position: relative; z-index: 1; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; background: linear-gradient(180deg, #0b1322, #070b15); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 28px; scrollbar-width: none; -ms-overflow-style: none; }
+        .dg-modal-box::-webkit-scrollbar { display: none; }
+        .dg-modal-ozek { max-width: 420px; }
+        .dg-modal-x { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.16); background: rgba(10,16,30,0.8); color: #fff; cursor: pointer; font-size: 15px; transition: background 0.2s, transform 0.2s; }
+        .dg-modal-x:hover { background: #ff4757; transform: rotate(90deg); }
+        .dg-modal-box h3 { font-size: 20px; font-weight: 900; text-transform: uppercase; color: #fff; margin: 0 44px 18px 0; letter-spacing: -0.3px; }
+        .dg-modal-box label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--g99-tekst-medlo); margin: 12px 0 6px; }
+        .dg-modal-box input, .dg-modal-box select, .dg-modal-box textarea { width: 100%; padding: 11px 13px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--g99-plast-rob); color: #fff; font-size: 14px; font-weight: 600; font-family: 'Montserrat', sans-serif; outline: none; }
+        .dg-modal-box input:focus, .dg-modal-box select:focus, .dg-modal-box textarea:focus { border-color: rgba(0,242,254,0.45); }
+        .dg-vrsta2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .dg-shrani { width: 100%; margin-top: 22px; padding: 14px; border-radius: 11px; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #041018; display: inline-flex; align-items: center; justify-content: center; gap: 9px; transition: transform 0.2s, box-shadow 0.2s; }
+        .dg-shrani:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,242,254,0.4); }
+        .dg-prijava-oznaka { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #00f2fe; margin-bottom: 12px; }
+        @media (max-width: 620px) { .dg-vrsta2 { grid-template-columns: 1fr; } .dg-seznam { grid-template-columns: 1fr; max-width: 460px; } }
+
+        /* ============================================================
            MODERNIZACIJA v3 (web + mobil): baza čez celo stran, lestvica
            kot ločene plošče, Moja Kartica kot sredinski "hero".
            Vse je vezano na body[data-pogled] (nastavi preklopiPogled),
@@ -500,6 +562,7 @@
         /* Baza/lestvica/slava/sobe dobijo širši oder kot Moja Kartica (900px). */
         body[data-pogled="baza"] .glavni-kontejner.prikaz-nacin,
         body[data-pogled="lestvica"] .glavni-kontejner.prikaz-nacin,
+        body[data-pogled="dogodek"] .glavni-kontejner.prikaz-nacin,
         body[data-pogled="slava"] .glavni-kontejner.prikaz-nacin,
         body[data-pogled="sobe"] .glavni-kontejner.prikaz-nacin { max-width: 1480px; }
 
