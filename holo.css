@@ -53,13 +53,14 @@
         /* glare - sledi kazalcu (--mx/--my nastavlja pripniTiltInFoil); pri static prosojen */
         radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
             var(--holo-glare) 0%, transparent 55%),
-        /* mono prelivni pas v barvi ranga z belim jedrom */
+        /* mono prelivni pas v barvi ranga - MEHAK in širok (nizko belo jedro), da NE nastane
+           vidna svetla črta/linija čez kartico (prej je bilo jedro 0.42 in je izgledalo kot šiv) */
         linear-gradient(var(--holo-kot),
-            transparent 33%,
-            var(--holo-barva) 47%,
-            rgba(255,255,255,0.42) 50%,
-            var(--holo-barva) 53%,
-            transparent 67%);
+            transparent 6%,
+            var(--holo-barva) 42%,
+            rgba(255,255,255,0.12) 50%,
+            var(--holo-barva) 58%,
+            transparent 94%);
     background-repeat: no-repeat;
     background-size: 100% 100%, var(--holo-band-size);
     background-position: 0 0, var(--holo-band-pos);
@@ -74,12 +75,12 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    mix-blend-mode: var(--holo-tex-blend, color-dodge);
+    mix-blend-mode: var(--holo-tex-blend, overlay);
     background: var(--holo-tex, none);
     background-repeat: no-repeat;
     background-size: var(--holo-tex-size, 220% 220%);
     background-position: var(--holo-tex-pos, 50% 50%);
-    opacity: var(--holo-tex-op, 0.9);
+    opacity: var(--holo-tex-op, 0.55);
 }
 
 /* ---------- NAČINA ---------- */
@@ -88,10 +89,12 @@
 .holo-static { --holo-nacin: 0.55; --holo-glare: transparent; --holo-band-pos: 32% 30%; }
 .holo-static::after { display: none; }   /* v mreži NIKOLI spektra - zmogljivost (20+ kartic) */
 
-/* Velika kartica: glare sledi prstu; pas se premakne z --mx/--my. */
+/* Velika kartica: glare sledi prstu; pas se premakne z --mx/--my.
+   --holo-nacin 0.5 = živa plast je namerno PREPOLOVLJENA (prej 1.0 = preveč, "sploh se ni nič
+   videlo"); glare je mehkejši (0.3 namesto 0.5). Kartica ostane berljiva, holo je le nakazan. */
 .holo-live {
-    --holo-nacin: 1;
-    --holo-glare: rgba(255,255,255,0.5);
+    --holo-nacin: 0.5;
+    --holo-glare: rgba(255,255,255,0.3);
     --holo-band-pos: calc(var(--mx, 50%) * -0.7 + 85%) calc(var(--my, 50%) * -0.7 + 85%);
 }
 
@@ -104,22 +107,22 @@
 .holo-bronze  { --holo-op: 0.16; --holo-barva: var(--rang-bronze); --holo-blend: soft-light; }
 
 /* 3 SILVER — čist bel sijaj (silver token je skoraj bel), brez barve */
-.holo-silver  { --holo-op: 0.24; --holo-barva: var(--rang-silver); --holo-blend: soft-light; }
+.holo-silver  { --holo-op: 0.22; --holo-barva: var(--rang-silver); --holo-blend: soft-light; }
 
 /* 4 GOLD — zlat sweep, izrazitejši */
-.holo-gold    { --holo-op: 0.38; --holo-barva: var(--rang-gold); --holo-blend: overlay; }
+.holo-gold    { --holo-op: 0.32; --holo-barva: var(--rang-gold); --holo-blend: overlay; }
 
-/* 5 EMERALD — globok zelen odsev, počasnejši pas */
-.holo-emerald { --holo-op: 0.40; --holo-barva: var(--rang-emerald); --holo-blend: overlay; --holo-kot: 108deg; }
+/* 5 EMERALD — globok zelen odsev (referenčna spodnja meja - diamant+ je le malo močnejši) */
+.holo-emerald { --holo-op: 0.36; --holo-barva: var(--rang-emerald); --holo-blend: overlay; --holo-kot: 110deg; }
 
-/* 6 DIAMOND — hladen, oster, prizmatičen; color-dodge naredi belo jedro ostro. ŠE mono. */
-.holo-diamond { --holo-op: 0.50; --holo-barva: var(--rang-diamond); --holo-blend: color-dodge; --holo-kot: 128deg; }
+/* 6 DIAMOND — hladen, oster; le malo nad emeraldom. ŠE ENOBARVEN (overlay, ne color-dodge). */
+.holo-diamond { --holo-op: 0.40; --holo-barva: var(--rang-diamond); --holo-blend: overlay; --holo-kot: 118deg; }
 
 /* ===== PRESKOK: od tu naprej barvni SPEKTER (--holo-tex), zgrajen iz rang-tokenov ===== */
 
 /* 7 PRIME — prvič spekter (kvalitativni skok). Mono pas ostane (prime vijolična) + mavrica. */
 .holo-prime {
-    --holo-op: 0.50; --holo-barva: var(--rang-prime); --holo-blend: overlay; --holo-tex-blend: overlay;
+    --holo-op: 0.46; --holo-barva: var(--rang-prime); --holo-blend: overlay; --holo-tex-blend: soft-light;
     --holo-tex: repeating-linear-gradient(125deg,
         var(--rang-elite)   0%,
         var(--rang-gold)    12%,
@@ -132,7 +135,7 @@
 
 /* 8 ELITE — poln mavrični pretok, gostejši spekter, hitrejši */
 .holo-elite {
-    --holo-op: 0.56; --holo-barva: var(--rang-elite); --holo-blend: overlay; --holo-tex-blend: color-dodge;
+    --holo-op: 0.52; --holo-barva: var(--rang-elite); --holo-blend: overlay; --holo-tex-blend: overlay;
     --holo-tex: repeating-linear-gradient(118deg,
         var(--rang-elite)   0%,
         var(--rang-gold)    10%,
@@ -146,7 +149,7 @@
 
 /* 9 G99 — galaksija: spektralni vrtinec (conic), stalno živ */
 .holo-g99 {
-    --holo-op: 0.60; --holo-barva: var(--rang-g99); --holo-blend: screen; --holo-tex-blend: color-dodge;
+    --holo-op: 0.58; --holo-barva: var(--rang-g99); --holo-blend: screen; --holo-tex-blend: overlay;
     --holo-tex: conic-gradient(from 0deg at 50% 50%,
         var(--rang-elite), var(--rang-gold), var(--rang-emerald),
         var(--rang-g99), var(--rang-prime), var(--rang-diamond), var(--rang-elite));

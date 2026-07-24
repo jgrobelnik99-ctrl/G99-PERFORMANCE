@@ -199,7 +199,8 @@ body.landing {
     background-image: var(--foto), radial-gradient(circle at 50% 120%, rgba(0,242,254,0.22), transparent 60%), linear-gradient(160deg, #0d1b2e 0%, #050a14 78%);
     background-size: cover; background-position: center 22%; background-repeat: no-repeat;
 }
-.l-foto-hero { --foto: url('https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=520&q=70'); }
+.l-foto-hero { --foto: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=520&q=70'); }
+.l-foto-hero-2 { --foto: url('https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=520&q=70'); }
 .l-foto-1 { --foto: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=360&q=65'); }
 .l-foto-2 { --foto: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=360&q=65'); }
 .l-foto-3 { --foto: url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=360&q=65'); }
@@ -221,6 +222,18 @@ body.landing {
 .l-hero-card .poglej-flip { box-shadow: 0 30px 80px -22px rgba(0,0,0,0.85); }
 .l-hero-card-hint { text-align: center; margin-top: 40px; font-size: 10.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #5a6a85; }
 .l-hero-card-hint i { color: #00f2fe; margin-right: 5px; }
+
+/* Druga hero kartica: ŽENSKA (G99), statičen eksponat ZADAJ-DESNO za moško interaktivno.
+   Moška je z-index 2 (spredaj), ženska 1 (zadaj), rahlo zavrtena v drugo smer = "pahljača". */
+.l-hero-card #lHeroCardOvoj { position: relative; z-index: 2; }
+.l-hero-card-2 {
+    position: absolute; top: 0; left: 0; width: 100%; z-index: 1;
+    transform: translate(44%, 3%) rotate(11deg) scale(0.9); transform-origin: center;
+    pointer-events: none;
+}
+.l-hero-card-2 .fifa-kartica { box-shadow: 0 30px 80px -22px rgba(0,0,0,0.88); }
+/* Na ožjih zaslonih pokažemo samo eno (moško) kartico, da postavitev ostane čista. */
+@media (max-width: 900px) { .l-hero-card-2 { display: none; } }
 
 /* --- LIVE utripajoča pika --- */
 .l-live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ff4757; box-shadow: 0 0 10px #ff4757; margin-right: 7px; vertical-align: middle; animation: l-live 1.4s infinite; }
