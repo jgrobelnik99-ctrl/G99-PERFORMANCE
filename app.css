@@ -28,6 +28,13 @@
 
 * { box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         body { background-color: var(--g99-ozadje); color: #ffffff; margin: 0; padding: 20px 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; user-select: none; }
+
+        /* Vizualno skrij navpično drsno letev (desni "scroll bar") za čistejši videz -
+           drsanje s kolescem/sledilno ploščico/dotikom ostane popolnoma delujoče.
+           app.css naložita tako aplikacija (app.html) kot javna stran (index.html),
+           zato ta pravila veljajo za oboje. */
+        html { scrollbar-width: none; -ms-overflow-style: none; }
+        html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
         
         .exporting * { animation: none !important; transition: none !important; }
         .exporting .rank-diamond::before, .exporting .rank-prime::before, .exporting .rank-elite::before, .exporting .rank-g99::before { display: none !important; }
