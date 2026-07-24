@@ -3890,68 +3890,116 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         el.innerHTML = html;
     };
 
+    // ===== Pomožne funkcije za prenovljeno lestvico (APEX slog) =====
+    window.lestKat = window.lestKat || 'ovr';
+    window.lestNastaviSpol = function(s, btn) {
+        let sel = document.getElementById('filterLestvicaSpol'); if(sel) sel.value = s;
+        document.querySelectorAll('#lestTabi .lest-tab').forEach(b => b.classList.toggle('aktiven', b === btn));
+        window.izrisiLestvice();
+    };
+    window.lestNastaviKat = function(k, btn) {
+        window.lestKat = k;
+        document.querySelectorAll('#lestCipi .lest-cip').forEach(b => b.classList.toggle('aktiven', b === btn));
+        window.izrisiLestvice();
+    };
+    // Priljubljeni športniki (zvezdica) - shranjeno lokalno v brskalniku (localStorage).
+    window.lestBerePriljubljene = function() {
+        if(window._lestFav) return window._lestFav;
+        try { window._lestFav = new Set(JSON.parse(localStorage.getItem('g99_lest_fav') || '[]')); }
+        catch(e) { window._lestFav = new Set(); }
+        return window._lestFav;
+    };
+    window.lestPreklopiPriljubljen = function(ev, id) {
+        if(ev) ev.stopPropagation();
+        let s = window.lestBerePriljubljene();
+        if(s.has(id)) s.delete(id); else s.add(id);
+        try { localStorage.setItem('g99_lest_fav', JSON.stringify([...s])); } catch(e){}
+        window.izrisiLestvice();
+    };
+    window.lestRazsiri = function(ev, id) {
+        if(ev) ev.stopPropagation();
+        let row = document.getElementById('lestv-' + id);
+        if(row) row.classList.toggle('razsirjena');
+    };
+    // Napisi na krmilju (iz OBSTOJEČIH prevodov - brez novih ključev). Kliče se ob vsakem izrisu;
+    // ker le nastavlja besedilo/placeholder (ne gradi na novo inputa), iskalno polje ne izgubi fokusa.
+    window.lestPosodobiLabele = function() {
+        let lng = window.prevodi[window.tJezik]; let sl = window.tJezik === 'sl';
+        let inp = document.getElementById('lestIskanje'); if(inp) inp.placeholder = lng.isci || (sl ? 'Išči ime...' : 'Search name...');
+        let mapSpol = { 'VSI': sl ? 'VSI' : 'ALL', 'M': sl ? 'MOŠKI' : 'MEN', 'Z': sl ? 'ŽENSKE' : 'WOMEN' };
+        document.querySelectorAll('#lestTabi .lest-tab').forEach(b => { let t = mapSpol[b.dataset.spol]; if(t) b.textContent = t; });
+        let mapKat = { ovr: 'OVR', hitrost: lng.ttHit, moc: lng.ttMoc, vzdrzljivost: lng.ttVzd, eksplozivnost: lng.ttEks, agilnost: lng.ttAgi };
+        document.querySelectorAll('#lestCipi .lest-cip').forEach(b => { let t = mapKat[b.dataset.kat]; if(t) b.textContent = t; });
+    };
+
     window.izrisiLestvice = function() {
         window.ocistiMiniCharts();
-        let c = document.getElementById('lestvicaVsebina'); c.innerHTML = ''; let lng = window.prevodi[window.tJezik]; 
+        window.lestPosodobiLabele();
+        let c = document.getElementById('lestvicaVsebina'); if(!c) return; let lng = window.prevodi[window.tJezik];
         let fSez = document.getElementById('filterLestvicaSezona').value;
         let fSpol = document.getElementById('filterLestvicaSpol').value;
+        let iskanje = ((document.getElementById('lestIskanje') || {}).value || '').trim().toLowerCase();
+        let kat = window.lestKat || 'ovr';
 
-        let g = window.groupAthletesByEmail(); let vA = []; 
-        for (let e in g) { 
-            let i = g[e]; 
-            let sS = fSez === "VSE" ? i[0] : i.find(x => x.sezona === fSez); 
-            if(sS && (fSpol === "VSI" || sS.spol === fSpol)) {
-                vA.push(sS); 
-            }
+        let g = window.groupAthletesByEmail(); let vA = [];
+        for (let e in g) {
+            let i = g[e];
+            let sS = fSez === "VSE" ? i[0] : i.find(x => x.sezona === fSez);
+            if(sS && (fSpol === "VSI" || sS.spol === fSpol)) vA.push(sS);
         }
-        
-        // Lestvica NIKOLI ne filtrira po generaciji (vedno združuje vse skupaj), zato bi bil
-        // LOCAL način tu vedno zavajajoč (glej opombo v izrisiGalerijo) - zato tu VEDNO
-        // prisilimo GLOBAL, ne glede na preklopnik.
+        if(iskanje) vA = vA.filter(a => (a.ime || '').toLowerCase().includes(iskanje));
+
+        // Lestvica NIKOLI ne filtrira po generaciji (združuje vse) - zato tu VEDNO prisilimo GLOBAL.
         let prejsnjiModeLestvica = window.ratingMode;
         window.ratingMode = 'GLOBAL';
         window.posodobiStanjeModePreklopnika(true);
 
-        vA.forEach(a => { a.dynamicOvr = window.izracunajOcene(a).ovr; });
-
-        function vF(v, nB) { let f = parseFloat(v); if (isNaN(f) || f <= 0) return nB ? 999 : 0; return f; }
-                // Ena kategorija lestvice. Znak z mestom je od 4. mesta naprej v barvi RANGA
-        // športnika, ne v barvi kategorije - tako lestvica na prvi pogled pove isto kot
-        // kartica. Prva tri mesta obdržijo zlato, srebro in bron, ker je stopničke treba
-        // ločiti od ranga.
-        function uB(n, i, sF, b) {
-            let iG = [...vA].sort(sF).filter(a => parseInt(a.ovr) > 0).slice(0, 10);
-            if(iG.length === 0) return '';
-            let h = `<div class="lestvica-sekcija" style="--lb:${b}; --lb-mehko:${window.barvaProsojno(b, 0.16)}; --lb-rob:${window.barvaProsojno(b, 0.45)}">
-                <div class="lestvica-glava">
-                    <div class="lestvica-ikona"><i class="fa-solid ${i}"></i></div>
-                    <div class="lestvica-naslov">${n}</div>
-                    <div class="lestvica-stevec">${iG.length}</div>
-                </div>
-                <div class="lestvica-crta"></div>
-                <div class="galerija-grid">`;
-            iG.forEach((ig, inx) => {
-                let medalja = ['#f1c40f', '#bdc3c7', '#cd7f32'][inx];
-                let bC = medalja || window.getColorForOvr(parseInt(ig.ovr) || 0);
-                h += `<div class="lestvica-mesto${inx < 3 ? ' stopnicke m' + (inx + 1) : ''}">`
-                   + window.dobiHTMLMaleKartice(ig, true, inx + 1, bC) + `</div>`;
-            });
-            h += `</div></div>`;
-            return h;
-        }
-        
-        c.innerHTML += uB(lng.topOVR, 'fa-skull', (a,b)=>b.dynamicOvr - a.dynamicOvr, '#ff9f43'); 
-        c.innerHTML += uB(lng.topHit, 'fa-bolt-lightning', (a,b)=>vF(a.hitrost, true) - vF(b.hitrost, true), '#f1c40f'); 
-        c.innerHTML += uB(lng.topMoc, 'fa-mountain', (a,b)=>vF(b.moc, false) - vF(a.moc, false), '#ff7675'); 
-        c.innerHTML += uB(lng.topVzd, 'fa-battery-full', (a,b)=>vF(b.vzdrzljivost, false) - vF(a.vzdrzljivost, false), '#a29bfe'); 
-        c.innerHTML += uB(lng.topEks, 'fa-meteor', (a,b)=>vF(b.eksplozivnost, false) - vF(a.eksplozivnost, false), '#fdcb6e'); 
-        c.innerHTML += uB(lng.topAgi, 'fa-staff-snake', (a,b)=>vF(a.agilnost, true) - vF(b.agilnost, true), '#00cec9');
-
+        vA.forEach(a => { let r = window.izracunajOcene(a); a._oc = r.ocene; a._ovr = r.ovr; });
         window.ratingMode = prejsnjiModeLestvica;
 
+        let kljuc = kat === 'ovr' ? null : kat;
+        let razvrsceni = vA.filter(a => (kljuc ? a._oc[kljuc] : a._ovr) > 0)
+                           .sort((x, y) => (kljuc ? (y._oc[kljuc] - x._oc[kljuc]) : (y._ovr - x._ovr)));
+
+        let katBarve = { hitrost: '#f1c40f', moc: '#ff7675', vzdrzljivost: '#a29bfe', eksplozivnost: '#fdcb6e', agilnost: '#00cec9' };
+        let fav = window.lestBerePriljubljene();
+
+        if(razvrsceni.length === 0) {
+            c.innerHTML = '<div class="lest-prazno">' + (iskanje ? (window.tJezik === 'sl' ? 'Ni zadetkov.' : 'No results.') : (lng.bazaPrazna || '')) + '</div>';
+            return;
+        }
+
+        let statIkone = [['fa-bolt', 'hitrost'], ['fa-dumbbell', 'moc'], ['fa-heart-pulse', 'vzdrzljivost'], ['fa-gauge-high', 'eksplozivnost'], ['fa-wave-square', 'agilnost']];
+        let vrstice = razvrsceni.map((a, idx) => {
+            let mesto = idx + 1;
+            let ovr = a._ovr;
+            let rankCol = window.getColorForOvr(ovr);
+            let prikazScore = kljuc ? a._oc[kljuc] : ovr;
+            let scoreCol = kljuc ? katBarve[kat] : rankCol;
+            let medalja = ['#f1c40f', '#c7d0dc', '#cd7f32'][idx];
+            let mestoCol = mesto <= 3 ? medalja : rankCol;
+            let sCache = a.slika || window.slikeCache[a.id] || "";
+            let bgS = sCache ? ("background-image:url('" + sCache + "');") : "";
+            let rankInfo = window.getRankClassAndName(ovr, lng);
+            let sub = (rankInfo.n) + ' · ' + (a.generacija || 'U17');
+            let jePril = fav.has(a.id);
+            let statHTML = statIkone.map(function(par) { return '<div class="lest-stat"><i class="fa-solid ' + par[0] + '"></i><b>' + a._oc[par[1]] + '</b></div>'; }).join('');
+            return '<div class="lest-vrstica' + (jePril ? ' priljubljena' : '') + (mesto <= 3 ? ' stopnicke' : '') + '" id="lestv-' + a.id + '" style="--rc:' + rankCol + '; --sc:' + scoreCol + ';" onclick="window.poglejKartico(\'' + a.id + '\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')window.poglejKartico(\'' + a.id + '\')">'
+                + '<div class="lest-glava-vrstica">'
+                + '<div class="lest-mesto" style="color:' + mestoCol + ';"><span>' + mesto + '</span></div>'
+                + '<div class="lest-avatar" data-slika-atlet="' + a.id + '" style="' + bgS + '"></div>'
+                + '<div class="lest-imepodatki"><div class="lest-ime">' + (window.escapeHtml(a.ime) || lng.neznan) + '</div><div class="lest-sub">' + sub + '</div></div>'
+                + '<div class="lest-score">' + prikazScore + '</div>'
+                + '<button type="button" class="lest-razsiri-gumb" onclick="window.lestRazsiri(event,\'' + a.id + '\')" aria-label="+"><i class="fa-solid fa-chevron-down"></i></button>'
+                + '<button type="button" class="lest-zvezda' + (jePril ? ' aktivna' : '') + '" onclick="window.lestPreklopiPriljubljen(event,\'' + a.id + '\')" aria-label="star"><i class="fa-solid fa-star"></i></button>'
+                + '</div>'
+                + '<div class="lest-razsirjeno"><div class="lest-stati">' + statHTML + '</div></div>'
+                + '</div>';
+        }).join('');
+
+        c.innerHTML = '<div class="lest-seznam">' + vrstice + '</div>';
         window.zazeniLenoNalaganjeSlik(c);
-        window.pripniTiltInFoil(c);
-        window.prednaloziVseSlike(vA.map(x => x.id));
+        window.prednaloziVseSlike(razvrsceni.map(x => x.id));
     };
 
     window.osveziGalerijo = async function() {

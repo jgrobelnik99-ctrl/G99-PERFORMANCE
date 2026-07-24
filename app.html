@@ -470,16 +470,35 @@
             </div>
 
             <div class="prikaz-sekcija" id="panelLestvica" style="display: none; width: 100%; flex-direction: column;">
-                <div class="galerija-filtri" style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px;">
-                    <select id="filterLestvicaSezona" onchange="window.izrisiLestvice()" style="max-width: 250px;">
-                        <option id="optLestSezVse2" value="VSE">Vse Sezone (Najnovejše)</option>
-                        <option id="optLestSez1_2" value="Sezona 1">Season 1</option>
-                        <option id="optLestSez2_2" value="Sezona 2">Season 2</option>
-                        <option id="optLestSez3_2" value="Sezona 3">Season 3</option>
-                        <option id="optLestSez4_2" value="Sezona 4">Season 4</option>
-                        <option id="optLestSez5_2" value="Sezona 5">Season 5</option>
-                    </select>
-                    <select id="filterLestvicaSpol" onchange="window.izrisiLestvice()" style="max-width: 200px;">
+                <!-- Prenovljena lestvica (APEX slog): iskanje + zavihki spola + čipi kategorij.
+                     filterLestvicaSpol OSTANE (skrit) - zavihki mu nastavljajo vrednost, da se
+                     obstoječe vezave in prevodi opcij (spremeniJezik) ne pokvarijo. -->
+                <div class="lest-krmilje">
+                    <div class="lest-iskanje"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="lestIskanje" oninput="window.izrisiLestvice()" autocomplete="off" placeholder="Išči ime..."></div>
+                    <div class="lest-tabi" id="lestTabi">
+                        <button type="button" class="lest-tab aktiven" data-spol="VSI" onclick="window.lestNastaviSpol('VSI', this)">VSI</button>
+                        <button type="button" class="lest-tab" data-spol="M" onclick="window.lestNastaviSpol('M', this)">MOŠKI</button>
+                        <button type="button" class="lest-tab" data-spol="Z" onclick="window.lestNastaviSpol('Z', this)">ŽENSKE</button>
+                    </div>
+                    <div class="lest-cipi" id="lestCipi">
+                        <button type="button" class="lest-cip aktiven" data-kat="ovr" onclick="window.lestNastaviKat('ovr', this)">OVR</button>
+                        <button type="button" class="lest-cip" data-kat="hitrost" onclick="window.lestNastaviKat('hitrost', this)">Hitrost</button>
+                        <button type="button" class="lest-cip" data-kat="moc" onclick="window.lestNastaviKat('moc', this)">Moč</button>
+                        <button type="button" class="lest-cip" data-kat="vzdrzljivost" onclick="window.lestNastaviKat('vzdrzljivost', this)">Vzdržljivost</button>
+                        <button type="button" class="lest-cip" data-kat="eksplozivnost" onclick="window.lestNastaviKat('eksplozivnost', this)">Eksplozivnost</button>
+                        <button type="button" class="lest-cip" data-kat="agilnost" onclick="window.lestNastaviKat('agilnost', this)">Agilnost</button>
+                    </div>
+                    <div class="galerija-filtri lest-sezona" style="width: 100%; display: flex; justify-content: center;">
+                        <select id="filterLestvicaSezona" onchange="window.izrisiLestvice()">
+                            <option id="optLestSezVse2" value="VSE">Vse Sezone (Najnovejše)</option>
+                            <option id="optLestSez1_2" value="Sezona 1">Season 1</option>
+                            <option id="optLestSez2_2" value="Sezona 2">Season 2</option>
+                            <option id="optLestSez3_2" value="Sezona 3">Season 3</option>
+                            <option id="optLestSez4_2" value="Sezona 4">Season 4</option>
+                            <option id="optLestSez5_2" value="Sezona 5">Season 5</option>
+                        </select>
+                    </div>
+                    <select id="filterLestvicaSpol" style="display:none">
                         <option id="optLestSpolVsi" value="VSI">Vsi Spoli</option>
                         <option id="optLestSpolM" value="M">Moški</option>
                         <option id="optLestSpolZ" value="Z">Ženske</option>
