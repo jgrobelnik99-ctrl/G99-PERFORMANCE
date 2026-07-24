@@ -2388,6 +2388,26 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         nav.classList.toggle('meni-odprt');
     };
 
+    // Na TELEFONU preseli PRAVA elementa - jezik (SI/EN) in način (GLOBAL/LOCAL) - v
+    // "Nastavitve" znotraj menija Več, da vrh ni prenatrpan. Na PC ju vrne na izvorno
+    // mesto. Premikamo PRAVA elementa (ne kopij), zato ni podvajanja stanja. Izvorno
+    // mesto si zapomnimo s sidrom (komentar), da ju lahko vrnemo natanko nazaj.
+    window.razporediNastavitve = function() {
+        let nast = document.getElementById('navNastavitve');
+        if(!nast) return;
+        let mob = window.matchMedia('(max-width: 768px)').matches;
+        [document.querySelector('.jezikovni-meni'), document.querySelector('.mode-switch-wrapper')].forEach(el => {
+            if(!el) return;
+            if(!el._sidro) {
+                let s = document.createComment('sidro-nastavitve');
+                el.parentNode.insertBefore(s, el.nextSibling);
+                el._sidro = s;
+            }
+            if(mob) { if(el.parentNode !== nast) nast.appendChild(el); }
+            else { if(el.parentNode === nast && el._sidro.parentNode) el._sidro.parentNode.insertBefore(el, el._sidro); }
+        });
+    };
+
     window.preklopiPogled = function(p) {
         // Klubski trener (ne glavni admin) nima "Moja Kartica" - če bi kdo tja preusmeril,
         // ga pošljemo na "Moj Klub".
@@ -5289,7 +5309,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
         let slGumb = document.getElementById('slGumb'); let enGumb = document.getElementById('enGumb');
         if (slGumb) slGumb.classList.toggle('aktivno', j === 'sl'); if (enGumb) enGumb.classList.toggle('aktivno', j === 'en');
         
-        window.setT('naslovPrijava', j === 'sl' ? 'Tvoj OVR te čaka.' : 'Your OVR awaits.'); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava); window.setT('gumbOdjavaVecTxt', lng.odjava);
+        window.setT('naslovPrijava', j === 'sl' ? 'Tvoj OVR te čaka.' : 'Your OVR awaits.'); window.setT('lblPrijavaEmail', lng.lblEmail); window.setT('lblPrijavaGeslo', lng.lblGeslo); window.setT('btnPrijavaGumb', lng.btnLogin); window.setT('btnOdpriReg', lng.btnReg); window.setT('btnOdjavaTekst', lng.odjava); window.setT('gumbOdjavaVecTxt', lng.odjava); window.setT('navNastavitveTxt', j === 'sl' ? 'Nastavitve' : 'Settings');
         // Ikone (namesto emoji) so tu, ker gumbVnos/Prikaz/Baza/Lestvica/Slava/Izzivi/Sobe
         // dobijo CELOTEN innerHTML na novo ob vsakem preklopu jezika - .nav-oznaka ovija
         // besedilo, da ga lahko app.css na mobilni spodnji vrstici ločeno postavi pod ikono.
@@ -5824,3 +5844,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
     };
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', window.initApp); } else { window.initApp(); }
+
+    // Nastavitve (jezik + način) razporedi glede na velikost zaslona: telefon -> v meni Več,
+    // PC -> na vrh. Ob nalaganju in ob spremembi velikosti okna.
+    window.razporediNastavitve();
+    window.addEventListener('resize', function(){ clearTimeout(window._nastavitveTimer); window._nastavitveTimer = setTimeout(window.razporediNastavitve, 150); });

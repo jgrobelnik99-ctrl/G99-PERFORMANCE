@@ -113,6 +113,12 @@
                 <button class="preklop-gumb" id="gumbIzzivi" onclick="window.preklopiPogled('izzivi')">⚔️ <span id="gumbIzziviTxt">Izzivi</span></button>
                 <button class="preklop-gumb" id="gumbSobe" onclick="window.preklopiPogled('sobe')">🔒 <span id="gumbSobeTxt">Sobe</span></button>
                 <button class="preklop-gumb" id="gumbNadzor" onclick="window.preklopiVecMeni(true); window.preklopiPogled('nadzor')" style="display:none;"><i class="fa-solid fa-gauge-high"></i> <span id="gumbNadzorTxt">Nadzorna plošča</span></button>
+                <!-- NASTAVITVE (samo telefon): sem JS preseli PRAVA elementa jezika (SI/EN)
+                     in načina (GLOBAL/LOCAL) - en sam vir resnice, brez podvajanja. Na PC
+                     sta na svojem mestu (zgoraj). Glej window.razporediNastavitve v app.js. -->
+                <div class="nav-nastavitve" id="navNastavitve">
+                    <div class="nav-nastavitve-naslov" id="navNastavitveTxt">Nastavitve</div>
+                </div>
                 <!-- Odjava je v meniju Več (samo na telefonu; na PC ostane gumb zgoraj levo). -->
                 <button class="preklop-gumb nav-vec-odjava" id="gumbOdjavaVec" onclick="window.preklopiVecMeni(true); window.odjaviUporabnika()"><i class="fa-solid fa-right-from-bracket"></i> <span id="gumbOdjavaVecTxt">Odjava</span></button>
             </div>
