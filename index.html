@@ -31,7 +31,7 @@
             <button type="button" class="l-nav-dd-gumb" id="lNavDDGumb" aria-haspopup="true" aria-expanded="false">Dogodki <i class="fa-solid fa-chevron-down"></i></button>
             <div class="l-nav-dd-meni" id="lNavDDMeni">
                 <a href="#dogodki"><i class="fa-solid fa-calendar-days"></i> Prihajajoči termini</a>
-                <button type="button" class="l-nav-dd-akcija" onclick="odpriDogodekModal()"><i class="fa-solid fa-stopwatch"></i> Testiraj se — G99 Event</button>
+                <button type="button" class="l-nav-dd-akcija" onclick="odpriDogodekModal()"><i class="fa-solid fa-stopwatch"></i> Testiraj se — G99 Dogodek</button>
             </div>
         </div>
         <a href="app.html" class="l-btn-prijava">Prijava</a>
@@ -429,9 +429,9 @@
 <section class="l-section l-section-alt" id="dogodki">
     <div class="l-wrap">
         <div class="l-section-head l-reveal">
-            <div class="l-kicker">G99 Protokol</div>
+            <div class="l-kicker">G99 Dogodki</div>
             <h2 class="l-h2">Izmeri se v <span class="accent">živo</span>.</h2>
-            <p class="l-section-sub">Uradni G99 Protokol po Sloveniji. Rezerviraj mesto, opravi vseh pet meritev in dobi uradno kartico na licu mesta.</p>
+            <p class="l-section-sub">Uradni G99 Dogodki po Sloveniji. Rezerviraj mesto, opravi vseh pet meritev in dobi uradno kartico na licu mesta.</p>
         </div>
 
         <div class="l-dogodki-grid l-reveal">
@@ -440,7 +440,7 @@
                     <span class="l-dogodek-status odprto">Prijave odprte</span>
                 </div>
                 <div class="l-dogodek-telo">
-                    <div class="l-dogodek-ime">G99 Protokol — Ljubljana</div>
+                    <div class="l-dogodek-ime">G99 Dogodek — Ljubljana</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 12. september 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Športni park Ljubljana</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19</div>
@@ -452,7 +452,7 @@
                     <span class="l-dogodek-status kmalu">Kmalu</span>
                 </div>
                 <div class="l-dogodek-telo">
-                    <div class="l-dogodek-ime">G99 Protokol — Maribor</div>
+                    <div class="l-dogodek-ime">G99 Dogodek — Maribor</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 18. oktober 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Dvorana Tabor, Maribor</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U15 · U17 · U19 · Pro</div>
@@ -464,7 +464,7 @@
                     <span class="l-dogodek-status razprodano">Razprodano</span>
                 </div>
                 <div class="l-dogodek-telo">
-                    <div class="l-dogodek-ime">G99 Protokol — Celje</div>
+                    <div class="l-dogodek-ime">G99 Dogodek — Celje</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-calendar"></i> 8. avgust 2026</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-location-dot"></i> Atletski stadion Kladivar</div>
                     <div class="l-dogodek-meta"><i class="fa-solid fa-user-group"></i> U17 · U19</div>
@@ -503,7 +503,7 @@
         </div>
         <div class="l-footer-col">
             <h4>Dogodki</h4>
-            <a href="#dogodki">G99 Protokol</a>
+            <a href="#dogodki">G99 Dogodki</a>
         </div>
     </div>
     <div class="l-footer-bottom">
@@ -512,19 +512,21 @@
     </div>
 </footer>
 
-<!-- ============ MODAL: G99 EVENT (podroben opis + termini) ============ -->
-<!-- Odpre se ob kliku na "Prijavi se na dogodek" ali na navigacijski "Testiraj se — G99 Event".
+<!-- ============ MODAL: G99 DOGODEK (podroben opis + termini) ============ -->
+<!-- Odpre se ob kliku na "Prijavi se na dogodek" ali na navigacijski "Testiraj se — G99 Dogodek".
      Vsa logika (odpri/zapri/označi termin) je v landing.js (odpriDogodekModal / zapriDogodekModal). -->
 <div class="l-modal" id="lDogodekModal" aria-hidden="true">
     <div class="l-modal-ozadje" onclick="zapriDogodekModal()"></div>
     <div class="l-modal-okvir">
         <button class="l-modal-zapri" onclick="zapriDogodekModal()" aria-label="Zapri okno"><i class="fa-solid fa-xmark"></i></button>
-        <div class="l-modal-okno" role="dialog" aria-modal="true" aria-label="G99 Event">
+        <div class="l-modal-okno" role="dialog" aria-modal="true" aria-label="G99 Dogodek">
 
             <div class="l-modal-hero">
-                <div class="l-modal-znacka"><span class="l-live-dot"></span> G99 Event · Uradni protokol</div>
+                <!-- žareči blobi kot v landing heroju -->
+                <div class="l-modal-glow"><span class="l-mg-blob l-mg-blob-1"></span><span class="l-mg-blob l-mg-blob-2"></span></div>
+                <div class="l-modal-znacka"><span class="l-live-dot"></span> G99 Dogodek · Uradni protokol</div>
                 <h2 class="l-modal-naslov">Testiraj se v <span class="accent">živo</span>.</h2>
-                <p class="l-modal-podnaslov">G99 Event je uradno merjenje po standardiziranem protokolu. Opraviš pet postaj pod nadzorom, sistem sproti izračuna tvoj OVR (1–99), ti pa odideš z digitalno kartico, rangom in značkami — na licu mesta.</p>
+                <p class="l-modal-podnaslov">G99 Dogodek je uradno merjenje po standardiziranem protokolu. Opraviš pet postaj pod nadzorom, sistem sproti izračuna tvoj OVR (1–99), ti pa odideš z digitalno kartico, rangom in značkami — na licu mesta.</p>
                 <div class="l-modal-hitro">
                     <div class="l-mh"><b>~90 min</b><span>trajanje</span></div>
                     <div class="l-mh-crta"></div>
@@ -561,36 +563,27 @@
                 <div class="l-modal-h3"><i class="fa-solid fa-calendar-days"></i> Razpoložljivi termini</div>
                 <div class="l-modal-dogodki">
                     <div class="l-md-dogodek" data-dog="lj">
-                        <div class="l-md-slika l-dog-foto-1"></div>
+                        <div class="l-md-slika l-dog-foto-1"><span class="l-dogodek-status odprto">Prijave odprte</span></div>
                         <div class="l-md-info">
-                            <div class="l-md-glava">
-                                <div class="l-md-ime">G99 Protokol — Ljubljana</div>
-                                <span class="l-dogodek-status odprto">Prijave odprte</span>
-                            </div>
+                            <div class="l-md-ime">G99 Dogodek — Ljubljana</div>
                             <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 12. sep 2026</span><span><i class="fa-solid fa-location-dot"></i> Športni park LJ</span><span><i class="fa-solid fa-user-group"></i> U15 · U17 · U19</span><span><i class="fa-solid fa-clock"></i> 09:00–15:00</span></div>
                             <div class="l-md-cena"><b>25 €</b> / atlet · vključena uradna kartica</div>
                         </div>
                         <a href="app.html" class="l-md-gumb">Prijavi se</a>
                     </div>
                     <div class="l-md-dogodek" data-dog="mb">
-                        <div class="l-md-slika l-dog-foto-2"></div>
+                        <div class="l-md-slika l-dog-foto-2"><span class="l-dogodek-status kmalu">Kmalu</span></div>
                         <div class="l-md-info">
-                            <div class="l-md-glava">
-                                <div class="l-md-ime">G99 Protokol — Maribor</div>
-                                <span class="l-dogodek-status kmalu">Kmalu</span>
-                            </div>
+                            <div class="l-md-ime">G99 Dogodek — Maribor</div>
                             <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 18. okt 2026</span><span><i class="fa-solid fa-location-dot"></i> Dvorana Tabor</span><span><i class="fa-solid fa-user-group"></i> U15 · U17 · U19 · Pro</span><span><i class="fa-solid fa-clock"></i> 10:00–16:00</span></div>
                             <div class="l-md-cena"><b>25 €</b> / atlet · prijave se odprejo septembra</div>
                         </div>
                         <a href="app.html" class="l-md-gumb sekundarni">Na čakalno listo</a>
                     </div>
                     <div class="l-md-dogodek" data-dog="ce">
-                        <div class="l-md-slika l-dog-foto-3"></div>
+                        <div class="l-md-slika l-dog-foto-3"><span class="l-dogodek-status razprodano">Razprodano</span></div>
                         <div class="l-md-info">
-                            <div class="l-md-glava">
-                                <div class="l-md-ime">G99 Protokol — Celje</div>
-                                <span class="l-dogodek-status razprodano">Razprodano</span>
-                            </div>
+                            <div class="l-md-ime">G99 Dogodek — Celje</div>
                             <div class="l-md-meta"><span><i class="fa-solid fa-calendar"></i> 8. avg 2026</span><span><i class="fa-solid fa-location-dot"></i> Stadion Kladivar</span><span><i class="fa-solid fa-user-group"></i> U17 · U19</span><span><i class="fa-solid fa-clock"></i> 09:00–14:00</span></div>
                             <div class="l-md-cena">Dogodek je zaključen · rezultati so v bazi</div>
                         </div>
@@ -600,7 +593,7 @@
             </div>
 
             <div class="l-modal-cta">
-                <div class="l-modal-cta-txt"><b>Nimaš termina blizu?</b><span>Prijavi se v aplikacijo in prvi izveš, ko odpremo nov G99 Event.</span></div>
+                <div class="l-modal-cta-txt"><b>Nimaš termina blizu?</b><span>Prijavi se v aplikacijo in prvi izveš, ko odpremo nov G99 Dogodek.</span></div>
                 <a href="app.html" class="l-btn-primary">Odpri aplikacijo <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
